@@ -92,7 +92,9 @@ public class AndroidMetadataTest {
 
     @Test
     public void testDeviceName(){
-        when(capabilities.getCapability("device")).thenReturn("Samsung s22");
+        String sessionDetails = "{\"device\":\"Samsung s22\"}";
+        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
+                .thenReturn(sessionDetails);
         Assert.assertEquals(metadata.deviceName(), "Samsung s22");
     }
 

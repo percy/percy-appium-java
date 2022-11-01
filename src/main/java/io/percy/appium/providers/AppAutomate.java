@@ -19,12 +19,7 @@ public class AppAutomate extends GenericProvider {
     }
 
     public String getDebugUrl() {
-        if (Cache.CACHE_MAP.get("getSessionDetails_" + sessionId) == null) {
-            Cache.CACHE_MAP.put("getSessionDetails_" + sessionId,
-                    driver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"));
-        }
-        String sessionDetailsString = Cache.CACHE_MAP.get("getSessionDetails_" + sessionId).toString();
-        JSONObject sessionDetails = new JSONObject(sessionDetailsString);
+        JSONObject sessionDetails = new JSONObject(getSessionDetails());
         return sessionDetails.get("browser_url").toString();
     }
 
@@ -68,6 +63,14 @@ public class AppAutomate extends GenericProvider {
         String percyScreenshotUrl = super.screenshot(name, fullScreen, debugUrl);
         executePercyScreenshotEnd(percyScreenshotUrl);
         return null;
+    }
+
+    private String getSessionDetails() {
+        if (Cache.CACHE_MAP.get("getSessionDetails_" + sessionId) == null) {
+            Cache.CACHE_MAP.put("getSessionDetails_" + sessionId,
+                    driver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"));
+        }
+        return Cache.CACHE_MAP.get("getSessionDetails_" + sessionId).toString();
     }
 
 }
