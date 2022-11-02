@@ -88,7 +88,9 @@ public class AppPercy {
         set.add("percyOptions_" + sessionId);
         set.add("systemBars_" + sessionId);
         set.add("viewportRect_" + sessionId);
+        set.add("viewportRectFallback_" + sessionId);
         set.add("windowSize_" + sessionId);
+        set.add("getDevicesJson_" + sessionId);
         Cache.CACHE_MAP.keySet().removeAll(set);
     }
 

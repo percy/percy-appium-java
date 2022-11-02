@@ -21,9 +21,6 @@ public class CliWrapper {
     private static String PERCY_SERVER_ADDRESS = System.getenv().getOrDefault("PERCY_SERVER_ADDRESS",
             "http://localhost:5338");
 
-    // Determine if we're debug logging
-    public static boolean PERCY_DEBUG = System.getenv().getOrDefault("PERCY_LOGLEVEL", "info").equals("debug");
-
     // Environment information like Java, driver, & SDK versions
     private Environment env;
 
@@ -58,7 +55,7 @@ public class CliWrapper {
             return true;
         } catch (Exception ex) {
             AppPercy.log("Percy is not running, disabling screenshots");
-            if (PERCY_DEBUG) {
+            if (AppPercy.PERCY_DEBUG) {
                 AppPercy.log(ex.toString());
             }
 
@@ -92,7 +89,7 @@ public class CliWrapper {
             JSONObject jsonResponse = new JSONObject(EntityUtils.toString(response.getEntity()));
             return jsonResponse.getString("link");
         } catch (Exception ex) {
-            if (PERCY_DEBUG) {
+            if (AppPercy.PERCY_DEBUG) {
                 AppPercy.log(ex.toString());
             }
             AppPercy.log("Could not post screenshot " + name);

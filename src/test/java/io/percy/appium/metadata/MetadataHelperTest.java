@@ -53,13 +53,13 @@ public class MetadataHelperTest {
     }
 
     @Test
-    public void testParsedJsonValueWhenExists() {
-        Assert.assertEquals(MetadataHelper.parsedJsonValue("scale_factor", "iphone 12").intValue(), 3);
+    public void testValueFromStaticDevicesInfoWhenExists() {
+        Assert.assertEquals(MetadataHelper.valueFromStaticDevicesInfo("scale_factor", "iphone 12", "abc").intValue(), 3);
     }
 
     @Test
-    public void testParsedJsonValueWhenNotExists() {
-        Assert.assertEquals(MetadataHelper.parsedJsonValue("scale_factor", "iphone 1").intValue(), 0);
+    public void testValueFromStaticDevicesInfoWhenNotExists() {
+        Assert.assertEquals(MetadataHelper.valueFromStaticDevicesInfo("scale_factor", "iphone 1", "abc").intValue(), 0);
     }
 
 }

@@ -3,7 +3,6 @@ package io.percy.appium.metadata;
 import java.util.Map;
 
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.WebDriver.Options;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.ios.IOSDriver;
@@ -25,8 +24,12 @@ public class IosMetadata extends Metadata {
         try {
             deviceScreenWidth = ((Long) getViewportRect().get("width")).intValue();
         } catch (Exception e) {
-            AppPercy.log("Could not fetch deviceScreenWidth from viewportRect, using Json");
-            Integer scaleFactor = MetadataHelper.parsedJsonValue("scale_factor", this.deviceName().toLowerCase());
+            if (AppPercy.PERCY_DEBUG) {
+                AppPercy.log("Could not fetch deviceScreenWidth from viewportRect, using static config");
+            }
+            Cache.CACHE_MAP.put("viewportRectFallback_" + sessionId, "true");
+            Integer scaleFactor = MetadataHelper.valueFromStaticDevicesInfo("scale_factor",
+                    this.deviceName().toLowerCase(), sessionId);
             deviceScreenWidth = getWindowSize().getWidth() * scaleFactor;
         }
         return deviceScreenWidth;
@@ -35,12 +38,18 @@ public class IosMetadata extends Metadata {
     public Integer deviceScreenHeight() {
         Integer deviceScreenHeight;
         try {
+            if (Cache.CACHE_MAP.get("viewportRectFallback_" + sessionId) == "true") {
+                throw new Exception("viewportRectFallback");
+            }
             Integer height = ((Long) getViewportRect().get("height")).intValue();
             Integer top = ((Long) getViewportRect().get("top")).intValue();
             deviceScreenHeight = height + top;
         } catch (Exception e) {
-            AppPercy.log("Could not fetch deviceScreenHeight from viewportRect, using Json");
-            Integer scaleFactor = MetadataHelper.parsedJsonValue("scale_factor", this.deviceName().toLowerCase());
+            if (AppPercy.PERCY_DEBUG) {
+                AppPercy.log("Could not fetch deviceScreenHeight from viewportRect, using static config");
+            }
+            Integer scaleFactor = MetadataHelper.valueFromStaticDevicesInfo("scale_factor",
+                    this.deviceName().toLowerCase(), sessionId);
             deviceScreenHeight = getWindowSize().getHeight() * scaleFactor;
         }
         return deviceScreenHeight;
@@ -49,11 +58,18 @@ public class IosMetadata extends Metadata {
     public Integer statBarHeight() {
         Integer statBarHeight;
         try {
+            if (Cache.CACHE_MAP.get("viewportRectFallback_" + sessionId) == "true") {
+                throw new Exception("viewportRectFallback");
+            }
             statBarHeight = ((Long) getViewportRect().get("top")).intValue();
         } catch (Exception e) {
-            AppPercy.log("Could not fetch statBarHeight from viewportRect, using Json");
-            Integer scaleFactor = MetadataHelper.parsedJsonValue("scale_factor", this.deviceName().toLowerCase());
-            Integer statusBarHeight = MetadataHelper.parsedJsonValue("status_bar", this.deviceName().toLowerCase());
+            if (AppPercy.PERCY_DEBUG) {
+                AppPercy.log("Could not fetch statBarHeight from viewportRect, using static config");
+            }
+            Integer scaleFactor = MetadataHelper.valueFromStaticDevicesInfo("scale_factor",
+                    this.deviceName().toLowerCase(), sessionId);
+            Integer statusBarHeight = MetadataHelper.valueFromStaticDevicesInfo("status_bar",
+                    this.deviceName().toLowerCase(), sessionId);
             statBarHeight = statusBarHeight * scaleFactor;
         }
         return statBarHeight;
@@ -70,7 +86,6 @@ public class IosMetadata extends Metadata {
         if (Cache.CACHE_MAP.get("windowSize_" + sessionId) == null) {
             Cache.CACHE_MAP.put("windowSize_" + sessionId, driver.manage().window().getSize());
         }
-        Options s = driver.manage();
         return (Dimension) Cache.CACHE_MAP.get("windowSize_" + sessionId);
     }
 
