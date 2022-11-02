@@ -2,12 +2,14 @@ package io.percy.appium.metadata;
 
 import io.appium.java_client.ios.IOSDriver;
 import io.percy.appium.lib.Cache;
+import io.percy.appium.providers.AppAutomate;
 
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Set;
 
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

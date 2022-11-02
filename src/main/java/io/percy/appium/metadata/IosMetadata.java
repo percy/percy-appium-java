@@ -24,12 +24,10 @@ public class IosMetadata extends Metadata {
         try {
             deviceScreenWidth = ((Long) getViewportRect().get("width")).intValue();
         } catch (Exception e) {
-            if (AppPercy.PERCY_DEBUG) {
-                AppPercy.log("Could not fetch deviceScreenWidth from viewportRect, using static config");
-            }
+            AppPercy.log("Could not fetch deviceScreenWidth from viewportRect, using static config", "debug");
             Cache.CACHE_MAP.put("viewportRectFallback_" + sessionId, "true");
             Integer scaleFactor = MetadataHelper.valueFromStaticDevicesInfo("scale_factor",
-                    this.deviceName().toLowerCase(), sessionId);
+                    this.deviceName().toLowerCase());
             deviceScreenWidth = getWindowSize().getWidth() * scaleFactor;
         }
         return deviceScreenWidth;
@@ -45,11 +43,9 @@ public class IosMetadata extends Metadata {
             Integer top = ((Long) getViewportRect().get("top")).intValue();
             deviceScreenHeight = height + top;
         } catch (Exception e) {
-            if (AppPercy.PERCY_DEBUG) {
-                AppPercy.log("Could not fetch deviceScreenHeight from viewportRect, using static config");
-            }
+            AppPercy.log("Could not fetch deviceScreenHeight from viewportRect, using static config", "debug");
             Integer scaleFactor = MetadataHelper.valueFromStaticDevicesInfo("scale_factor",
-                    this.deviceName().toLowerCase(), sessionId);
+                    this.deviceName().toLowerCase());
             deviceScreenHeight = getWindowSize().getHeight() * scaleFactor;
         }
         return deviceScreenHeight;
@@ -63,13 +59,11 @@ public class IosMetadata extends Metadata {
             }
             statBarHeight = ((Long) getViewportRect().get("top")).intValue();
         } catch (Exception e) {
-            if (AppPercy.PERCY_DEBUG) {
-                AppPercy.log("Could not fetch statBarHeight from viewportRect, using static config");
-            }
+            AppPercy.log("Could not fetch statBarHeight from viewportRect, using static config", "debug");
             Integer scaleFactor = MetadataHelper.valueFromStaticDevicesInfo("scale_factor",
-                    this.deviceName().toLowerCase(), sessionId);
+                    this.deviceName().toLowerCase());
             Integer statusBarHeight = MetadataHelper.valueFromStaticDevicesInfo("status_bar",
-                    this.deviceName().toLowerCase(), sessionId);
+                    this.deviceName().toLowerCase());
             statBarHeight = statusBarHeight * scaleFactor;
         }
         return statBarHeight;

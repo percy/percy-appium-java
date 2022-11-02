@@ -72,10 +72,8 @@ public class AppPercy {
             GenericProvider provider = ProviderResolver.resolveProvider(driver);
             provider.screenshot(name, fullScreen, provider.getDebugUrl());
         } catch (Exception e) {
-            log("Error taking screenshot " + name);
-            if (PERCY_DEBUG) {
-                log(e.toString());
-            }
+            log("Error taking screenshot " + name, "info");
+            log(e.toString(), "debug");
             if (!ignoreErrors) {
                 throw new RuntimeException("Error taking screenshot " + name);
             }
@@ -90,12 +88,16 @@ public class AppPercy {
         set.add("viewportRect_" + sessionId);
         set.add("viewportRectFallback_" + sessionId);
         set.add("windowSize_" + sessionId);
-        set.add("getDevicesJson_" + sessionId);
+        set.add("getDevicesJson");
         Cache.CACHE_MAP.keySet().removeAll(set);
     }
 
-    public static void log(String message) {
-        System.out.println(LABEL + " " + message);
+    public static void log(String message, String logLevel) {
+        if (logLevel == "debug" && PERCY_DEBUG) {
+            System.out.println(LABEL + " " + message);
+        } else if (logLevel == "info") {
+            System.out.println(LABEL + " " + message);
+        }
     }
 
 }

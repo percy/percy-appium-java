@@ -24,39 +24,28 @@ public class MetadataHelper {
                 throw new Exception("Driver class not found");
             }
         } catch (Exception e) {
-            AppPercy.log("Unsupported driver class, " + driverClass);
+            AppPercy.log("Unsupported driver class, " + driverClass, "info");
         }
         return null;
     }
 
-    public static Integer valueFromStaticDevicesInfo(String key, String deviceName, String sessionId) {
+    public static Integer valueFromStaticDevicesInfo(String key, String deviceName) {
         try {
-            JSONObject object = getDevicesJson(sessionId).getJSONObject(deviceName);
+            JSONObject object = getDevicesJson().getJSONObject(deviceName);
             return Integer.parseInt(object.getString(key));
         } catch (JSONException e) {
             return 0;
         }
     }
 
-    public static JSONObject getDevicesJson(String sessionId) {
-        if (Cache.CACHE_MAP.get("getDevicesJson_" + sessionId) == null) {
+    public static JSONObject getDevicesJson() {
+        if (Cache.CACHE_MAP.get("getDevicesJson") == null) {
             InputStream inputStream = MetadataHelper.class.getResourceAsStream("devices.json");
             JSONTokener tokener = new JSONTokener(inputStream);
             JSONObject devicesJsonObject = new JSONObject(tokener);
-            Cache.CACHE_MAP.put("getDevicesJson_" + sessionId, devicesJsonObject);
+            Cache.CACHE_MAP.put("getDevicesJson", devicesJsonObject);
         }
-        return (JSONObject) Cache.CACHE_MAP.get("getDevicesJson_" + sessionId);
-    }
-
-    public static JSONObject getSessionDetails(AppiumDriver driver) {
-        String sessionId = driver.getSessionId().toString();
-        if (Cache.CACHE_MAP.get("getSessionDetails_" + sessionId) == null) {
-            String sessionDetails = (String) driver
-                    .executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}");
-            JSONObject sessionDetailsJsonObject = new JSONObject(sessionDetails);
-            Cache.CACHE_MAP.put("getSessionDetails_" + sessionId, sessionDetailsJsonObject);
-        }
-        return (JSONObject) Cache.CACHE_MAP.get("getSessionDetails_" + sessionId);
+        return (JSONObject) Cache.CACHE_MAP.get("getDevicesJson");
     }
 
 }

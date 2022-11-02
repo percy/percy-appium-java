@@ -4,20 +4,22 @@ import org.json.JSONObject;
 
 import io.appium.java_client.AppiumDriver;
 import io.percy.appium.AppPercy;
+import io.percy.appium.lib.Cache;
 import io.percy.appium.metadata.Metadata;
-import io.percy.appium.metadata.MetadataHelper;
 
 public class AppAutomate extends GenericProvider {
     private AppiumDriver driver;
     private Boolean markedPercySession = true;
+    private static String sessionId;
 
     public AppAutomate(AppiumDriver driver, Metadata metadata) {
         super(driver, metadata);
         this.driver = driver;
+        this.sessionId = driver.getSessionId().toString();
     }
 
     public String getDebugUrl() {
-        return MetadataHelper.getSessionDetails(driver).get("browser_url").toString();
+        return getSessionDetails(driver).get("browser_url").toString();
     }
 
     public static Boolean supports(AppiumDriver driver) {
@@ -37,7 +39,7 @@ public class AppAutomate extends GenericProvider {
                 markedPercySession = result.get("success").toString() == "true";
             }
         } catch (Exception e) {
-            AppPercy.log("BrowserStack executer failed");
+            AppPercy.log("BrowserStack executer failed", "info");
         }
     }
 
@@ -51,7 +53,7 @@ public class AppAutomate extends GenericProvider {
                 markedPercySession = result.get("success").toString() == "true";
             }
         } catch (Exception e) {
-            AppPercy.log("BrowserStack executer failed");
+            AppPercy.log("BrowserStack executer failed", "info");
         }
     }
 
@@ -60,6 +62,16 @@ public class AppAutomate extends GenericProvider {
         String percyScreenshotUrl = super.screenshot(name, fullScreen, debugUrl);
         executePercyScreenshotEnd(percyScreenshotUrl);
         return null;
+    }
+
+    public static JSONObject getSessionDetails(AppiumDriver driver) {
+        if (Cache.CACHE_MAP.get("getSessionDetails_" + sessionId) == null) {
+            String sessionDetails = (String) driver
+                    .executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}");
+            JSONObject sessionDetailsJsonObject = new JSONObject(sessionDetails);
+            Cache.CACHE_MAP.put("getSessionDetails_" + sessionId, sessionDetailsJsonObject);
+        }
+        return (JSONObject) Cache.CACHE_MAP.get("getSessionDetails_" + sessionId);
     }
 
 }

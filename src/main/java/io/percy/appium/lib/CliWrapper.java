@@ -47,17 +47,15 @@ public class CliWrapper {
             String version = response.getFirstHeader("x-percy-core-version").getValue();
 
             if (!version.split("\\.")[0].equals("1")) {
-                AppPercy.log("Unsupported Percy CLI version, " + version);
+                AppPercy.log("Unsupported Percy CLI version, " + version, "info");
 
                 return false;
             }
 
             return true;
         } catch (Exception ex) {
-            AppPercy.log("Percy is not running, disabling screenshots");
-            if (AppPercy.PERCY_DEBUG) {
-                AppPercy.log(ex.toString());
-            }
+            AppPercy.log("Percy is not running, disabling screenshots", "info");
+            AppPercy.log(ex.toString(), "debug");
 
             return false;
         }
@@ -89,10 +87,8 @@ public class CliWrapper {
             JSONObject jsonResponse = new JSONObject(EntityUtils.toString(response.getEntity()));
             return jsonResponse.getString("link");
         } catch (Exception ex) {
-            if (AppPercy.PERCY_DEBUG) {
-                AppPercy.log(ex.toString());
-            }
-            AppPercy.log("Could not post screenshot " + name);
+            AppPercy.log(ex.toString(), "debug");
+            AppPercy.log("Could not post screenshot " + name, "info");
         }
         return null;
     }

@@ -2,6 +2,8 @@ package io.percy.appium.metadata;
 
 import io.appium.java_client.AppiumDriver;
 
+import io.percy.appium.providers.AppAutomate;
+
 public abstract class Metadata {
     private static AppiumDriver driver;
 
@@ -10,7 +12,8 @@ public abstract class Metadata {
     }
 
     public String deviceName() {
-        return MetadataHelper.getSessionDetails(driver).get("device").toString();
+        // TODO Temp code, will fix when we add support to multiple providers
+        return AppAutomate.getSessionDetails(driver).get("device").toString();
     }
 
     public String osName() {

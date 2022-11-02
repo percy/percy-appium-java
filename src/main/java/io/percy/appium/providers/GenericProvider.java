@@ -61,7 +61,7 @@ public class GenericProvider {
             outputStream.write(srcBytes);
             outputStream.close();
         } catch (IOException e) {
-            AppPercy.log("Failed to write to file");
+            AppPercy.log("Failed to write to file", "info");
         }
         return filePath;
     }
