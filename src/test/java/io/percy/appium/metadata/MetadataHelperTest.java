@@ -17,7 +17,7 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 
 @RunWith(org.mockito.junit.MockitoJUnitRunner.class)
-public class MetadataResolverTest {
+public class MetadataHelperTest {
     @Mock
     IOSDriver iosDriver;
 
@@ -34,22 +34,32 @@ public class MetadataResolverTest {
     }
 
     @Test
-    public void testIOSDriver() {
-        Assert.assertEquals(MetadataResolver.resolve(iosDriver).getClass(), IosMetadata.class);
+    public void testResolveIOSDriver() {
+        Assert.assertEquals(MetadataHelper.resolve(iosDriver).getClass(), IosMetadata.class);
     }
 
     @Test
-    public void testAndroidDriver() {
-        Assert.assertEquals(MetadataResolver.resolve(androidDriver).getClass(), AndroidMetadata.class);
+    public void testResolveAndroidDriver() {
+        Assert.assertEquals(MetadataHelper.resolve(androidDriver).getClass(), AndroidMetadata.class);
     }
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void testRemoteWebDriver() throws Exception {
+    public void testResolveRemoteWebDriver() throws Exception {
         exception.expect(Exception.class);
-        Assert.assertEquals(MetadataResolver.resolve((AppiumDriver) webDriver), null);
+        Assert.assertEquals(MetadataHelper.resolve((AppiumDriver) webDriver), null);
     }
-    
+
+    @Test
+    public void testValueFromStaticDevicesInfoWhenExists() {
+        Assert.assertEquals(MetadataHelper.valueFromStaticDevicesInfo("scale_factor", "iphone 12").intValue(), 3);
+    }
+
+    @Test
+    public void testValueFromStaticDevicesInfoWhenNotExists() {
+        Assert.assertEquals(MetadataHelper.valueFromStaticDevicesInfo("scale_factor", "iphone 1").intValue(), 0);
+    }
+
 }

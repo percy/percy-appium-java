@@ -73,9 +73,7 @@ public class AppPercy {
             provider.screenshot(name, fullScreen, provider.getDebugUrl());
         } catch (Exception e) {
             log("Error taking screenshot " + name);
-            if (PERCY_DEBUG) {
-                log(e.toString());
-            }
+            log(e.toString(), "debug");
             if (!ignoreErrors) {
                 throw new RuntimeException("Error taking screenshot " + name);
             }
@@ -88,11 +86,22 @@ public class AppPercy {
         set.add("percyOptions_" + sessionId);
         set.add("systemBars_" + sessionId);
         set.add("viewportRect_" + sessionId);
+        set.add("viewportRectFallback_" + sessionId);
+        set.add("windowSize_" + sessionId);
+        set.add("getDevicesJson");
         Cache.CACHE_MAP.keySet().removeAll(set);
     }
 
     public static void log(String message) {
-        System.out.println(LABEL + " " + message);
+        log(message, "info");
+    }
+
+    public static void log(String message, String logLevel) {
+        if (logLevel == "debug" && PERCY_DEBUG) {
+            System.out.println(LABEL + " " + message);
+        } else if (logLevel == "info") {
+            System.out.println(LABEL + " " + message);
+        }
     }
 
 }

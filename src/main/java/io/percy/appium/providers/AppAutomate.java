@@ -10,7 +10,7 @@ import io.percy.appium.metadata.Metadata;
 public class AppAutomate extends GenericProvider {
     private AppiumDriver driver;
     private Boolean markedPercySession = true;
-    private String sessionId;
+    private static String sessionId;
 
     public AppAutomate(AppiumDriver driver, Metadata metadata) {
         super(driver, metadata);
@@ -19,13 +19,7 @@ public class AppAutomate extends GenericProvider {
     }
 
     public String getDebugUrl() {
-        if (Cache.CACHE_MAP.get("getSessionDetails_" + sessionId) == null) {
-            Cache.CACHE_MAP.put("getSessionDetails_" + sessionId,
-                    driver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"));
-        }
-        String sessionDetailsString = Cache.CACHE_MAP.get("getSessionDetails_" + sessionId).toString();
-        JSONObject sessionDetails = new JSONObject(sessionDetailsString);
-        return sessionDetails.get("browser_url").toString();
+        return getSessionDetails(driver).get("browser_url").toString();
     }
 
     public static Boolean supports(AppiumDriver driver) {
@@ -68,6 +62,16 @@ public class AppAutomate extends GenericProvider {
         String percyScreenshotUrl = super.screenshot(name, fullScreen, debugUrl);
         executePercyScreenshotEnd(percyScreenshotUrl);
         return null;
+    }
+
+    public static JSONObject getSessionDetails(AppiumDriver driver) {
+        if (Cache.CACHE_MAP.get("getSessionDetails_" + sessionId) == null) {
+            String sessionDetails = (String) driver
+                    .executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}");
+            JSONObject sessionDetailsJsonObject = new JSONObject(sessionDetails);
+            Cache.CACHE_MAP.put("getSessionDetails_" + sessionId, sessionDetailsJsonObject);
+        }
+        return (JSONObject) Cache.CACHE_MAP.get("getSessionDetails_" + sessionId);
     }
 
 }

@@ -2,11 +2,14 @@ package io.percy.appium.metadata;
 
 import io.appium.java_client.ios.IOSDriver;
 import io.percy.appium.lib.Cache;
+import io.percy.appium.providers.AppAutomate;
 
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.Set;
 
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,14 +18,23 @@ import org.junit.runner.RunWith;
 
 import org.mockito.Mock;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.ScreenOrientation;
+import org.openqa.selenium.WebDriver.ImeHandler;
+import org.openqa.selenium.WebDriver.Options;
+import org.openqa.selenium.WebDriver.Timeouts;
+import org.openqa.selenium.WebDriver.Window;
+import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.SessionId;
 
 import com.github.javafaker.Faker;
 
 @RunWith(org.mockito.junit.MockitoJUnitRunner.class)
 public class IosMetadataTest {
+
     @Mock
     IOSDriver driver;
 
@@ -37,6 +49,107 @@ public class IosMetadataTest {
     Long width = faker.number().randomNumber(3, false);
     Long top = faker.number().randomNumber(3, false);
     Long height = faker.number().randomNumber(3, false);
+
+    Options Options = new Options() {
+
+        @Override
+        public void addCookie(Cookie cookie) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void deleteCookieNamed(String name) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void deleteCookie(Cookie cookie) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void deleteAllCookies() {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public Set<Cookie> getCookies() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public Cookie getCookieNamed(String name) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public Timeouts timeouts() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public ImeHandler ime() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public Window window() {
+            return new Window() {
+
+                @Override
+                public void setSize(Dimension targetSize) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void setPosition(Point targetPosition) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public Dimension getSize() {
+                    // TODO Auto-generated method stub
+                    return new Dimension(100, 200);
+                }
+
+                @Override
+                public Point getPosition() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public void maximize() {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void fullscreen() {
+                    // TODO Auto-generated method stub
+
+                }
+
+            };
+        }
+
+        @Override
+        public Logs logs() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+    };
 
     @Before
     public void setup() {
@@ -60,8 +173,28 @@ public class IosMetadataTest {
     }
 
     @Test
+    public void testDeviceScreenWidthFromJson() {
+        viewportRect.clear();
+        String sessionDetails = "{\"device\":\"iPhone 12\"}";
+        when(driver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
+                .thenReturn(sessionDetails);
+        when(driver.manage()).thenReturn(Options);
+        Assert.assertEquals(metadata.deviceScreenWidth().intValue(), 300);
+    }
+
+    @Test
     public void testDeviceScreenHeight() {
         Assert.assertEquals(metadata.deviceScreenHeight().intValue(), top.intValue() + height.intValue());
+    }
+
+    @Test
+    public void testDeviceScreenHeightFromJson() {
+        viewportRect.clear();
+        String sessionDetails = "{\"device\":\"iPhone 12\"}";
+        when(driver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
+                .thenReturn(sessionDetails);
+        when(driver.manage()).thenReturn(Options);
+        Assert.assertEquals(metadata.deviceScreenHeight().intValue(), 600);
     }
 
     @Test
@@ -70,13 +203,24 @@ public class IosMetadataTest {
     }
 
     @Test
+    public void testStatBarHeightFromJson() {
+        viewportRect.clear();
+        String sessionDetails = "{\"device\":\"iPhone 12\"}";
+        when(driver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
+                .thenReturn(sessionDetails);
+        Assert.assertEquals(metadata.statBarHeight().intValue(), 141);
+    }
+
+    @Test
     public void testNavBarHeight() {
         Assert.assertEquals(metadata.navBarHeight().intValue(), 0);
     }
 
     @Test
-    public void testDeviceName(){
-        when(capabilities.getCapability("device")).thenReturn("iPhone 12");
+    public void testDeviceName() {
+        String sessionDetails = "{\"device\":\"iPhone 12\"}";
+        when(driver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
+                .thenReturn(sessionDetails);
         Assert.assertEquals(metadata.deviceName(), "iPhone 12");
     }
 
