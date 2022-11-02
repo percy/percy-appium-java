@@ -72,7 +72,7 @@ public class AppPercy {
             GenericProvider provider = ProviderResolver.resolveProvider(driver);
             provider.screenshot(name, fullScreen, provider.getDebugUrl());
         } catch (Exception e) {
-            log("Error taking screenshot " + name, "info");
+            log("Error taking screenshot " + name);
             log(e.toString(), "debug");
             if (!ignoreErrors) {
                 throw new RuntimeException("Error taking screenshot " + name);
@@ -90,6 +90,10 @@ public class AppPercy {
         set.add("windowSize_" + sessionId);
         set.add("getDevicesJson");
         Cache.CACHE_MAP.keySet().removeAll(set);
+    }
+
+    public static void log(String message) {
+        log(message, "info");
     }
 
     public static void log(String message, String logLevel) {

@@ -24,7 +24,7 @@ public class MetadataHelper {
                 throw new Exception("Driver class not found");
             }
         } catch (Exception e) {
-            AppPercy.log("Unsupported driver class, " + driverClass, "info");
+            AppPercy.log("Unsupported driver class, " + driverClass);
         }
         return null;
     }

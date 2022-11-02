@@ -39,7 +39,7 @@ public class AppAutomate extends GenericProvider {
                 markedPercySession = result.get("success").toString() == "true";
             }
         } catch (Exception e) {
-            AppPercy.log("BrowserStack executer failed", "info");
+            AppPercy.log("BrowserStack executer failed");
         }
     }
 
@@ -53,7 +53,7 @@ public class AppAutomate extends GenericProvider {
                 markedPercySession = result.get("success").toString() == "true";
             }
         } catch (Exception e) {
-            AppPercy.log("BrowserStack executer failed", "info");
+            AppPercy.log("BrowserStack executer failed");
         }
     }
 
