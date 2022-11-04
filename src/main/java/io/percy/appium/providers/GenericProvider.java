@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 import org.openqa.selenium.OutputType;
 
@@ -30,7 +31,7 @@ public class GenericProvider {
         JSONObject tag = new JSONObject();
         tag.put("name", metadata.deviceName());
         tag.put("osName", metadata.osName());
-        tag.put("osVersion", metadata.osVersion());
+        tag.put("osVersion", metadata.platformVersion());
         tag.put("width", metadata.deviceScreenWidth());
         tag.put("height", metadata.deviceScreenHeight());
         tag.put("orientation", metadata.orientation());
@@ -38,8 +39,8 @@ public class GenericProvider {
     }
 
     public List<Tile> captureTiles(Boolean fullScreen) {
-        byte[] srcBytes = captureScreenshot();
-        String localFilePath = getAbsolutePath(srcBytes);
+        String srcString = captureScreenshot();
+        String localFilePath = getAbsolutePath(srcString);
         Integer statusBarHeight = metadata.statBarHeight();
         Integer navBarHeight = metadata.navBarHeight();
         Integer headerHeight = 0;
@@ -53,12 +54,13 @@ public class GenericProvider {
         return true;
     }
 
-    private String getAbsolutePath(byte[] srcBytes) {
+    private String getAbsolutePath(String srcString) {
         String dirPath = getDirPath();
         String filePath = dirPath + UUID.randomUUID().toString() + ".png";
         try {
+            byte[] data = Base64.decodeBase64(srcString);
             FileOutputStream outputStream = new FileOutputStream(filePath);
-            outputStream.write(srcBytes);
+            outputStream.write(data);
             outputStream.close();
         } catch (IOException e) {
             AppPercy.log("Failed to write to file");
@@ -75,8 +77,8 @@ public class GenericProvider {
         }
     }
 
-    private byte[] captureScreenshot() {
-        return driver.getScreenshotAs(OutputType.BYTES);
+    private String captureScreenshot() {
+        return driver.getScreenshotAs(OutputType.BASE64);
     }
 
     public String screenshot(String name, Boolean fullScreen, String debugUrl) {

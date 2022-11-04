@@ -17,19 +17,20 @@ public abstract class Metadata {
     }
 
     public String osName() {
-        return driver.getCapabilities().getPlatform().toString();
+        return driver.getCapabilities().getCapability("platformName").toString();
     }
 
-    public String osVersion() {
-        Object osVersion = driver.getCapabilities().getCapability("osVersion");
-        if (osVersion == null) {
-            return null;
-        }
-        return osVersion.toString();
+    public String platformVersion() {
+        return driver.getCapabilities().getCapability("platformVersion").toString();
     }
 
     public String orientation() {
-        return driver.getOrientation().toString().toLowerCase();
+        try {
+            return driver.getOrientation().toString().toLowerCase();
+        } catch (java.lang.NoSuchMethodError e) {
+            // TODO Need to fix this for appium client v8
+            return "PORTRAIT";
+        }
     }
 
     public abstract Integer deviceScreenWidth();

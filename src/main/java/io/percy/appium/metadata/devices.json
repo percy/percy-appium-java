@@ -155,7 +155,7 @@
      "scale_factor":"2",
      "status_bar":"20"
   },
-  "ipad pro 12.9 2017":{
+  "ipad pro 12.9":{
      "scale_factor":"2",
      "status_bar":"20"
   },
@@ -170,5 +170,63 @@
   "ipad 5th":{
      "scale_factor":"2",
      "status_bar":"20"
+  },
+  "google pixel 6 pro":{
+   "12":{
+      "status_bar":"143",
+      "nav_bar":"56"
+   },
+   "13":{
+      "status_bar":"130",
+      "nav_bar":"84"
+   }
+  },
+  "samsung galaxy s22 plus":{
+   "12":{
+      "status_bar":"74",
+      "nav_bar":"135"
+   }
+  },
+  "samsung galaxy s21":{
+   "12":{
+      "status_bar":"80",
+      "nav_bar":"144"
+   }
+  },
+  "samsung galaxy s22 ultra":{
+   "12":{
+      "status_bar":"75",
+      "nav_bar":"135"
+   }
+  },
+  "samsung galaxy s22":{
+   "12":{
+      "status_bar":"81",
+      "nav_bar":"144"
+   }
+  },
+  "samsung galaxy tab s8":{
+   "12":{
+      "status_bar":"51",
+      "nav_bar":"102"
+   }
+  },
+  "google pixel 5":{
+   "12":{
+      "status_bar":"145",
+      "nav_bar":"44"
+   }
+  },
+  "google pixel 6":{
+   "12":{
+      "status_bar":"124",
+      "nav_bar":"42"
+   }
+  },
+  "google pixel 7":{
+   "13":{
+      "status_bar":"118",
+      "nav_bar":"63"
+   }
   }
 }
