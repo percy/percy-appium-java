@@ -28,8 +28,14 @@ public class AndroidMetadata extends Metadata {
 
     public Integer statBarHeight() {
         try {
-            return Integer.parseInt(
-                    ((Map) getSystemBars().get("statusBar")).get("height").toString());
+            String statBarHeight = ((Map) getSystemBars().get("statusBar")).get("height").toString();
+            if (statBarHeight.equals("1")) {
+                return MetadataHelper.valueFromStaticDevicesInfo("status_bar", this.deviceName().toLowerCase(),
+                        this.platformVersion());
+            } else {
+                return Integer.parseInt(statBarHeight);
+            }
+
         } catch (Exception e) {
             return 0;
         }
@@ -37,8 +43,13 @@ public class AndroidMetadata extends Metadata {
 
     public Integer navBarHeight() {
         try {
-            return Integer.parseInt(
-                    ((Map) getSystemBars().get("navigationBar")).get("height").toString());
+            String navBarHeight = ((Map) getSystemBars().get("navigationBar")).get("height").toString();
+            if (navBarHeight.equals("1")) {
+                return MetadataHelper.valueFromStaticDevicesInfo("nav_bar", this.deviceName().toLowerCase(),
+                        this.platformVersion());
+            } else {
+                return Integer.parseInt(navBarHeight);
+            }
         } catch (Exception e) {
             return 0;
         }

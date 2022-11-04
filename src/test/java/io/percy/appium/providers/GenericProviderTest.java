@@ -37,9 +37,9 @@ public class GenericProviderTest {
     @Test
     public void testGetTag(){
 
-        when(metadata.deviceName()).thenReturn("Samsung s22");
+        when(metadata.deviceName()).thenReturn("Samsung Galaxy s22");
         when(metadata.osName()).thenReturn("ANDROID");
-        when(metadata.osVersion()).thenReturn("9");
+        when(metadata.platformVersion()).thenReturn("9");
         when(metadata.orientation()).thenReturn("landscape");
         when(metadata.deviceScreenHeight()).thenReturn(deviceScreenHeight);
         when(metadata.deviceScreenWidth()).thenReturn(deviceScreenWidth);
@@ -47,7 +47,7 @@ public class GenericProviderTest {
         GenericProvider genericProvider = new GenericProvider(androidDriver, metadata);
         
         JSONObject tile = genericProvider.getTag();
-        Assert.assertEquals(tile.get("name"), "Samsung s22");
+        Assert.assertEquals(tile.get("name"), "Samsung Galaxy s22");
         Assert.assertEquals(tile.get("osName"), "ANDROID");
         Assert.assertEquals(tile.get("osVersion"), "9");
         Assert.assertEquals(tile.get("width"), deviceScreenWidth);
@@ -57,7 +57,7 @@ public class GenericProviderTest {
 
     @Test
     public void testcaptureTiles() {
-        when(androidDriver.getScreenshotAs(OutputType.BYTES)).thenReturn(new byte[]{1,2,3,4});
+        when(androidDriver.getScreenshotAs(OutputType.BASE64)).thenReturn("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAADwCAYAAAA+VemSAAAgAEl...==");
         when(metadata.statBarHeight()).thenReturn(statusBarHeight);
         when(metadata.navBarHeight()).thenReturn(navigationBarHeight);
 

@@ -74,8 +74,32 @@ public class AndroidMetadataTest {
     }
 
     @Test
+    public void testStatBarHeightFromJson() {
+        statusBar.clear();
+        statusBar.put("height", 1);
+        systemBars.put("statusBar", statusBar);
+        String sessionDetails = "{\"device\":\"Samsung Galaxy s22\"}";
+        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
+                .thenReturn(sessionDetails);
+        when(capabilities.getCapability("platformVersion")).thenReturn("12");
+        Assert.assertEquals(metadata.statBarHeight().intValue(), 81);
+    }
+
+    @Test
     public void testNavBarHeight() {
         Assert.assertEquals(metadata.navBarHeight(), navigationBarHeight);
+    }
+
+    @Test
+    public void testNavBarHeighFromJson() {
+        statusBar.clear();
+        statusBar.put("height", 1);
+        systemBars.put("navigationBar", statusBar);
+        String sessionDetails = "{\"device\":\"Samsung Galaxy s22\"}";
+        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
+                .thenReturn(sessionDetails);
+        when(capabilities.getCapability("platformVersion")).thenReturn("12");
+        Assert.assertEquals(metadata.navBarHeight().intValue(), 144);
     }
 
     @Test
@@ -92,22 +116,22 @@ public class AndroidMetadataTest {
 
     @Test
     public void testDeviceName(){
-        String sessionDetails = "{\"device\":\"Samsung s22\"}";
+        String sessionDetails = "{\"device\":\"Samsung Galaxy s22\"}";
         when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
                 .thenReturn(sessionDetails);
-        Assert.assertEquals(metadata.deviceName(), "Samsung s22");
+        Assert.assertEquals(metadata.deviceName(), "Samsung Galaxy s22");
     }
 
     @Test
     public void testOsName(){
-        when(capabilities.getPlatform()).thenReturn(Platform.ANDROID);
+        when(capabilities.getCapability("platformName")).thenReturn("ANDROID");
         Assert.assertEquals(metadata.osName(), "ANDROID");
     }
 
     @Test
     public void testOsVersion(){
-        when(capabilities.getCapability("osVersion")).thenReturn("12");
-        Assert.assertEquals(metadata.osVersion(), "12");
+        when(capabilities.getCapability("platformVersion")).thenReturn("12");
+        Assert.assertEquals(metadata.platformVersion(), "12");
     }
 
     @Test

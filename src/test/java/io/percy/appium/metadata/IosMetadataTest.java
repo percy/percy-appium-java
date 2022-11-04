@@ -226,14 +226,14 @@ public class IosMetadataTest {
 
     @Test
     public void testOsName(){
-        when(capabilities.getPlatform()).thenReturn(Platform.IOS);
+        when(capabilities.getCapability("platformName")).thenReturn("IOS");
         Assert.assertEquals(metadata.osName(), "IOS");
     }
 
     @Test
     public void testOsVersion(){
-        when(capabilities.getCapability("osVersion")).thenReturn("16");
-        Assert.assertEquals(metadata.osVersion(), "16");
+        when(capabilities.getCapability("platformVersion")).thenReturn("16");
+        Assert.assertEquals(metadata.platformVersion(), "16");
     }
 
     @Test
