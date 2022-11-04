@@ -58,10 +58,8 @@ public class GenericProviderTest {
     @Test
     public void testGetTagWhenDeviceNameAndOrientationIsPassed(){
 
-        when(metadata.deviceName()).thenReturn("Samsung Galaxy s22");
         when(metadata.osName()).thenReturn("ANDROID");
         when(metadata.platformVersion()).thenReturn("9");
-        when(metadata.orientation()).thenReturn("landscape");
         when(metadata.deviceScreenHeight()).thenReturn(deviceScreenHeight);
         when(metadata.deviceScreenWidth()).thenReturn(deviceScreenWidth);
 
@@ -96,8 +94,6 @@ public class GenericProviderTest {
     @Test
     public void testcaptureTilesWhenPassedExplicitly() {
         when(androidDriver.getScreenshotAs(OutputType.BASE64)).thenReturn("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAADwCAYAAAA+VemSAAAgAEl...==");
-        when(metadata.statBarHeight()).thenReturn(statusBarHeight);
-        when(metadata.navBarHeight()).thenReturn(navigationBarHeight);
 
         GenericProvider genericProvider = new GenericProvider(androidDriver, metadata);
 
