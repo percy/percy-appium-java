@@ -53,7 +53,7 @@ public class AppPercy {
      *
      */
     public void screenshot(String name) {
-        screenshot(name, false);
+        screenshot(name, null, null, null, null, false);
     }
 
     /**
@@ -61,16 +61,77 @@ public class AppPercy {
      *
      * @param name       The human-readable name of the screenshot. Should be
      *                   unique.
-     * @param fullScreen It indicates if the app is a full screen
+     * @param deviceName Device name on which screensho is taken
+     *
      */
-    public void screenshot(String name, Boolean fullScreen) {
+    public void screenshot(String name, String deviceName) {
+        screenshot(name, deviceName, null, null, null, false);
+    }
+
+    /**
+     * Take a screenshot and upload it to Percy.
+     *
+     * @param name            The human-readable name of the screenshot. Should be
+     *                        unique.
+     * @param deviceName      Device name on which screensho is taken
+     * @param statusBarHeight Height of status bar for the device
+     *
+     */
+    public void screenshot(String name, String deviceName, Integer statusBarHeight) {
+        screenshot(name, deviceName, statusBarHeight, null, null, false);
+    }
+
+    /**
+     * Take a screenshot and upload it to Percy.
+     *
+     * @param name            The human-readable name of the screenshot. Should be
+     *                        unique.
+     * @param deviceName      Device name on which screensho is taken
+     * @param statusBarHeight Height of status bar for the device
+     * @param navBarHeight    Height of navigation bar for the device
+     *
+     */
+    public void screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight) {
+        screenshot(name, deviceName, statusBarHeight, navBarHeight, null, false);
+    }
+
+    /**
+     * Take a screenshot and upload it to Percy.
+     *
+     * @param name            The human-readable name of the screenshot. Should be
+     *                        unique.
+     * @param deviceName      Device name on which screensho is taken
+     * @param statusBarHeight Height of status bar for the device
+     * @param navBarHeight    Height of navigation bar for the device
+     * @param orientation     Orientation of the application
+     *
+     */
+    public void screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,
+            String orientation) {
+        screenshot(name, deviceName, statusBarHeight, navBarHeight, orientation, false);
+    }
+
+    /**
+     * Take a screenshot and upload it to Percy.
+     *
+     * @param name            The human-readable name of the screenshot. Should be
+     *                        unique.
+     * @param deviceName      Device name on which screensho is taken
+     * @param statusBarHeight Height of status bar for the device
+     * @param navBarHeight    Height of navigation bar for the device
+     * @param orientation     Orientation of the application
+     * @param fullScreen      It indicates if the app is a full screen
+     */
+    public void screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,
+            String orientation, Boolean fullScreen) {
         if (!isPercyEnabled || !percyOptions.percyOptionEnabled()) {
             return;
         }
         percyOptions.setPercyIgnoreErrors();
         try {
             GenericProvider provider = ProviderResolver.resolveProvider(driver);
-            provider.screenshot(name, fullScreen, provider.getDebugUrl());
+            provider.screenshot(name, deviceName, statusBarHeight, navBarHeight, orientation, fullScreen,
+                    provider.getDebugUrl());
         } catch (Exception e) {
             log("Error taking screenshot " + name);
             log(e.toString(), "debug");
@@ -81,7 +142,7 @@ public class AppPercy {
     }
 
     protected void finalize() throws Throwable {
-        Set<String> set = new HashSet<> ();
+        Set<String> set = new HashSet<>();
         set.add("getSessionDetails_" + sessionId);
         set.add("percyOptions_" + sessionId);
         set.add("systemBars_" + sessionId);

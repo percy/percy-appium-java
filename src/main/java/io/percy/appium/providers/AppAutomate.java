@@ -57,9 +57,11 @@ public class AppAutomate extends GenericProvider {
         }
     }
 
-    public String screenshot(String name, Boolean fullScreen, String debugUrl) {
+    public String screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,
+            String orientation, Boolean fullScreen, String debugUrl) {
         executePercyScreenshotBegin();
-        String percyScreenshotUrl = super.screenshot(name, fullScreen, debugUrl);
+        String percyScreenshotUrl = super.screenshot(name, deviceName, statusBarHeight, navBarHeight, orientation,
+                fullScreen, debugUrl);
         executePercyScreenshotEnd(percyScreenshotUrl);
         return null;
     }
