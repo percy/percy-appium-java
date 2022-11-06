@@ -2,14 +2,12 @@ package io.percy.appium.metadata;
 
 import io.appium.java_client.ios.IOSDriver;
 import io.percy.appium.lib.Cache;
-import io.percy.appium.providers.AppAutomate;
 
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Set;
 
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,7 +18,6 @@ import org.mockito.Mock;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriver.ImeHandler;
@@ -232,7 +229,8 @@ public class IosMetadataTest {
 
     @Test
     public void testOsVersion(){
-        when(capabilities.getCapability("platformVersion")).thenReturn("16");
+        when(capabilities.getCapability("platformVersion")).thenReturn(null);
+        when(capabilities.getCapability("os_version")).thenReturn("16");
         Assert.assertEquals(metadata.platformVersion(), "16");
     }
 

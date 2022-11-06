@@ -49,7 +49,7 @@ public class MetadataHelper {
 
     public static JSONObject getDevicesJson() {
         if (Cache.CACHE_MAP.get("getDevicesJson") == null) {
-            InputStream inputStream = MetadataHelper.class.getResourceAsStream("devices.json");
+            InputStream inputStream = MetadataHelper.class.getResourceAsStream("/devices.json");
             JSONTokener tokener = new JSONTokener(inputStream);
             JSONObject devicesJsonObject = new JSONObject(tokener);
             Cache.CACHE_MAP.put("getDevicesJson", devicesJsonObject);

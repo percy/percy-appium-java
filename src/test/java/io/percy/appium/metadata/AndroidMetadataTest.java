@@ -16,7 +16,6 @@ import org.junit.runner.RunWith;
 
 import org.mockito.Mock;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.remote.SessionId;
 
@@ -129,7 +128,7 @@ public class AndroidMetadataTest {
     }
 
     @Test
-    public void testOsVersion(){
+    public void testPlatformVersion(){
         when(capabilities.getCapability("platformVersion")).thenReturn("12");
         Assert.assertEquals(metadata.platformVersion(), "12");
     }
