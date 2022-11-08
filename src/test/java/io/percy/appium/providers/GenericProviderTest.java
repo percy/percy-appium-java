@@ -83,12 +83,12 @@ public class GenericProviderTest {
         GenericProvider genericProvider = new GenericProvider(androidDriver, metadata);
 
         Tile tile = genericProvider.captureTiles(false, null, null).get(0);
-        Assert.assertTrue(tile.localFilePath.contains("/tmp"));
-        Assert.assertEquals(tile.statusBarHeight, statusBarHeight);
-        Assert.assertEquals(tile.navBarHeight, navigationBarHeight);
-        Assert.assertEquals(tile.headerHeight.intValue(), 0);
-        Assert.assertEquals(tile.footerHeight.intValue(), 0);
-        Assert.assertEquals(tile.fullScreen, false);
+        Assert.assertTrue(tile.getLocalFilePath().contains("/tmp"));
+        Assert.assertEquals(tile.getStatusBarHeight(), statusBarHeight);
+        Assert.assertEquals(tile.getNavBarHeight(), navigationBarHeight);
+        Assert.assertEquals(tile.getHeaderHeight().intValue(), 0);
+        Assert.assertEquals(tile.getFooterHeight().intValue(), 0);
+        Assert.assertEquals(tile.getFullScreen(), false);
     }
 
     @Test
@@ -98,12 +98,12 @@ public class GenericProviderTest {
         GenericProvider genericProvider = new GenericProvider(androidDriver, metadata);
 
         Tile tile = genericProvider.captureTiles(false, 100, 200).get(0);
-        Assert.assertTrue(tile.localFilePath.contains("/tmp"));
-        Assert.assertEquals(tile.statusBarHeight.intValue(), 100);
-        Assert.assertEquals(tile.navBarHeight.intValue(), 200);
-        Assert.assertEquals(tile.headerHeight.intValue(), 0);
-        Assert.assertEquals(tile.footerHeight.intValue(), 0);
-        Assert.assertEquals(tile.fullScreen, false);
+        Assert.assertTrue(tile.getLocalFilePath().contains("/tmp"));
+        Assert.assertEquals(tile.getStatusBarHeight().intValue(), 100);
+        Assert.assertEquals(tile.getNavBarHeight().intValue(), 200);
+        Assert.assertEquals(tile.getHeaderHeight().intValue(), 0);
+        Assert.assertEquals(tile.getFooterHeight().intValue(), 0);
+        Assert.assertEquals(tile.getFullScreen(), false);
     }
 
     @Test

@@ -14,25 +14,33 @@ import io.percy.appium.providers.ProviderResolver;
  * Percy client for visual testing.
  */
 public class AppPercy {
-    // Appium Driver we'll use for accessing the apps to screenshot.
+    /**
+     * Appium Driver we'll use for accessing the apps to screenshot.
+    */
     private AppiumDriver driver;
 
     private CliWrapper cliWrapper;
 
     private PercyOptions percyOptions;
 
-    // Determine if we're debug logging
-    public static boolean PERCY_DEBUG = System.getenv().getOrDefault("PERCY_LOGLEVEL", "info").equals("debug");
+    /**
+     * Determine if we're debug logging
+    */
+    private static boolean PERCY_DEBUG = System.getenv().getOrDefault("PERCY_LOGLEVEL", "info").equals("debug");
 
-    // for logging
+    /**
+     * for logging
+    */
     private static String LABEL = "[\u001b[35m" + (PERCY_DEBUG ? "percy:java" : "percy") + "\u001b[39m]";
 
-    // Is the Percy server running or not
-    boolean isPercyEnabled;
+    /**
+     * Is the Percy server running or not
+    */
+    private boolean isPercyEnabled;
 
     private String sessionId;
 
-    public static Boolean ignoreErrors = true;
+    private static Boolean ignoreErrors = true;
 
     /**
      * @param driver The Appium Driver object that will hold the app session to

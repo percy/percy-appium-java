@@ -23,5 +23,3 @@ jobs:
           restore-keys: v1/${{ runner.os }}/java-${{ matrix.java }}/
       - run: yarn
       - run: mvn test
-        env:
-          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
