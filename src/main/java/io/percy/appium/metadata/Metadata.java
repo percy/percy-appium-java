@@ -21,7 +21,14 @@ public abstract class Metadata {
     }
 
     public String platformVersion() {
-        return driver.getCapabilities().getCapability("platformVersion").toString();
+        Object platformVersion = driver.getCapabilities().getCapability("platformVersion");
+        if (platformVersion == null) {
+            platformVersion = driver.getCapabilities().getCapability("os_version");
+            if (platformVersion == null) {
+                return null;
+            }
+        }
+        return platformVersion.toString();
     }
 
     public String orientation() {

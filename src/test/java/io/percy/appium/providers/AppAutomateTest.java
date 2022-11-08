@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,9 +77,15 @@ public class AppAutomateTest {
     @Test
     public void testExecutePercyScreenshotBegin() {
         String response = "{\"success\":\"true\"}";
-        when(androidDriver.executeScript(String.format(
-                "browserstack_executor: {\"action\": \"percyScreenshot\", \"arguments\": {\"state\": \"begin\", \"percyBuildId\": \"{%s}\", \"percyBuildUrl\": \"{%s}\"}}",
-                System.getenv("PERCY_BUILD_ID"), System.getenv("PERCY_BUILD_URL")))).thenReturn(response);
+        JSONObject arguments = new JSONObject();
+        arguments.put("state", "begin");
+        arguments.put("percyBuildId", System.getenv("PERCY_BUILD_ID"));
+        arguments.put("percyBuildUrl", System.getenv("PERCY_BUILD_URL"));
+        JSONObject reqObject = new JSONObject();
+        reqObject.put("action", "percyScreenshot");
+        reqObject.put("arguments", arguments);
+        when(androidDriver.executeScript(String.format("browserstack_executor: {%s}", reqObject.toString())))
+                .thenReturn(response);
         appAutomate.executePercyScreenshotBegin();
     }
 
@@ -86,9 +93,14 @@ public class AppAutomateTest {
     public void testExecutePercyScreenshotEnd() {
         String response = "{\"success\":\"true\"}";
         String percyScreenshotUrl = "";
-        when(androidDriver.executeScript(String.format(
-            "browserstack_executor: {\"action\": \"percyScreenshot\", \"arguments\": {\"state\": \"end\", \"percyScreenshotUrl\": \"{%s}\"}}",
-            percyScreenshotUrl))).thenReturn(response);
+        JSONObject arguments = new JSONObject();
+        arguments.put("state", "end");
+        arguments.put("percyScreenshotUrl", percyScreenshotUrl);
+        JSONObject reqObject = new JSONObject();
+        reqObject.put("action", "percyScreenshot");
+        reqObject.put("arguments", arguments);
+        when(androidDriver.executeScript(String.format("browserstack_executor: {%s}", reqObject.toString())))
+                .thenReturn(response);
         appAutomate.executePercyScreenshotEnd(percyScreenshotUrl);
     }
 

@@ -1,5 +1,7 @@
 # percy-appium-java
 
+https://github.com/percy/percy-appium-java/workflows/Test/badge.svg
+
 [Percy](https://percy.io) visual testing for Java Appium.
 
 ## Installation

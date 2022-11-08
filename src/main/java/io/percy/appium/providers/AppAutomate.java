@@ -32,9 +32,15 @@ public class AppAutomate extends GenericProvider {
     public void executePercyScreenshotBegin() {
         try {
             if (markedPercySession) {
-                String resultString = driver.executeScript(String.format(
-                        "browserstack_executor: {\"action\": \"percyScreenshot\", \"arguments\": {\"state\": \"begin\", \"percyBuildId\": \"{%s}\", \"percyBuildUrl\": \"{%s}\"}}",
-                        System.getenv("PERCY_BUILD_ID"), System.getenv("PERCY_BUILD_URL"))).toString();
+                JSONObject arguments = new JSONObject();
+                arguments.put("state", "begin");
+                arguments.put("percyBuildId", System.getenv("PERCY_BUILD_ID"));
+                arguments.put("percyBuildUrl", System.getenv("PERCY_BUILD_URL"));
+                JSONObject reqObject = new JSONObject();
+                reqObject.put("action", "percyScreenshot");
+                reqObject.put("arguments", arguments);
+                String resultString = driver
+                        .executeScript(String.format("browserstack_executor: {%s}", reqObject.toString())).toString();
                 JSONObject result = new JSONObject(resultString);
                 markedPercySession = result.get("success").toString() == "true";
             }
@@ -46,9 +52,14 @@ public class AppAutomate extends GenericProvider {
     public void executePercyScreenshotEnd(String percyScreenshotUrl) {
         try {
             if (markedPercySession) {
-                String resultString = driver.executeScript(String.format(
-                        "browserstack_executor: {\"action\": \"percyScreenshot\", \"arguments\": {\"state\": \"end\", \"percyScreenshotUrl\": \"{%s}\"}}",
-                        percyScreenshotUrl)).toString();
+                JSONObject arguments = new JSONObject();
+                arguments.put("state", "end");
+                arguments.put("percyScreenshotUrl", percyScreenshotUrl);
+                JSONObject reqObject = new JSONObject();
+                reqObject.put("action", "percyScreenshot");
+                reqObject.put("arguments", arguments);
+                String resultString = driver
+                        .executeScript(String.format("browserstack_executor: {%s}", reqObject.toString())).toString();
                 JSONObject result = new JSONObject(resultString);
                 markedPercySession = result.get("success").toString() == "true";
             }

@@ -7,12 +7,12 @@ import org.json.JSONObject;
 
 public class Tile {
     // File path where screenshot is stored
-    public String localFilePath;
-    public Integer statusBarHeight;
-    public Integer navBarHeight;
-    public Integer headerHeight;
-    public Integer footerHeight;
-    public Boolean fullScreen;
+    private String localFilePath;
+    private Integer statusBarHeight;
+    private Integer navBarHeight;
+    private Integer headerHeight;
+    private Integer footerHeight;
+    private Boolean fullScreen;
 
     public Tile(String localFilePath, Integer statusBarHeight, Integer navBarHeight, Integer headerHeight,
             Integer footerHeight, Boolean fullScreen) {
@@ -37,6 +37,30 @@ public class Tile {
             tiles.add(tileData);
         }
         return tiles;
+    }
+
+    public String getLocalFilePath() {
+        return localFilePath;
+    }
+
+    public Integer getStatusBarHeight() {
+        return statusBarHeight;
+    }
+
+    public Integer getNavBarHeight() {
+        return navBarHeight;
+    }
+
+    public Integer getHeaderHeight() {
+        return headerHeight;
+    }
+
+    public Integer getFooterHeight() {
+        return footerHeight;
+    }
+
+    public Boolean getFullScreen() {
+        return fullScreen;
     }
 
 }
