@@ -61,7 +61,7 @@ public class AppPercy {
      *
      * @param name       The human-readable name of the screenshot. Should be
      *                   unique.
-     * @param deviceName Device name on which screensho is taken
+     * @param deviceName Device name on which screenshot is taken
      *
      */
     public void screenshot(String name, String deviceName) {
@@ -73,7 +73,7 @@ public class AppPercy {
      *
      * @param name            The human-readable name of the screenshot. Should be
      *                        unique.
-     * @param deviceName      Device name on which screensho is taken
+     * @param deviceName      Device name on which screenshot is taken
      * @param statusBarHeight Height of status bar for the device
      *
      */
@@ -86,7 +86,7 @@ public class AppPercy {
      *
      * @param name            The human-readable name of the screenshot. Should be
      *                        unique.
-     * @param deviceName      Device name on which screensho is taken
+     * @param deviceName      Device name on which screenshot is taken
      * @param statusBarHeight Height of status bar for the device
      * @param navBarHeight    Height of navigation bar for the device
      *
@@ -100,7 +100,7 @@ public class AppPercy {
      *
      * @param name            The human-readable name of the screenshot. Should be
      *                        unique.
-     * @param deviceName      Device name on which screensho is taken
+     * @param deviceName      Device name on which screenshot is taken
      * @param statusBarHeight Height of status bar for the device
      * @param navBarHeight    Height of navigation bar for the device
      * @param orientation     Orientation of the application
@@ -116,7 +116,7 @@ public class AppPercy {
      *
      * @param name            The human-readable name of the screenshot. Should be
      *                        unique.
-     * @param deviceName      Device name on which screensho is taken
+     * @param deviceName      Device name on which screenshot is taken
      * @param statusBarHeight Height of status bar for the device
      * @param navBarHeight    Height of navigation bar for the device
      * @param orientation     Orientation of the application
