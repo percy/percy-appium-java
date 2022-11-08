@@ -1,6 +1,6 @@
 # percy-appium-java
 
-https://github.com/percy/percy-appium-java/workflows/Test/badge.svg
+![Test](https://github.com/percy/percy-appium-java/workflows/Test/badge.svg)
 
 [Percy](https://percy.io) visual testing for Java Appium.
 
@@ -78,11 +78,13 @@ The screenshot method arguments:
 
 - `name` (**required**) - The screenshot name; must be unique to each screenshot
 - Additional screenshot options (overrides any project options):
-  - `deviceName` - Device name on which screenshot is taken
-  - `statusBarHeight` - Height of status bar for the device
-  - `navBarHeight` - Height of navigation bar for the device
-  - `orientation`  - Orientation of the application
   - `fullScreen ` - It indicates if the app is a full screen
+  - `options` - Optional screenshot params:
+    Use `ScreenshotOptions` to set following params to override
+      - `deviceName` - Device name on which screenshot is taken
+      - `statusBarHeight` - Height of status bar for the device
+      - `navBarHeight` - Height of navigation bar for the device
+      - `orientation`  - Orientation of the application
 
 ### Migrating Config
 

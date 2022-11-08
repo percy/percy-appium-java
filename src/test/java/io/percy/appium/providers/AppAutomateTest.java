@@ -66,42 +66,47 @@ public class AppAutomateTest {
 
     @Test
     public void testExecutePercyScreenshotBeginWhenNullExceptionDoesNotThrow() {
-        appAutomate.executePercyScreenshotBegin();
+        appAutomate.executePercyScreenshotBegin("");
     }
 
     @Test
     public void testExecutePercyScreenshotEndWhenNullExceptionDoesNotThrow() {
-        appAutomate.executePercyScreenshotEnd("");
+        appAutomate.executePercyScreenshotEnd("", "", "");
     }
 
     @Test
     public void testExecutePercyScreenshotBegin() {
         String response = "{\"success\":\"true\"}";
+        String name = "First";
         JSONObject arguments = new JSONObject();
         arguments.put("state", "begin");
         arguments.put("percyBuildId", System.getenv("PERCY_BUILD_ID"));
         arguments.put("percyBuildUrl", System.getenv("PERCY_BUILD_URL"));
+        arguments.put("name", name);
         JSONObject reqObject = new JSONObject();
         reqObject.put("action", "percyScreenshot");
         reqObject.put("arguments", arguments);
         when(androidDriver.executeScript(String.format("browserstack_executor: {%s}", reqObject.toString())))
                 .thenReturn(response);
-        appAutomate.executePercyScreenshotBegin();
+        appAutomate.executePercyScreenshotBegin(name);
     }
 
     @Test
     public void testExecutePercyScreenshotEnd() {
         String response = "{\"success\":\"true\"}";
         String percyScreenshotUrl = "";
+        String name = "First";
         JSONObject arguments = new JSONObject();
         arguments.put("state", "end");
         arguments.put("percyScreenshotUrl", percyScreenshotUrl);
+        arguments.put("name", name);
+        arguments.put("status", "success");
         JSONObject reqObject = new JSONObject();
         reqObject.put("action", "percyScreenshot");
         reqObject.put("arguments", arguments);
         when(androidDriver.executeScript(String.format("browserstack_executor: {%s}", reqObject.toString())))
                 .thenReturn(response);
-        appAutomate.executePercyScreenshotEnd(percyScreenshotUrl);
+        appAutomate.executePercyScreenshotEnd(name ,percyScreenshotUrl, null);
     }
 
 }

@@ -7,6 +7,7 @@ import io.appium.java_client.AppiumDriver;
 import io.percy.appium.lib.Cache;
 import io.percy.appium.lib.CliWrapper;
 import io.percy.appium.lib.PercyOptions;
+import io.percy.appium.lib.ScreenshotOptions;
 import io.percy.appium.providers.GenericProvider;
 import io.percy.appium.providers.ProviderResolver;
 
@@ -16,7 +17,7 @@ import io.percy.appium.providers.ProviderResolver;
 public class AppPercy {
     /**
      * Appium Driver we'll use for accessing the apps to screenshot.
-    */
+     */
     private AppiumDriver driver;
 
     private CliWrapper cliWrapper;
@@ -25,17 +26,17 @@ public class AppPercy {
 
     /**
      * Determine if we're debug logging
-    */
+     */
     private static boolean PERCY_DEBUG = System.getenv().getOrDefault("PERCY_LOGLEVEL", "info").equals("debug");
 
     /**
      * for logging
-    */
+     */
     private static String LABEL = "[\u001b[35m" + (PERCY_DEBUG ? "percy:java" : "percy") + "\u001b[39m]";
 
     /**
      * Is the Percy server running or not
-    */
+     */
     private boolean isPercyEnabled;
 
     private String sessionId;
@@ -61,7 +62,7 @@ public class AppPercy {
      *
      */
     public void screenshot(String name) {
-        screenshot(name, null, null, null, null, false);
+        screenshot(name, false, null);
     }
 
     /**
@@ -69,11 +70,10 @@ public class AppPercy {
      *
      * @param name       The human-readable name of the screenshot. Should be
      *                   unique.
-     * @param deviceName Device name on which screenshot is taken
-     *
+     * @param fullScreen It indicates if the app is a full screen
      */
-    public void screenshot(String name, String deviceName) {
-        screenshot(name, deviceName, null, null, null, false);
+    public void screenshot(String name, Boolean fullScreen) {
+        screenshot(name, fullScreen, null);
     }
 
     /**
@@ -81,12 +81,14 @@ public class AppPercy {
      *
      * @param name            The human-readable name of the screenshot. Should be
      *                        unique.
-     * @param deviceName      Device name on which screenshot is taken
-     * @param statusBarHeight Height of status bar for the device
-     *
+     * @param options         Optional screenshot params
+        * @param deviceName      Device name on which screenshot is taken
+        * @param statusBarHeight Height of status bar for the device
+        * @param navBarHeight    Height of navigation bar for the device
+        * @param orientation     Orientation of the application
      */
-    public void screenshot(String name, String deviceName, Integer statusBarHeight) {
-        screenshot(name, deviceName, statusBarHeight, null, null, false);
+    public void screenshot(String name, ScreenshotOptions options) {
+        screenshot(name, false, options);
     }
 
     /**
@@ -94,52 +96,26 @@ public class AppPercy {
      *
      * @param name            The human-readable name of the screenshot. Should be
      *                        unique.
-     * @param deviceName      Device name on which screenshot is taken
-     * @param statusBarHeight Height of status bar for the device
-     * @param navBarHeight    Height of navigation bar for the device
-     *
-     */
-    public void screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight) {
-        screenshot(name, deviceName, statusBarHeight, navBarHeight, null, false);
-    }
-
-    /**
-     * Take a screenshot and upload it to Percy.
-     *
-     * @param name            The human-readable name of the screenshot. Should be
-     *                        unique.
-     * @param deviceName      Device name on which screenshot is taken
-     * @param statusBarHeight Height of status bar for the device
-     * @param navBarHeight    Height of navigation bar for the device
-     * @param orientation     Orientation of the application
-     *
-     */
-    public void screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,
-            String orientation) {
-        screenshot(name, deviceName, statusBarHeight, navBarHeight, orientation, false);
-    }
-
-    /**
-     * Take a screenshot and upload it to Percy.
-     *
-     * @param name            The human-readable name of the screenshot. Should be
-     *                        unique.
-     * @param deviceName      Device name on which screenshot is taken
-     * @param statusBarHeight Height of status bar for the device
-     * @param navBarHeight    Height of navigation bar for the device
-     * @param orientation     Orientation of the application
      * @param fullScreen      It indicates if the app is a full screen
+     * @param options         Optional screenshot params
+        * @param deviceName      Device name on which screenshot is taken
+        * @param statusBarHeight Height of status bar for the device
+        * @param navBarHeight    Height of navigation bar for the device
+        * @param orientation     Orientation of the application
      */
-    public void screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,
-            String orientation, Boolean fullScreen) {
+    public void screenshot(String name, Boolean fullScreen, ScreenshotOptions options) {
         if (!isPercyEnabled || !percyOptions.percyOptionEnabled()) {
             return;
         }
         percyOptions.setPercyIgnoreErrors();
         try {
             GenericProvider provider = ProviderResolver.resolveProvider(driver);
-            provider.screenshot(name, deviceName, statusBarHeight, navBarHeight, orientation, fullScreen,
-                    provider.getDebugUrl());
+            if (options != null) {
+                provider.screenshot(name, options.getDeviceName(), options.getStatusBarHeight(), options.getNavBarHeight(),
+                        options.getOrientation(), fullScreen, provider.getDebugUrl());
+            } else {
+                provider.screenshot(name, null, null, null, null, fullScreen, provider.getDebugUrl());
+            }
         } catch (Exception e) {
             log("Error taking screenshot " + name);
             log(e.toString(), "debug");
