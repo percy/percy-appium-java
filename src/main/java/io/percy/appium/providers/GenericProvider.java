@@ -27,26 +27,40 @@ public class GenericProvider {
         this.cliWrapper = new CliWrapper(driver);
     }
 
-    public JSONObject getTag() {
+    public JSONObject getTag(String deviceName, String orientation) {
         JSONObject tag = new JSONObject();
-        tag.put("name", metadata.deviceName());
+        String name = deviceName;
+        String appOrientation = orientation;
+        if (deviceName == null) {
+            name = metadata.deviceName();
+        }
+        if (orientation == null) {
+            appOrientation = metadata.orientation();
+        }
+        tag.put("name", name);
         tag.put("osName", metadata.osName());
         tag.put("osVersion", metadata.platformVersion());
         tag.put("width", metadata.deviceScreenWidth());
         tag.put("height", metadata.deviceScreenHeight());
-        tag.put("orientation", metadata.orientation());
+        tag.put("orientation", appOrientation);
         return tag;
     }
 
-    public List<Tile> captureTiles(Boolean fullScreen) {
+    public List<Tile> captureTiles(Boolean fullScreen, Integer statusBarHeight, Integer navBarHeight) {
+        Integer statusBar = statusBarHeight;
+        Integer navBar = navBarHeight;
+        if (statusBarHeight == null) {
+            statusBar = metadata.statBarHeight();
+        }
+        if (navBarHeight == null) {
+            navBar = metadata.navBarHeight();
+        }
         String srcString = captureScreenshot();
         String localFilePath = getAbsolutePath(srcString);
-        Integer statusBarHeight = metadata.statBarHeight();
-        Integer navBarHeight = metadata.navBarHeight();
         Integer headerHeight = 0;
         Integer footerHeight = 0;
         List<Tile> tiles = new ArrayList<Tile>();
-        tiles.add(new Tile(localFilePath, statusBarHeight, navBarHeight, headerHeight, footerHeight, fullScreen));
+        tiles.add(new Tile(localFilePath, statusBar, navBar, headerHeight, footerHeight, fullScreen));
         return tiles;
     }
 
@@ -81,9 +95,10 @@ public class GenericProvider {
         return driver.getScreenshotAs(OutputType.BASE64);
     }
 
-    public String screenshot(String name, Boolean fullScreen, String debugUrl) {
-        JSONObject tag = getTag();
-        List<Tile> tiles = captureTiles(fullScreen);
+    public String screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,
+            String orientation, Boolean fullScreen, String debugUrl) {
+        JSONObject tag = getTag(deviceName, orientation);
+        List<Tile> tiles = captureTiles(fullScreen, statusBarHeight, navBarHeight);
         return cliWrapper.postScreenshot(name, tag, tiles, debugUrl);
     }
 

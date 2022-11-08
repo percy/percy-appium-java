@@ -1,0 +1,16 @@
+name: Lint
+on: push
+jobs:
+  lint:
+    name: Lint
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        java: [17]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+      - run: make lint

@@ -29,12 +29,19 @@ public class AppAutomate extends GenericProvider {
         return false;
     }
 
-    public void executePercyScreenshotBegin() {
+    public void executePercyScreenshotBegin(String name) {
         try {
             if (markedPercySession) {
-                String resultString = driver.executeScript(String.format(
-                        "browserstack_executor: {\"action\": \"percyScreenshot\", \"arguments\": {\"state\": \"begin\", \"percyBuildId\": \"{%s}\", \"percyBuildUrl\": \"{%s}\"}}",
-                        System.getenv("PERCY_BUILD_ID"), System.getenv("PERCY_BUILD_URL"))).toString();
+                JSONObject arguments = new JSONObject();
+                arguments.put("state", "begin");
+                arguments.put("percyBuildId", System.getenv("PERCY_BUILD_ID"));
+                arguments.put("percyBuildUrl", System.getenv("PERCY_BUILD_URL"));
+                arguments.put("name", name);
+                JSONObject reqObject = new JSONObject();
+                reqObject.put("action", "percyScreenshot");
+                reqObject.put("arguments", arguments);
+                String resultString = driver
+                        .executeScript(String.format("browserstack_executor: {%s}", reqObject.toString())).toString();
                 JSONObject result = new JSONObject(resultString);
                 markedPercySession = result.get("success").toString() == "true";
             }
@@ -43,12 +50,23 @@ public class AppAutomate extends GenericProvider {
         }
     }
 
-    public void executePercyScreenshotEnd(String percyScreenshotUrl) {
+    public void executePercyScreenshotEnd(String name, String percyScreenshotUrl, String error) {
         try {
             if (markedPercySession) {
-                String resultString = driver.executeScript(String.format(
-                        "browserstack_executor: {\"action\": \"percyScreenshot\", \"arguments\": {\"state\": \"end\", \"percyScreenshotUrl\": \"{%s}\"}}",
-                        percyScreenshotUrl)).toString();
+                String status = "success";
+                if (error != null) {
+                    status = "Failed: " + error;
+                }
+                JSONObject arguments = new JSONObject();
+                arguments.put("state", "end");
+                arguments.put("percyScreenshotUrl", percyScreenshotUrl);
+                arguments.put("name", name);
+                arguments.put("status", status);
+                JSONObject reqObject = new JSONObject();
+                reqObject.put("action", "percyScreenshot");
+                reqObject.put("arguments", arguments);
+                String resultString = driver
+                        .executeScript(String.format("browserstack_executor: {%s}", reqObject.toString())).toString();
                 JSONObject result = new JSONObject(resultString);
                 markedPercySession = result.get("success").toString() == "true";
             }
@@ -57,10 +75,18 @@ public class AppAutomate extends GenericProvider {
         }
     }
 
-    public String screenshot(String name, Boolean fullScreen, String debugUrl) {
-        executePercyScreenshotBegin();
-        String percyScreenshotUrl = super.screenshot(name, fullScreen, debugUrl);
-        executePercyScreenshotEnd(percyScreenshotUrl);
+    public String screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,
+            String orientation, Boolean fullScreen, String debugUrl) {
+        executePercyScreenshotBegin(name);
+        String percyScreenshotUrl = "";
+        String error = "";
+        try {
+            percyScreenshotUrl = super.screenshot(name, deviceName, statusBarHeight, navBarHeight, orientation,
+            fullScreen, debugUrl);
+        } catch (Exception e) {
+            error = e.getMessage();
+        }
+        executePercyScreenshotEnd(name, percyScreenshotUrl, error);
         return null;
     }
 

@@ -46,13 +46,32 @@ public class GenericProviderTest {
 
         GenericProvider genericProvider = new GenericProvider(androidDriver, metadata);
         
-        JSONObject tile = genericProvider.getTag();
+        JSONObject tile = genericProvider.getTag(null, null);
         Assert.assertEquals(tile.get("name"), "Samsung Galaxy s22");
         Assert.assertEquals(tile.get("osName"), "ANDROID");
         Assert.assertEquals(tile.get("osVersion"), "9");
         Assert.assertEquals(tile.get("width"), deviceScreenWidth);
         Assert.assertEquals(tile.get("height"), deviceScreenHeight);
         Assert.assertEquals(tile.get("orientation"), "landscape");
+    }
+
+    @Test
+    public void testGetTagWhenDeviceNameAndOrientationIsPassed(){
+
+        when(metadata.osName()).thenReturn("ANDROID");
+        when(metadata.platformVersion()).thenReturn("9");
+        when(metadata.deviceScreenHeight()).thenReturn(deviceScreenHeight);
+        when(metadata.deviceScreenWidth()).thenReturn(deviceScreenWidth);
+
+        GenericProvider genericProvider = new GenericProvider(androidDriver, metadata);
+        
+        JSONObject tile = genericProvider.getTag("example device", "example orientation");
+        Assert.assertEquals(tile.get("name"), "example device");
+        Assert.assertEquals(tile.get("osName"), "ANDROID");
+        Assert.assertEquals(tile.get("osVersion"), "9");
+        Assert.assertEquals(tile.get("width"), deviceScreenWidth);
+        Assert.assertEquals(tile.get("height"), deviceScreenHeight);
+        Assert.assertEquals(tile.get("orientation"), "example orientation");
     }
 
     @Test
@@ -63,13 +82,28 @@ public class GenericProviderTest {
 
         GenericProvider genericProvider = new GenericProvider(androidDriver, metadata);
 
-        Tile tile = genericProvider.captureTiles(false).get(0);
-        Assert.assertTrue(tile.localFilePath.contains("/tmp"));
-        Assert.assertEquals(tile.statusBarHeight, statusBarHeight);
-        Assert.assertEquals(tile.navBarHeight, navigationBarHeight);
-        Assert.assertEquals(tile.headerHeight.intValue(), 0);
-        Assert.assertEquals(tile.footerHeight.intValue(), 0);
-        Assert.assertEquals(tile.fullScreen, false);
+        Tile tile = genericProvider.captureTiles(false, null, null).get(0);
+        Assert.assertTrue(tile.getLocalFilePath().contains("/tmp"));
+        Assert.assertEquals(tile.getStatusBarHeight(), statusBarHeight);
+        Assert.assertEquals(tile.getNavBarHeight(), navigationBarHeight);
+        Assert.assertEquals(tile.getHeaderHeight().intValue(), 0);
+        Assert.assertEquals(tile.getFooterHeight().intValue(), 0);
+        Assert.assertEquals(tile.getFullScreen(), false);
+    }
+
+    @Test
+    public void testcaptureTilesWhenPassedExplicitly() {
+        when(androidDriver.getScreenshotAs(OutputType.BASE64)).thenReturn("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAADwCAYAAAA+VemSAAAgAEl...==");
+
+        GenericProvider genericProvider = new GenericProvider(androidDriver, metadata);
+
+        Tile tile = genericProvider.captureTiles(false, 100, 200).get(0);
+        Assert.assertTrue(tile.getLocalFilePath().contains("/tmp"));
+        Assert.assertEquals(tile.getStatusBarHeight().intValue(), 100);
+        Assert.assertEquals(tile.getNavBarHeight().intValue(), 200);
+        Assert.assertEquals(tile.getHeaderHeight().intValue(), 0);
+        Assert.assertEquals(tile.getFooterHeight().intValue(), 0);
+        Assert.assertEquals(tile.getFullScreen(), false);
     }
 
     @Test
