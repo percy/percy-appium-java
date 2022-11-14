@@ -30,17 +30,8 @@ public class MetadataHelper {
     }
 
     public static Integer valueFromStaticDevicesInfo(String key, String deviceName) {
-        return valueFromStaticDevicesInfo(key, deviceName, null);
-    }
-
-    public static Integer valueFromStaticDevicesInfo(String key, String deviceName, String osVersion) {
         try {
-            JSONObject object;
-            if (osVersion == null) {
-                object = getDevicesJson().getJSONObject(deviceName);
-            } else {
-                object = getDevicesJson().getJSONObject(deviceName).getJSONObject(osVersion);
-            }
+            JSONObject object = getDevicesJson().getJSONObject(deviceName);
             return Integer.parseInt(object.getString(key));
         } catch (JSONException e) {
             return 0;

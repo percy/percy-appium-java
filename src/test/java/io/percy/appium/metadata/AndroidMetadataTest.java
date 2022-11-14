@@ -73,44 +73,8 @@ public class AndroidMetadataTest {
     }
 
     @Test
-    public void testStatBarHeightFromJson() {
-        statusBar.clear();
-        statusBar.put("height", 1);
-        systemBars.put("statusBar", statusBar);
-        String sessionDetails = "{\"device\":\"Samsung Galaxy s22\"}";
-        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
-        when(capabilities.getCapability("platformVersion")).thenReturn("12");
-        Assert.assertEquals(metadata.statBarHeight().intValue(), 81);
-    }
-
-    @Test
     public void testNavBarHeight() {
         Assert.assertEquals(metadata.navBarHeight(), navigationBarHeight);
-    }
-
-    @Test
-    public void testNavBarHeighFromJson() {
-        statusBar.clear();
-        statusBar.put("height", 1);
-        systemBars.put("navigationBar", statusBar);
-        String sessionDetails = "{\"device\":\"Samsung Galaxy s22\"}";
-        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
-        when(capabilities.getCapability("platformVersion")).thenReturn("12");
-        Assert.assertEquals(metadata.navBarHeight().intValue(), 144);
-    }
-
-    @Test
-    public void testStatBarHeightException() {
-        systemBars.clear();
-        Assert.assertEquals(metadata.statBarHeight().intValue(), 0);
-    }
-
-    @Test
-    public void testNavBarHeightException() {
-        systemBars.clear();
-        Assert.assertEquals(metadata.navBarHeight().intValue(), 0);
     }
 
     @Test

@@ -172,7 +172,7 @@ public class IosMetadataTest {
     @Test
     public void testDeviceScreenWidthFromJson() {
         viewportRect.clear();
-        String sessionDetails = "{\"device\":\"iPhone 12\"}";
+        String sessionDetails = "{\"device\":\"iphone 8 plus\"}";
         when(driver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
                 .thenReturn(sessionDetails);
         when(driver.manage()).thenReturn(Options);
@@ -187,7 +187,7 @@ public class IosMetadataTest {
     @Test
     public void testDeviceScreenHeightFromJson() {
         viewportRect.clear();
-        String sessionDetails = "{\"device\":\"iPhone 12\"}";
+        String sessionDetails = "{\"device\":\"iphone 8 plus\"}";
         when(driver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
                 .thenReturn(sessionDetails);
         when(driver.manage()).thenReturn(Options);
