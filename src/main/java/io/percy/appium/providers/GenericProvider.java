@@ -30,19 +30,15 @@ public class GenericProvider {
     public JSONObject getTag(String deviceName, String orientation) {
         JSONObject tag = new JSONObject();
         String name = deviceName;
-        String appOrientation = orientation;
         if (deviceName == null) {
             name = metadata.deviceName();
-        }
-        if (orientation == null) {
-            appOrientation = metadata.orientation();
         }
         tag.put("name", name);
         tag.put("osName", metadata.osName());
         tag.put("osVersion", metadata.platformVersion());
         tag.put("width", metadata.deviceScreenWidth());
         tag.put("height", metadata.deviceScreenHeight());
-        tag.put("orientation", appOrientation);
+        tag.put("orientation", metadata.orientation(orientation));
         return tag;
     }
 

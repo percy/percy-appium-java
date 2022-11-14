@@ -133,9 +133,25 @@ public class AndroidMetadataTest {
         Assert.assertEquals(metadata.platformVersion(), "12");
     }
 
+
+    @Test
+    public void testOrientatioWithPortrait(){
+        Assert.assertEquals(metadata.orientation("PORTRAIT"), "PORTRAIT");
+    }
+
+    @Test
+    public void testOrientatioWithLandscape(){
+        Assert.assertEquals(metadata.orientation("LANDSCAPE"), "LANDSCAPE");
+    }
+
+    @Test
+    public void testOrientatioWithWrongParam(){
+        Assert.assertEquals(metadata.orientation("PARAM"), "PORTRAIT");
+    }
+
     @Test
     public void testOrientation(){
         when(androidDriver.getOrientation()).thenReturn(ScreenOrientation.LANDSCAPE);
-        Assert.assertEquals(metadata.orientation(), "landscape");
+        Assert.assertEquals(metadata.orientation("AUTO"), "LANDSCAPE");
     }
 }

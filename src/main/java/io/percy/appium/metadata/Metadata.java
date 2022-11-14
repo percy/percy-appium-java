@@ -31,11 +31,21 @@ public abstract class Metadata {
         return platformVersion.toString();
     }
 
-    public String orientation() {
-        try {
-            return driver.getOrientation().toString().toLowerCase();
-        } catch (java.lang.NoSuchMethodError e) {
-            // TODO Need to fix this for appium client v8
+    public String orientation(String orientation) {
+        if (orientation == "PORTRAIT" || orientation == "LANDSCAPE") {
+            return orientation;
+        } else if (orientation == "AUTO") {
+            try {
+                return driver.getOrientation().toString();
+            } catch (java.lang.NoSuchMethodError e) {
+                Object orientationCapability = driver.getCapabilities().getCapability("orientation");
+                if (orientationCapability != null) {
+                    return orientationCapability.toString();
+                } else {
+                    return "PORTRAIT";
+                }
+            }
+        } else {
             return "PORTRAIT";
         }
     }
