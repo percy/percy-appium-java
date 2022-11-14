@@ -150,7 +150,18 @@ public class AndroidMetadataTest {
     }
 
     @Test
-    public void testOrientation(){
+    public void testOrientatioWithWrongNullParam(){
+        Assert.assertEquals(metadata.orientation(null), "PORTRAIT");
+    }
+
+    @Test
+    public void testOrientatioWithWrongNullParamAndCaps(){
+        when(androidDriver.getCapabilities().getCapability("orientation")).thenReturn(ScreenOrientation.LANDSCAPE);
+        Assert.assertEquals(metadata.orientation(null), "LANDSCAPE");
+    }
+
+    @Test
+    public void testOrientationAuto(){
         when(androidDriver.getOrientation()).thenReturn(ScreenOrientation.LANDSCAPE);
         Assert.assertEquals(metadata.orientation("AUTO"), "LANDSCAPE");
     }

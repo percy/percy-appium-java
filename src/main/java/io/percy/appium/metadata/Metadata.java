@@ -38,15 +38,15 @@ public abstract class Metadata {
             try {
                 return driver.getOrientation().toString();
             } catch (java.lang.NoSuchMethodError e) {
-                Object orientationCapability = driver.getCapabilities().getCapability("orientation");
-                if (orientationCapability != null) {
-                    return orientationCapability.toString();
-                } else {
-                    return "PORTRAIT";
-                }
+                return "PORTRAIT";
             }
         } else {
-            return "PORTRAIT";
+            Object orientationCapability = driver.getCapabilities().getCapability("orientation");
+            if (orientationCapability != null) {
+                return orientationCapability.toString();
+            } else {
+                return "PORTRAIT";
+            }
         }
     }
 

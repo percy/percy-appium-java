@@ -250,6 +250,17 @@ public class IosMetadataTest {
     }
 
     @Test
+    public void testOrientatioWithWrongNullParam(){
+        Assert.assertEquals(metadata.orientation(null), "PORTRAIT");
+    }
+
+    @Test
+    public void testOrientatioWithWrongNullParamAndCaps(){
+        when(driver.getCapabilities().getCapability("orientation")).thenReturn(ScreenOrientation.LANDSCAPE);
+        Assert.assertEquals(metadata.orientation(null), "LANDSCAPE");
+    }
+
+    @Test
     public void testOrientatioAuto(){
         when(driver.getOrientation()).thenReturn(ScreenOrientation.LANDSCAPE);
         Assert.assertEquals(metadata.orientation("AUTO"), "LANDSCAPE");
