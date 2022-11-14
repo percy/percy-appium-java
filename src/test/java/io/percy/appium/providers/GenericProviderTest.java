@@ -40,19 +40,19 @@ public class GenericProviderTest {
         when(metadata.deviceName()).thenReturn("Samsung Galaxy s22");
         when(metadata.osName()).thenReturn("ANDROID");
         when(metadata.platformVersion()).thenReturn("9");
-        when(metadata.orientation()).thenReturn("landscape");
+        when(metadata.orientation("AUTO")).thenReturn("LANDSCAPE");
         when(metadata.deviceScreenHeight()).thenReturn(deviceScreenHeight);
         when(metadata.deviceScreenWidth()).thenReturn(deviceScreenWidth);
 
         GenericProvider genericProvider = new GenericProvider(androidDriver, metadata);
         
-        JSONObject tile = genericProvider.getTag(null, null);
+        JSONObject tile = genericProvider.getTag(null, "AUTO");
         Assert.assertEquals(tile.get("name"), "Samsung Galaxy s22");
         Assert.assertEquals(tile.get("osName"), "ANDROID");
         Assert.assertEquals(tile.get("osVersion"), "9");
         Assert.assertEquals(tile.get("width"), deviceScreenWidth);
         Assert.assertEquals(tile.get("height"), deviceScreenHeight);
-        Assert.assertEquals(tile.get("orientation"), "landscape");
+        Assert.assertEquals(tile.get("orientation"), "LANDSCAPE");
     }
 
     @Test
@@ -62,16 +62,17 @@ public class GenericProviderTest {
         when(metadata.platformVersion()).thenReturn("9");
         when(metadata.deviceScreenHeight()).thenReturn(deviceScreenHeight);
         when(metadata.deviceScreenWidth()).thenReturn(deviceScreenWidth);
+        when(metadata.orientation("orientation")).thenReturn("PORTRAIT");
 
         GenericProvider genericProvider = new GenericProvider(androidDriver, metadata);
         
-        JSONObject tile = genericProvider.getTag("example device", "example orientation");
+        JSONObject tile = genericProvider.getTag("example device", "orientation");
         Assert.assertEquals(tile.get("name"), "example device");
         Assert.assertEquals(tile.get("osName"), "ANDROID");
         Assert.assertEquals(tile.get("osVersion"), "9");
         Assert.assertEquals(tile.get("width"), deviceScreenWidth);
         Assert.assertEquals(tile.get("height"), deviceScreenHeight);
-        Assert.assertEquals(tile.get("orientation"), "example orientation");
+        Assert.assertEquals(tile.get("orientation"), "PORTRAIT");
     }
 
     @Test
