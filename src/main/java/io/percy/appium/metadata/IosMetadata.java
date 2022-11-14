@@ -2,11 +2,11 @@ package io.percy.appium.metadata;
 
 import java.util.Map;
 
-import org.openqa.selenium.Dimension;
+import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.http.HttpMethod;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.ios.IOSDriver;
-import io.percy.appium.AppPercy;
 import io.percy.appium.lib.Cache;
 
 public class IosMetadata extends Metadata {
@@ -20,67 +20,49 @@ public class IosMetadata extends Metadata {
     }
 
     public Integer deviceScreenWidth() {
-        Integer deviceScreenWidth;
-        try {
+        Integer deviceScreenWidth = MetadataHelper.valueFromStaticDevicesInfo("screenWidth",
+                this.deviceName().toLowerCase());
+        if (deviceScreenWidth == 0) {
             deviceScreenWidth = ((Long) getViewportRect().get("width")).intValue();
-        } catch (Exception e) {
-            AppPercy.log("Could not fetch deviceScreenWidth from viewportRect, using static config", "debug");
-            Cache.CACHE_MAP.put("viewportRectFallback_" + sessionId, "true");
-            Integer scaleFactor = MetadataHelper.valueFromStaticDevicesInfo("scale_factor",
-                    this.deviceName().toLowerCase());
-            deviceScreenWidth = getWindowSize().getWidth() * scaleFactor;
         }
         return deviceScreenWidth;
     }
 
     public Integer deviceScreenHeight() {
-        Integer deviceScreenHeight;
-        try {
-            if (Cache.CACHE_MAP.get("viewportRectFallback_" + sessionId) == "true") {
-                throw new Exception("viewportRectFallback");
-            }
-            Integer height = ((Long) getViewportRect().get("height")).intValue();
-            Integer top = ((Long) getViewportRect().get("top")).intValue();
-            deviceScreenHeight = height + top;
-        } catch (Exception e) {
-            AppPercy.log("Could not fetch deviceScreenHeight from viewportRect, using static config", "debug");
-            Integer scaleFactor = MetadataHelper.valueFromStaticDevicesInfo("scale_factor",
-                    this.deviceName().toLowerCase());
-            deviceScreenHeight = getWindowSize().getHeight() * scaleFactor;
+        Integer deviceScreenHeight = MetadataHelper.valueFromStaticDevicesInfo("screenHeight",
+                this.deviceName().toLowerCase());
+        if (deviceScreenHeight == 0) {
+            deviceScreenHeight = ((Long) getViewportRect().get("height")).intValue();
         }
         return deviceScreenHeight;
     }
 
     public Integer statBarHeight() {
-        Integer statBarHeight;
-        try {
-            if (Cache.CACHE_MAP.get("viewportRectFallback_" + sessionId) == "true") {
-                throw new Exception("viewportRectFallback");
-            }
-            statBarHeight = ((Long) getViewportRect().get("top")).intValue();
-        } catch (Exception e) {
-            AppPercy.log("Could not fetch statBarHeight from viewportRect, using static config", "debug");
-            Integer scaleFactor = MetadataHelper.valueFromStaticDevicesInfo("scale_factor",
-                    this.deviceName().toLowerCase());
-            Integer statusBarHeight = MetadataHelper.valueFromStaticDevicesInfo("status_bar",
-                    this.deviceName().toLowerCase());
-            statBarHeight = statusBarHeight * scaleFactor;
+        Integer statBarHeight = MetadataHelper.valueFromStaticDevicesInfo("statusBarHeight",
+                this.deviceName().toLowerCase());
+        Integer pixelRatio = MetadataHelper.valueFromStaticDevicesInfo("pixelRatio",
+                this.deviceName().toLowerCase());
+        if (statBarHeight == 0) {
+            return ((Long) getViewportRect().get("top")).intValue();
         }
-        return statBarHeight;
+        return statBarHeight * pixelRatio;
     }
 
     private Map getViewportRect() {
         if (Cache.CACHE_MAP.get("viewportRect_" + sessionId) == null) {
-            Cache.CACHE_MAP.put("viewportRect_" + sessionId, driver.executeScript("mobile: viewportRect"));
+            try {
+                Cache.CACHE_MAP.put("viewportRect_" + sessionId, getSession().get("viewportRect"));
+            } catch (java.lang.NoSuchMethodError e) {
+                Cache.CACHE_MAP.put("viewportRect_" + sessionId, driver.getSessionDetails().get("viewportRect"));
+            }
         }
         return (Map) Cache.CACHE_MAP.get("viewportRect_" + sessionId);
     }
 
-    private Dimension getWindowSize() {
-        if (Cache.CACHE_MAP.get("windowSize_" + sessionId) == null) {
-            Cache.CACHE_MAP.put("windowSize_" + sessionId, driver.manage().window().getSize());
-        }
-        return (Dimension) Cache.CACHE_MAP.get("windowSize_" + sessionId);
+    private Map getSession() {
+        driver.addCommand(HttpMethod.GET, "/session/" + driver.getSessionId(), "getSession");
+        Response session = driver.execute("getSession");
+        return (Map) session.getValue();
     }
 
     public Integer navBarHeight() {

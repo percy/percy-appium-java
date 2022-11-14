@@ -130,10 +130,7 @@ public class AppPercy {
         Set<String> set = new HashSet<>();
         set.add("getSessionDetails_" + sessionId);
         set.add("percyOptions_" + sessionId);
-        set.add("systemBars_" + sessionId);
         set.add("viewportRect_" + sessionId);
-        set.add("viewportRectFallback_" + sessionId);
-        set.add("windowSize_" + sessionId);
         set.add("getDevicesJson");
         Cache.CACHE_MAP.keySet().removeAll(set);
     }

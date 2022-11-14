@@ -35,16 +35,16 @@ import io.percy.appium.AppPercy;
 public class Example {
   private static AppPercy percy;
 
-	public static void main(String[] args) throws MalformedURLException, InterruptedException {
-    	DesiredCapabilities caps = new DesiredCapabilities();
-      // Add caps here
+  public static void main(String[] args) throws MalformedURLException, InterruptedException {
+    DesiredCapabilities caps = new DesiredCapabilities();
+    // Add caps here
 
-      AndroidDriver<AndroidElement> driver = new AndroidDriver<AndroidElement>(
-          new URL("http://hub.browserstack.com/wd/hub"), caps);
+    AndroidDriver<AndroidElement> driver = new AndroidDriver<AndroidElement>(
+      new URL("http://hub.browserstack.com/wd/hub"), caps);
 
-      percy = new AppPercy(driver);
-      percy.screenshot("First Screenshot");
-      driver.quit();
+    percy = new AppPercy(driver);
+    percy.screenshot("First Screenshot");
+    driver.quit();
 	}
 }
 ```
