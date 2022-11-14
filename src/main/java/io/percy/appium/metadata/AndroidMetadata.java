@@ -43,7 +43,7 @@ public class AndroidMetadata extends Metadata {
         if (Cache.CACHE_MAP.get("viewportRect_" + sessionId) == null) {
             try {
                 Cache.CACHE_MAP.put("viewportRect_" + sessionId, getSession().get("viewportRect"));
-            } catch (Exception e) {
+            } catch (java.lang.NoSuchMethodError e) {
                 Cache.CACHE_MAP.put("viewportRect_" + sessionId, driver.getSessionDetails().get("viewportRect"));
             }
         }

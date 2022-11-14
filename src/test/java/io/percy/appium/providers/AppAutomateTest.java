@@ -86,7 +86,7 @@ public class AppAutomateTest {
         JSONObject reqObject = new JSONObject();
         reqObject.put("action", "percyScreenshot");
         reqObject.put("arguments", arguments);
-        when(androidDriver.executeScript(String.format("browserstack_executor: {%s}", reqObject.toString())))
+        when(androidDriver.executeScript(String.format("browserstack_executor: %s", reqObject.toString())))
                 .thenReturn(response);
         appAutomate.executePercyScreenshotBegin(name);
     }
@@ -104,7 +104,7 @@ public class AppAutomateTest {
         JSONObject reqObject = new JSONObject();
         reqObject.put("action", "percyScreenshot");
         reqObject.put("arguments", arguments);
-        when(androidDriver.executeScript(String.format("browserstack_executor: {%s}", reqObject.toString())))
+        when(androidDriver.executeScript(String.format("browserstack_executor: %s", reqObject.toString())))
                 .thenReturn(response);
         appAutomate.executePercyScreenshotEnd(name ,percyScreenshotUrl, null);
     }

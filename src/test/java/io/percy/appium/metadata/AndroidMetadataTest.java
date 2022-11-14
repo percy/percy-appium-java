@@ -6,7 +6,6 @@ import io.percy.appium.lib.Cache;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -17,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ScreenOrientation;
+import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 
 import com.github.javafaker.Faker;
@@ -32,22 +32,22 @@ public class AndroidMetadataTest {
     AndroidMetadata metadata;
 
     Faker faker = new Faker();
-    Integer statusBarHeight = (int) faker.number().randomNumber(3, false);
-    Integer navigationBarHeight = (int) faker.number().randomNumber(3, false);
+    Long top = faker.number().randomNumber(3, false);
+    Long height = faker.number().randomNumber(3, false);
 
-    HashMap<String, Object> statusBar = new HashMap<String, Object>();
-    HashMap<String, Object> navigationBar = new HashMap<String, Object>();
-    Map<String, Map<String, Object>> systemBars = new HashMap<String, Map<String, Object>>();
+    HashMap<String, Long> viewportRect = new HashMap<String, Long>();
+    HashMap<String, HashMap<String, Long>> sessionValue = new HashMap<String, HashMap<String, Long>>();
+    Response session = new Response(new SessionId("abc"));
 
     @Before
     public void setup() {
-        statusBar.put("height", statusBarHeight);
-        navigationBar.put("height", navigationBarHeight);
-        systemBars.put("statusBar", statusBar);
-        systemBars.put("navigationBar", navigationBar);
+        viewportRect.put("top", top);
+        viewportRect.put("height", height);
+        sessionValue.put("viewportRect", viewportRect);
+        session.setValue(sessionValue);
         when(androidDriver.getSessionId()).thenReturn(new SessionId("abc"));
         when(androidDriver.getCapabilities()).thenReturn(capabilities);
-        when(androidDriver.getSystemBars()).thenReturn(systemBars);
+        when(androidDriver.execute("getSession")).thenReturn(session);
         when(capabilities.getCapability("deviceScreenSize")).thenReturn("1080x2160");
         metadata = new AndroidMetadata(androidDriver);
     }
@@ -69,12 +69,12 @@ public class AndroidMetadataTest {
 
     @Test
     public void testStatBarHeight() {
-        Assert.assertEquals(metadata.statBarHeight(), statusBarHeight);
+        Assert.assertEquals(metadata.statBarHeight().intValue(), top.intValue());
     }
 
     @Test
     public void testNavBarHeight() {
-        Assert.assertEquals(metadata.navBarHeight(), navigationBarHeight);
+        Assert.assertEquals(metadata.navBarHeight().intValue(), 2160 - (height + top));
     }
 
     @Test

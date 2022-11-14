@@ -32,7 +32,7 @@ public class MetadataHelper {
     public static Integer valueFromStaticDevicesInfo(String key, String deviceName) {
         try {
             JSONObject object = getDevicesJson().getJSONObject(deviceName);
-            return Integer.parseInt(object.getString(key));
+            return object.getInt(key);
         } catch (JSONException e) {
             return 0;
         }

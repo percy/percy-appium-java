@@ -41,7 +41,7 @@ public class AppAutomate extends GenericProvider {
                 reqObject.put("action", "percyScreenshot");
                 reqObject.put("arguments", arguments);
                 String resultString = driver
-                        .executeScript(String.format("browserstack_executor: {%s}", reqObject.toString())).toString();
+                        .executeScript(String.format("browserstack_executor: %s", reqObject.toString())).toString();
                 JSONObject result = new JSONObject(resultString);
                 markedPercySession = result.get("success").toString() == "true";
             }
@@ -66,7 +66,7 @@ public class AppAutomate extends GenericProvider {
                 reqObject.put("action", "percyScreenshot");
                 reqObject.put("arguments", arguments);
                 String resultString = driver
-                        .executeScript(String.format("browserstack_executor: {%s}", reqObject.toString())).toString();
+                        .executeScript(String.format("browserstack_executor: %s", reqObject.toString())).toString();
                 JSONObject result = new JSONObject(resultString);
                 markedPercySession = result.get("success").toString() == "true";
             }

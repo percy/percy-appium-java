@@ -38,19 +38,21 @@ public class IosMetadata extends Metadata {
     }
 
     public Integer statBarHeight() {
-        Integer statBarHeight = MetadataHelper.valueFromStaticDevicesInfo("screenHeight",
+        Integer statBarHeight = MetadataHelper.valueFromStaticDevicesInfo("statusBarHeight",
+                this.deviceName().toLowerCase());
+        Integer pixelRatio = MetadataHelper.valueFromStaticDevicesInfo("pixelRatio",
                 this.deviceName().toLowerCase());
         if (statBarHeight == 0) {
-            statBarHeight = ((Long) getViewportRect().get("top")).intValue();
+            return ((Long) getViewportRect().get("top")).intValue();
         }
-        return statBarHeight;
+        return statBarHeight * pixelRatio;
     }
 
     private Map getViewportRect() {
         if (Cache.CACHE_MAP.get("viewportRect_" + sessionId) == null) {
             try {
                 Cache.CACHE_MAP.put("viewportRect_" + sessionId, getSession().get("viewportRect"));
-            } catch (Exception e) {
+            } catch (java.lang.NoSuchMethodError e) {
                 Cache.CACHE_MAP.put("viewportRect_" + sessionId, driver.getSessionDetails().get("viewportRect"));
             }
         }
