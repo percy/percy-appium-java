@@ -82,10 +82,6 @@ public class AppPercy {
      * @param name            The human-readable name of the screenshot. Should be
      *                        unique.
      * @param options         Optional screenshot params
-     * @param deviceName      Device name on which screenshot is taken
-     * @param statusBarHeight Height of status bar for the device
-     * @param navBarHeight    Height of navigation bar for the device
-     * @param orientation     Orientation of the application
      */
     public void screenshot(String name, ScreenshotOptions options) {
         screenshot(name, false, options);
@@ -98,10 +94,6 @@ public class AppPercy {
      *                        unique.
      * @param fullScreen      It indicates if the app is a full screen
      * @param options         Optional screenshot params
-     * @param deviceName      Device name on which screenshot is taken
-     * @param statusBarHeight Height of status bar for the device
-     * @param navBarHeight    Height of navigation bar for the device
-     * @param orientation     Orientation of the application
      */
     public void screenshot(String name, Boolean fullScreen, ScreenshotOptions options) {
         if (!isPercyEnabled || !percyOptions.percyOptionEnabled()) {
