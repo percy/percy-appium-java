@@ -66,7 +66,6 @@ public class CliWrapper {
      *
      * @param name       The human-readable name of the screenshot. Should be
      *                   unique.
-     * @param fullScreen It indicates if the app is a full screen
      */
     public String postScreenshot(String name, JSONObject tag, List<Tile> tiles, String externalDebugUrl) {
         // Build a JSON object to POST back to the cli node process
