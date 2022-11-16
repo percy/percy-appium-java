@@ -1,4 +1,4 @@
-# percy-appium-java
+# percy-appium-app
 
 ![Test](https://github.com/percy/percy-appium-java/workflows/Test/badge.svg)
 
@@ -12,17 +12,17 @@ npm install `@percy/cli`:
 $ npm install --save-dev @percy/cli
 ```
 
-Add percy-appium-java to your project dependencies. If you're using Maven:
+Add percy-appium-app to your project dependencies. If you're using Maven:
 
 ``` xml
 <dependency>
   <groupId>io.percy</groupId>
-  <artifactId>percy-appium-java</artifactId>
+  <artifactId>percy-appium-app</artifactId>
   <version>0.0.1</version>
 </dependency>
 ```
 
-If you're using a different build system, see https://search.maven.org/artifact/io.percy/percy-appium-java for details for your specific system.
+If you're using a different build system, see https://search.maven.org/artifact/io.percy/percy-appium-app for details for your specific system.
 
 ## Usage
 
@@ -45,7 +45,7 @@ public class Example {
     percy = new AppPercy(driver);
     percy.screenshot("First Screenshot");
     driver.quit();
-	}
+  }
 }
 ```
 

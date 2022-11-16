@@ -44,13 +44,15 @@ You can also download installers from http://www.gnupg.org/download/ .
 
 Download the private key from 1password. It is a file attached to the secure note titled "Java release private key".
 
+Note: Update Expiry date for key using gpg --edit-key KEY_ID
+
 Import the key into your local gpg keyring:
 
 ```bash
 $ gpg --import secret-percy-release-key.asc
 ```
 
-It will prompt you for the key passphrase, which you can also find in 1password. Search for "Java release private key".
+It will prompt you for the key passphrase, which you can also find in 1password. Search for "Java release signing private key passphrase".
 
 ### Create a local settings.xml with our Sonatype credentials
 
