@@ -45,7 +45,7 @@ public class Example {
     percy = new AppPercy(driver);
     percy.screenshot("First Screenshot");
     driver.quit();
-	}
+  }
 }
 ```
 
