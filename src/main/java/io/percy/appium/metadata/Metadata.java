@@ -32,20 +32,24 @@ public abstract class Metadata {
     }
 
     public String orientation(String orientation) {
-        if (orientation == "PORTRAIT" || orientation == "LANDSCAPE") {
-            return orientation;
-        } else if (orientation == "AUTO") {
-            try {
-                return driver.getOrientation().toString();
-            } catch (java.lang.NoSuchMethodError e) {
-                return "PORTRAIT";
+        if (orientation != null) {
+            if (orientation.toLowerCase().equals("portrait") || orientation.toLowerCase().equals("landscape")) {
+                return orientation.toLowerCase();
+            } else if (orientation.toLowerCase().equals("auto")) {
+                try {
+                    return driver.getOrientation().toString().toLowerCase();
+                } catch (java.lang.NoSuchMethodError e) {
+                    return "portrait";
+                }
+            } else {
+                return "portrait";
             }
         } else {
             Object orientationCapability = driver.getCapabilities().getCapability("orientation");
             if (orientationCapability != null) {
-                return orientationCapability.toString();
+                return orientationCapability.toString().toLowerCase();
             } else {
-                return "PORTRAIT";
+                return "portrait";
             }
         }
     }

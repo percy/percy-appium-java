@@ -62,7 +62,7 @@ public class GenericProviderTest {
         when(metadata.platformVersion()).thenReturn("9");
         when(metadata.deviceScreenHeight()).thenReturn(deviceScreenHeight);
         when(metadata.deviceScreenWidth()).thenReturn(deviceScreenWidth);
-        when(metadata.orientation("orientation")).thenReturn("PORTRAIT");
+        when(metadata.orientation("orientation")).thenReturn("portrait");
 
         GenericProvider genericProvider = new GenericProvider(androidDriver, metadata);
         
@@ -72,7 +72,7 @@ public class GenericProviderTest {
         Assert.assertEquals(tile.get("osVersion"), "9");
         Assert.assertEquals(tile.get("width"), deviceScreenWidth);
         Assert.assertEquals(tile.get("height"), deviceScreenHeight);
-        Assert.assertEquals(tile.get("orientation"), "PORTRAIT");
+        Assert.assertEquals(tile.get("orientation"), "portrait");
     }
 
     @Test

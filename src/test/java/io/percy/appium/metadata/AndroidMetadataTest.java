@@ -100,33 +100,33 @@ public class AndroidMetadataTest {
 
     @Test
     public void testOrientatioWithPortrait(){
-        Assert.assertEquals(metadata.orientation("PORTRAIT"), "PORTRAIT");
+        Assert.assertEquals(metadata.orientation("PORTRAIT"), "portrait");
     }
 
     @Test
     public void testOrientatioWithLandscape(){
-        Assert.assertEquals(metadata.orientation("LANDSCAPE"), "LANDSCAPE");
+        Assert.assertEquals(metadata.orientation("LANDSCAPE"), "landscape");
     }
 
     @Test
     public void testOrientatioWithWrongParam(){
-        Assert.assertEquals(metadata.orientation("PARAM"), "PORTRAIT");
+        Assert.assertEquals(metadata.orientation("PARAM"), "portrait");
     }
 
     @Test
-    public void testOrientatioWithWrongNullParam(){
-        Assert.assertEquals(metadata.orientation(null), "PORTRAIT");
+    public void testOrientatioWithNullParam(){
+        Assert.assertEquals(metadata.orientation(null), "portrait");
     }
 
     @Test
-    public void testOrientatioWithWrongNullParamAndCaps(){
+    public void testOrientatioWithNullParamAndCaps(){
         when(androidDriver.getCapabilities().getCapability("orientation")).thenReturn(ScreenOrientation.LANDSCAPE);
-        Assert.assertEquals(metadata.orientation(null), "LANDSCAPE");
+        Assert.assertEquals(metadata.orientation(null), "landscape");
     }
 
     @Test
     public void testOrientationAuto(){
         when(androidDriver.getOrientation()).thenReturn(ScreenOrientation.LANDSCAPE);
-        Assert.assertEquals(metadata.orientation("AUTO"), "LANDSCAPE");
+        Assert.assertEquals(metadata.orientation("AUTO"), "landscape");
     }
 }
