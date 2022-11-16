@@ -4,8 +4,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.percy</groupId>
-  <artifactId>percy-appium-java</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <artifactId>percy-appium-app</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>${project.groupId}:${project.artifactId}</name>
@@ -31,7 +31,7 @@
     <connection>scm:git:git://github.com/percy/percy-appium-java.git</connection>
     <developerConnection>scm:git:https://github.com/percy/percy-appium-java.git</developerConnection>
     <url>https://github.com/percy/percy-appium-java/tree/master</url>
-    <tag>percy-appium-java-0.0.1</tag>
+    <tag>percy-appium-app-0.0.1</tag>
   </scm>
 
   <properties>
