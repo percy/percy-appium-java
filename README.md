@@ -1,5 +1,6 @@
 # percy-appium-app
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.percy/percy-appium-app/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.percy/percy-appium-app)
 ![Test](https://github.com/percy/percy-appium-java/workflows/Test/badge.svg)
 
 [Percy](https://percy.io) visual testing for Java Appium.

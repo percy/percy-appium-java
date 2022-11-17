@@ -79,7 +79,7 @@ public class AppAutomate extends GenericProvider {
             String orientation, Boolean fullScreen, String debugUrl) {
         executePercyScreenshotBegin(name);
         String percyScreenshotUrl = "";
-        String error = "";
+        String error = null;
         try {
             percyScreenshotUrl = super.screenshot(name, deviceName, statusBarHeight, navBarHeight, orientation,
             fullScreen, debugUrl);
