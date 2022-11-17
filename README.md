@@ -1,5 +1,6 @@
 # percy-appium-app
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.percy/percy-appium-app/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.percy/percy-appium-app)
 ![Test](https://github.com/percy/percy-appium-java/workflows/Test/badge.svg)
 
 [Percy](https://percy.io) visual testing for Java Appium.
@@ -18,7 +19,7 @@ Add percy-appium-app to your project dependencies. If you're using Maven:
 <dependency>
   <groupId>io.percy</groupId>
   <artifactId>percy-appium-app</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
 </dependency>
 ```
 
