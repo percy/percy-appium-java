@@ -16,10 +16,6 @@ public abstract class Metadata {
         return AppAutomate.getSessionDetails(driver).get("device").toString();
     }
 
-    public String osName() {
-        return driver.getCapabilities().getCapability("platformName").toString();
-    }
-
     public String platformVersion() {
         Object platformVersion = driver.getCapabilities().getCapability("platformVersion");
         if (platformVersion == null) {
@@ -53,6 +49,8 @@ public abstract class Metadata {
             }
         }
     }
+
+    public abstract String osName();
 
     public abstract Integer deviceScreenWidth();
 

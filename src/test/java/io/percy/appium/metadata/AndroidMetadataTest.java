@@ -87,8 +87,8 @@ public class AndroidMetadataTest {
 
     @Test
     public void testOsName(){
-        when(capabilities.getCapability("platformName")).thenReturn("ANDROID");
-        Assert.assertEquals(metadata.osName(), "ANDROID");
+        when(capabilities.getCapability("platformName")).thenReturn("Android");
+        Assert.assertEquals(metadata.osName(), "Android");
     }
 
     @Test

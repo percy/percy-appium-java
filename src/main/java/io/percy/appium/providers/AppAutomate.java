@@ -11,15 +11,42 @@ public class AppAutomate extends GenericProvider {
     private AppiumDriver driver;
     private Boolean markedPercySession = true;
     private static String sessionId;
+    private Metadata metadata;
 
     public AppAutomate(AppiumDriver driver, Metadata metadata) {
         super(driver, metadata);
         this.driver = driver;
+        this.metadata = metadata;
         this.sessionId = driver.getSessionId().toString();
     }
 
     public String getDebugUrl() {
         return getSessionDetails(driver).get("browser_url").toString();
+    }
+
+    public String getOsVersion() {
+        String osVersion =  getSessionDetails(driver).get("os_version").toString();
+        return osVersion.split("\\.")[0];
+    }
+
+    public JSONObject getTag(String deviceName, String orientation) {
+        JSONObject tag = new JSONObject();
+        String name = deviceName;
+        String platformVersion = metadata.platformVersion();
+        if (deviceName == null) {
+            name = metadata.deviceName();
+        }
+        if (platformVersion == null) {
+            platformVersion = getOsVersion();
+        }
+        tag.put("name", name);
+        tag.put("osName", metadata.osName());
+        tag.put("osVersion", platformVersion);
+        tag.put("width", metadata.deviceScreenWidth());
+        tag.put("height", metadata.deviceScreenHeight());
+        tag.put("orientation", metadata.orientation(orientation));
+        System.out.println(platformVersion);
+        return tag;
     }
 
     public static Boolean supports(AppiumDriver driver) {

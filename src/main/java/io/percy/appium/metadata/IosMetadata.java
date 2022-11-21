@@ -19,6 +19,12 @@ public class IosMetadata extends Metadata {
         this.sessionId = driver.getSessionId().toString();
     }
 
+    public String osName() {
+        String osName = driver.getCapabilities().getCapability("platformName").toString();
+        osName = osName.substring(0,1).toLowerCase() + osName.substring(1).toUpperCase();
+        return osName;
+    }
+
     public Integer deviceScreenWidth() {
         Integer deviceScreenWidth = MetadataHelper.valueFromStaticDevicesInfo("screenWidth",
                 this.deviceName().toLowerCase());

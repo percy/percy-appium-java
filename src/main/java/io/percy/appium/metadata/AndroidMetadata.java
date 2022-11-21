@@ -19,6 +19,12 @@ public class AndroidMetadata extends Metadata {
         this.sessionId = driver.getSessionId().toString();
     }
 
+    public String osName() {
+        String osName = driver.getCapabilities().getCapability("platformName").toString();
+        osName = osName.substring(0,1).toUpperCase() + osName.substring(1).toLowerCase();
+        return osName;
+    }
+
     public Integer deviceScreenWidth() {
         return Integer.parseInt(driver.getCapabilities().getCapability("deviceScreenSize")
                 .toString().split("x")[0]);

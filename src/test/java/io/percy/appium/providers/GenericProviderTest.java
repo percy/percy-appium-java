@@ -38,7 +38,7 @@ public class GenericProviderTest {
     public void testGetTag(){
 
         when(metadata.deviceName()).thenReturn("Samsung Galaxy s22");
-        when(metadata.osName()).thenReturn("ANDROID");
+        when(metadata.osName()).thenReturn("Android");
         when(metadata.platformVersion()).thenReturn("9");
         when(metadata.orientation("AUTO")).thenReturn("LANDSCAPE");
         when(metadata.deviceScreenHeight()).thenReturn(deviceScreenHeight);
@@ -48,7 +48,7 @@ public class GenericProviderTest {
         
         JSONObject tile = genericProvider.getTag(null, "AUTO");
         Assert.assertEquals(tile.get("name"), "Samsung Galaxy s22");
-        Assert.assertEquals(tile.get("osName"), "ANDROID");
+        Assert.assertEquals(tile.get("osName"), "Android");
         Assert.assertEquals(tile.get("osVersion"), "9");
         Assert.assertEquals(tile.get("width"), deviceScreenWidth);
         Assert.assertEquals(tile.get("height"), deviceScreenHeight);
@@ -58,7 +58,7 @@ public class GenericProviderTest {
     @Test
     public void testGetTagWhenDeviceNameAndOrientationIsPassed(){
 
-        when(metadata.osName()).thenReturn("ANDROID");
+        when(metadata.osName()).thenReturn("Android");
         when(metadata.platformVersion()).thenReturn("9");
         when(metadata.deviceScreenHeight()).thenReturn(deviceScreenHeight);
         when(metadata.deviceScreenWidth()).thenReturn(deviceScreenWidth);
@@ -68,7 +68,7 @@ public class GenericProviderTest {
         
         JSONObject tile = genericProvider.getTag("example device", "orientation");
         Assert.assertEquals(tile.get("name"), "example device");
-        Assert.assertEquals(tile.get("osName"), "ANDROID");
+        Assert.assertEquals(tile.get("osName"), "Android");
         Assert.assertEquals(tile.get("osVersion"), "9");
         Assert.assertEquals(tile.get("width"), deviceScreenWidth);
         Assert.assertEquals(tile.get("height"), deviceScreenHeight);

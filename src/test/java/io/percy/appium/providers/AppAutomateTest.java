@@ -14,7 +14,10 @@ import org.mockito.Mock;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.SessionId;
 
+import com.github.javafaker.Faker;
+
 import io.appium.java_client.android.AndroidDriver;
+import io.percy.appium.lib.Cache;
 import io.percy.appium.metadata.AndroidMetadata;
 
 @RunWith(org.mockito.junit.MockitoJUnitRunner.class)
@@ -30,6 +33,10 @@ public class AppAutomateTest {
     @Mock
     AndroidMetadata metadata;
 
+    Faker faker = new Faker();
+    Integer deviceScreenHeight = (int) faker.number().randomNumber(3, false);
+    Integer deviceScreenWidth = (int) faker.number().randomNumber(3, false);
+
     @Before
     public void setup() {
         when(androidDriver.getSessionId()).thenReturn(new SessionId("abc"));
@@ -38,10 +45,20 @@ public class AppAutomateTest {
 
     @Test
     public void testGetDebugUrl() {
+        Cache.CACHE_MAP.clear();
         String sessionDetails = "{\"browser_url\":\"http://example_session.browserstack.com/\"}";
         when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
                 .thenReturn(sessionDetails);
         Assert.assertEquals(appAutomate.getDebugUrl(), "http://example_session.browserstack.com/");
+    }
+
+    @Test
+    public void testGetOsVersion() {
+        Cache.CACHE_MAP.clear();
+        String sessionDetails = "{\"os_version\":\"13\"}";
+        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
+                .thenReturn(sessionDetails);
+        Assert.assertEquals(appAutomate.getOsVersion(), "13");
     }
 
     @Test
@@ -72,6 +89,31 @@ public class AppAutomateTest {
     @Test
     public void testExecutePercyScreenshotEndWhenNullExceptionDoesNotThrow() {
         appAutomate.executePercyScreenshotEnd("", "", "");
+    }
+
+    @Test
+    public void testGetTag(){
+        Cache.CACHE_MAP.clear();
+        when(metadata.deviceName()).thenReturn("Samsung Galaxy s22");
+        when(metadata.osName()).thenReturn("Android");
+        when(metadata.platformVersion()).thenReturn(null);
+        when(metadata.orientation("AUTO")).thenReturn("LANDSCAPE");
+        when(metadata.deviceScreenHeight()).thenReturn(deviceScreenHeight);
+        when(metadata.deviceScreenWidth()).thenReturn(deviceScreenWidth);
+        String sessionDetails = "{\"os_version\":\"13.1\"}";
+        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
+                .thenReturn(sessionDetails);
+
+
+        AppAutomate appAutomate = new AppAutomate(androidDriver, metadata);
+        
+        JSONObject tile = appAutomate.getTag(null, "AUTO");
+        Assert.assertEquals(tile.get("name"), "Samsung Galaxy s22");
+        Assert.assertEquals(tile.get("osName"), "Android");
+        Assert.assertEquals(tile.get("osVersion"), "13");
+        Assert.assertEquals(tile.get("width"), deviceScreenWidth);
+        Assert.assertEquals(tile.get("height"), deviceScreenHeight);
+        Assert.assertEquals(tile.get("orientation"), "LANDSCAPE");
     }
 
     @Test

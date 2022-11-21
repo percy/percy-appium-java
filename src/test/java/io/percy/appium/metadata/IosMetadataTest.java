@@ -125,8 +125,8 @@ public class IosMetadataTest {
 
     @Test
     public void testOsName(){
-        when(capabilities.getCapability("platformName")).thenReturn("IOS");
-        Assert.assertEquals(metadata.osName(), "IOS");
+        when(capabilities.getCapability("platformName")).thenReturn("iOS");
+        Assert.assertEquals(metadata.osName(), "iOS");
     }
 
     @Test
