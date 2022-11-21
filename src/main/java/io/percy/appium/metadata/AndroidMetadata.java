@@ -21,7 +21,7 @@ public class AndroidMetadata extends Metadata {
 
     public String osName() {
         String osName = driver.getCapabilities().getCapability("platformName").toString();
-        osName = osName.substring(0,1).toUpperCase() + osName.substring(1).toLowerCase();
+        osName = osName.substring(0, 1).toUpperCase() + osName.substring(1).toLowerCase();
         return osName;
     }
 

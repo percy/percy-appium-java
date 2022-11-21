@@ -21,7 +21,7 @@ public class IosMetadata extends Metadata {
 
     public String osName() {
         String osName = driver.getCapabilities().getCapability("platformName").toString();
-        osName = osName.substring(0,1).toLowerCase() + osName.substring(1).toUpperCase();
+        osName = osName.substring(0, 1).toLowerCase() + osName.substring(1).toUpperCase();
         return osName;
     }
 
