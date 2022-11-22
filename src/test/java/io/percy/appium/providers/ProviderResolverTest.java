@@ -17,10 +17,8 @@ import io.appium.java_client.android.AndroidDriver;
 @RunWith(org.mockito.junit.MockitoJUnitRunner.class)
 public class ProviderResolverTest {
 
-
     @Mock
     AndroidDriver androidDriver;
-
 
     @Before
     public void setup() {
@@ -46,5 +44,5 @@ public class ProviderResolverTest {
         }
         Assert.assertEquals(ProviderResolver.resolveProvider(androidDriver).getClass(), GenericProvider.class);
     }
-    
+
 }

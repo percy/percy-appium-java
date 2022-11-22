@@ -51,7 +51,7 @@ public class IosMetadataTest {
         when(driver.execute("getSession")).thenReturn(session);
         when(driver.getCapabilities()).thenReturn(capabilities);
         when(driver.getSessionId()).thenReturn(new SessionId("abc"));
-        metadata = new IosMetadata(driver);
+        metadata = new IosMetadata(driver, null, null, null, null, null);
     }
 
     @After
@@ -61,52 +61,40 @@ public class IosMetadataTest {
 
     @Test
     public void testDeviceScreenWidth() {
-        String sessionDetails = "{\"device\":\"iphone 12 pro\"}";
-        when(driver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
+        when(capabilities.getCapability("deviceName")).thenReturn("iphone 12 pro");
         Assert.assertEquals(metadata.deviceScreenWidth().intValue(), width.intValue());
     }
 
     @Test
     public void testDeviceScreenWidthFromJson() {
         viewportRect.clear();
-        String sessionDetails = "{\"device\":\"iphone 8 plus\"}";
-        when(driver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
+        when(capabilities.getCapability("deviceName")).thenReturn("iphone 8 plus");
         Assert.assertEquals(metadata.deviceScreenWidth().intValue(), 1080);
     }
 
     @Test
     public void testDeviceScreenHeight() {
-        String sessionDetails = "{\"device\":\"iphone 12 pro\"}";
-        when(driver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
+        when(capabilities.getCapability("deviceName")).thenReturn("iphone 12 pro");
         Assert.assertEquals(metadata.deviceScreenHeight().intValue(), height.intValue());
     }
 
     @Test
     public void testDeviceScreenHeightFromJson() {
         viewportRect.clear();
-        String sessionDetails = "{\"device\":\"iphone 8 plus\"}";
-        when(driver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
+        when(capabilities.getCapability("deviceName")).thenReturn("iphone 8 plus");
         Assert.assertEquals(metadata.deviceScreenHeight().intValue(), 1920);
     }
 
     @Test
     public void testStatBarHeight() {
-        String sessionDetails = "{\"device\":\"iphone 12 pro\"}";
-        when(driver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
+        when(capabilities.getCapability("deviceName")).thenReturn("iphone 12 pro");
         Assert.assertEquals(metadata.statBarHeight().intValue(), top.intValue());
     }
 
     @Test
     public void testStatBarHeightFromJson() {
         viewportRect.clear();
-        String sessionDetails = "{\"device\":\"iphone 8 plus\"}";
-        when(driver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
+        when(capabilities.getCapability("deviceName")).thenReturn("iphone 8 plus");
         Assert.assertEquals(metadata.statBarHeight().intValue(), 60);
     }
 
@@ -117,16 +105,23 @@ public class IosMetadataTest {
 
     @Test
     public void testDeviceName() {
-        String sessionDetails = "{\"device\":\"iPhone 12\"}";
-        when(driver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
+        when(capabilities.getCapability("deviceName")).thenReturn("iPhone 12");
         Assert.assertEquals(metadata.deviceName(), "iPhone 12");
     }
 
     @Test
+    public void testExplicitlyProvidedParams() {
+        metadata = new IosMetadata(driver, "iPhone 13", 100, 200, "landscape", null);
+        Assert.assertEquals(metadata.deviceName(), "iPhone 13");
+        Assert.assertEquals(metadata.statBarHeight().intValue(), 100);
+        Assert.assertEquals(metadata.navBarHeight().intValue(), 200);
+        Assert.assertEquals(metadata.orientation(), "landscape");
+    }
+
+    @Test
     public void testOsName(){
-        when(capabilities.getCapability("platformName")).thenReturn("IOS");
-        Assert.assertEquals(metadata.osName(), "IOS");
+        when(capabilities.getCapability("platformName")).thenReturn("iOS");
+        Assert.assertEquals(metadata.osName(), "iOS");
     }
 
     @Test
@@ -137,34 +132,38 @@ public class IosMetadataTest {
     }
 
     @Test
-    public void testOrientatioWithPortrait(){
-        Assert.assertEquals(metadata.orientation("PORTRAIT"), "portrait");
+    public void testOrientatioWithPortrait() {
+        metadata = new IosMetadata(driver, null, null, null, "portrait", null);
+        Assert.assertEquals(metadata.orientation(), "portrait");
     }
 
     @Test
-    public void testOrientatioWithLandscape(){
-        Assert.assertEquals(metadata.orientation("LANDSCAPE"), "landscape");
+    public void testOrientatioWithLandscape() {
+        metadata = new IosMetadata(driver, null, null, null, "landscape", null);
+        Assert.assertEquals(metadata.orientation(), "landscape");
     }
 
     @Test
-    public void testOrientatioWithWrongParam(){
-        Assert.assertEquals(metadata.orientation("PARAM"), "portrait");
+    public void testOrientatioWithWrongParam() {
+        metadata = new IosMetadata(driver, null, null, null, "temp", null);
+        Assert.assertEquals(metadata.orientation(), "portrait");
     }
 
     @Test
-    public void testOrientatioWithNullParam(){
-        Assert.assertEquals(metadata.orientation(null), "portrait");
+    public void testOrientatioWithNullParam() {
+        Assert.assertEquals(metadata.orientation(), "portrait");
     }
 
     @Test
     public void testOrientatioWithNullParamAndCaps(){
         when(driver.getCapabilities().getCapability("orientation")).thenReturn(ScreenOrientation.LANDSCAPE);
-        Assert.assertEquals(metadata.orientation(null), "landscape");
+        Assert.assertEquals(metadata.orientation(), "landscape");
     }
 
     @Test
-    public void testOrientatioAuto(){
+    public void testOrientatioAuto() {
+        metadata = new IosMetadata(driver, null, null, null, "auto", null);
         when(driver.getOrientation()).thenReturn(ScreenOrientation.LANDSCAPE);
-        Assert.assertEquals(metadata.orientation("AUTO"), "landscape");
+        Assert.assertEquals(metadata.orientation(), "landscape");
     }
 }

@@ -13,10 +13,24 @@ public class AndroidMetadata extends Metadata {
     private AndroidDriver driver;
     private String sessionId;
 
-    public AndroidMetadata(AppiumDriver driver) {
-        super(driver);
+    public AndroidMetadata(AppiumDriver driver, String deviceName, Integer statusBar, Integer navBar,
+            String orientation, String platformVersion) {
+        super(driver, deviceName, statusBar, navBar, orientation, platformVersion);
         this.driver = (AndroidDriver) driver;
         this.sessionId = driver.getSessionId().toString();
+    }
+
+    public String deviceName() {
+        String deviceName = getDeviceName();
+        if (deviceName != null) {
+            return deviceName;
+        }
+        Object device = driver.getCapabilities().getCapability("device");
+        if (device == null) {
+            Map desiredCaps = (Map) driver.getCapabilities().getCapability("desired");
+            device = desiredCaps.get("deviceName");
+        }
+        return device.toString();
     }
 
     public Integer deviceScreenWidth() {
@@ -30,10 +44,18 @@ public class AndroidMetadata extends Metadata {
     }
 
     public Integer statBarHeight() {
+        Integer statBar = getStatusBar();
+        if (statBar != null) {
+            return statBar;
+        }
         return ((Long) getViewportRect().get("top")).intValue();
     }
 
     public Integer navBarHeight() {
+        Integer navBar = getNavBar();
+        if (navBar != null) {
+            return navBar;
+        }
         Integer fullDeviceScreenHeight = deviceScreenHeight();
         Integer deviceScreenHeight = ((Long) getViewportRect().get("height")).intValue();
         return fullDeviceScreenHeight - (deviceScreenHeight + statBarHeight());

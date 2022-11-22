@@ -5,15 +5,14 @@ import org.json.JSONObject;
 import io.appium.java_client.AppiumDriver;
 import io.percy.appium.AppPercy;
 import io.percy.appium.lib.Cache;
-import io.percy.appium.metadata.Metadata;
 
 public class AppAutomate extends GenericProvider {
     private AppiumDriver driver;
     private Boolean markedPercySession = true;
     private static String sessionId;
 
-    public AppAutomate(AppiumDriver driver, Metadata metadata) {
-        super(driver, metadata);
+    public AppAutomate(AppiumDriver driver) {
+        super(driver);
         this.driver = driver;
         this.sessionId = driver.getSessionId().toString();
     }
@@ -23,7 +22,8 @@ public class AppAutomate extends GenericProvider {
     }
 
     public static Boolean supports(AppiumDriver driver) {
-        if (driver.getRemoteAddress().getHost().toString().contains("browserstack")) {
+        String remoteAddress = driver.getRemoteAddress().getHost().toString();
+        if (remoteAddress.contains(System.getenv("AA_DOMAIN") != null ? System.getenv("AA_DOMAIN") : "browserstack")) {
             return true;
         }
         return false;
@@ -80,14 +80,26 @@ public class AppAutomate extends GenericProvider {
         executePercyScreenshotBegin(name);
         String percyScreenshotUrl = "";
         String error = null;
+        String device = deviceName(deviceName);
         try {
-            percyScreenshotUrl = super.screenshot(name, deviceName, statusBarHeight, navBarHeight, orientation,
-            fullScreen, debugUrl);
+            percyScreenshotUrl = super.screenshot(name, device, statusBarHeight, navBarHeight, orientation,
+                    fullScreen, debugUrl, platformVersion());
         } catch (Exception e) {
             error = e.getMessage();
         }
         executePercyScreenshotEnd(name, percyScreenshotUrl, error);
         return null;
+    }
+
+    public String deviceName(String deviceName) {
+        if (deviceName != null) {
+            return deviceName;
+        }
+        return getSessionDetails(driver).get("device").toString();
+    }
+
+    public String platformVersion() {
+        return getSessionDetails(driver).get("os_version").toString().split("\\.")[0];
     }
 
     public static JSONObject getSessionDetails(AppiumDriver driver) {

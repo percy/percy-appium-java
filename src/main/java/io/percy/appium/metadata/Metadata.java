@@ -2,36 +2,44 @@ package io.percy.appium.metadata;
 
 import io.appium.java_client.AppiumDriver;
 
-import io.percy.appium.providers.AppAutomate;
-
 public abstract class Metadata {
     private static AppiumDriver driver;
+    private String orientation;
+    private String platformVersion;
+    private Integer statusBar;
+    private Integer navBar;
+    private String deviceName;
 
-    public Metadata(AppiumDriver driver) {
+    public Metadata(AppiumDriver driver, String deviceName, Integer statusBar, Integer navBar, String orientation,
+            String platformVersion) {
         Metadata.driver = driver;
-    }
-
-    public String deviceName() {
-        // TODO Temp code, will fix when we add support to multiple providers
-        return AppAutomate.getSessionDetails(driver).get("device").toString();
+        this.platformVersion = platformVersion;
+        this.orientation = orientation;
+        this.statusBar = statusBar;
+        this.navBar = navBar;
+        this.deviceName = deviceName;
     }
 
     public String osName() {
-        return driver.getCapabilities().getCapability("platformName").toString();
+        String osName = driver.getCapabilities().getCapability("platformName").toString();
+        return osName.substring(0, 1).toUpperCase() + osName.substring(1).toLowerCase();
     }
 
     public String platformVersion() {
-        Object platformVersion = driver.getCapabilities().getCapability("platformVersion");
-        if (platformVersion == null) {
-            platformVersion = driver.getCapabilities().getCapability("os_version");
-            if (platformVersion == null) {
+        if (platformVersion != null) {
+            return platformVersion;
+        }
+        Object osVersion = driver.getCapabilities().getCapability("platformVersion");
+        if (osVersion == null) {
+            osVersion = driver.getCapabilities().getCapability("os_version");
+            if (osVersion == null) {
                 return null;
             }
         }
-        return platformVersion.toString();
+        return osVersion.toString();
     }
 
-    public String orientation(String orientation) {
+    public String orientation() {
         if (orientation != null) {
             if (orientation.toLowerCase().equals("portrait") || orientation.toLowerCase().equals("landscape")) {
                 return orientation.toLowerCase();
@@ -54,7 +62,21 @@ public abstract class Metadata {
         }
     }
 
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public Integer getNavBar() {
+        return navBar;
+    }
+
+    public Integer getStatusBar() {
+        return statusBar;
+    }
+
     public abstract Integer deviceScreenWidth();
+
+    public abstract String deviceName();
 
     public abstract Integer deviceScreenHeight();
 

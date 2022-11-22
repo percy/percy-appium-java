@@ -13,10 +13,24 @@ public class IosMetadata extends Metadata {
     private IOSDriver driver;
     private String sessionId;
 
-    public IosMetadata(AppiumDriver driver) {
-        super(driver);
+    public IosMetadata(AppiumDriver driver, String deviceName, Integer statusBar, Integer navBar, String orientation,
+            String platformVersion) {
+        super(driver, deviceName, statusBar, navBar, orientation, platformVersion);
         this.driver = (IOSDriver) driver;
         this.sessionId = driver.getSessionId().toString();
+    }
+
+    public String deviceName() {
+        String deviceName = getDeviceName();
+        if (deviceName != null) {
+            return deviceName;
+        }
+        return driver.getCapabilities().getCapability("deviceName").toString();
+    }
+
+    public String osName() {
+        String osName = driver.getCapabilities().getCapability("platformName").toString();
+        return osName.substring(0, 1).toLowerCase() + osName.substring(1).toUpperCase();
     }
 
     public Integer deviceScreenWidth() {
@@ -38,6 +52,10 @@ public class IosMetadata extends Metadata {
     }
 
     public Integer statBarHeight() {
+        Integer statBar = getStatusBar();
+        if (statBar != null) {
+            return statBar;
+        }
         Integer statBarHeight = MetadataHelper.valueFromStaticDevicesInfo("statusBarHeight",
                 this.deviceName().toLowerCase());
         Integer pixelRatio = MetadataHelper.valueFromStaticDevicesInfo("pixelRatio",
@@ -66,6 +84,10 @@ public class IosMetadata extends Metadata {
     }
 
     public Integer navBarHeight() {
+        Integer navBar = getNavBar();
+        if (navBar != null) {
+            return navBar;
+        }
         return 0;
     }
 

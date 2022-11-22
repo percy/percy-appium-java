@@ -6,6 +6,7 @@ import io.percy.appium.lib.Cache;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -49,7 +50,7 @@ public class AndroidMetadataTest {
         when(androidDriver.getCapabilities()).thenReturn(capabilities);
         when(androidDriver.execute("getSession")).thenReturn(session);
         when(capabilities.getCapability("deviceScreenSize")).thenReturn("1080x2160");
-        metadata = new AndroidMetadata(androidDriver);
+        metadata = new AndroidMetadata(androidDriver, null, null, null, null, null);
     }
 
     @After
@@ -79,16 +80,22 @@ public class AndroidMetadataTest {
 
     @Test
     public void testDeviceName(){
-        String sessionDetails = "{\"device\":\"Samsung Galaxy s22\"}";
-        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
+        when(capabilities.getCapability("device")).thenReturn("Samsung Galaxy s22");
+        Assert.assertEquals(metadata.deviceName(), "Samsung Galaxy s22");
+    }
+
+    @Test
+    public void testDeviceNameFromDesired(){
+        Map desired = new HashMap<>();
+        desired.put("deviceName", "Samsung Galaxy s22");
+        when(capabilities.getCapability("desired")).thenReturn(desired);
         Assert.assertEquals(metadata.deviceName(), "Samsung Galaxy s22");
     }
 
     @Test
     public void testOsName(){
-        when(capabilities.getCapability("platformName")).thenReturn("ANDROID");
-        Assert.assertEquals(metadata.osName(), "ANDROID");
+        when(capabilities.getCapability("platformName")).thenReturn("Android");
+        Assert.assertEquals(metadata.osName(), "Android");
     }
 
     @Test
@@ -97,36 +104,48 @@ public class AndroidMetadataTest {
         Assert.assertEquals(metadata.platformVersion(), "12");
     }
 
-
     @Test
-    public void testOrientatioWithPortrait(){
-        Assert.assertEquals(metadata.orientation("PORTRAIT"), "portrait");
+    public void testExplicitlyProvidedParams() {
+        metadata = new AndroidMetadata(androidDriver, "Samsung Galaxy s22", 100, 200, "landscape", null);
+        Assert.assertEquals(metadata.deviceName(), "Samsung Galaxy s22");
+        Assert.assertEquals(metadata.statBarHeight().intValue(), 100);
+        Assert.assertEquals(metadata.navBarHeight().intValue(), 200);
+        Assert.assertEquals(metadata.orientation(), "landscape");
     }
 
     @Test
-    public void testOrientatioWithLandscape(){
-        Assert.assertEquals(metadata.orientation("LANDSCAPE"), "landscape");
+    public void testOrientatioWithPortrait() {
+        metadata = new AndroidMetadata(androidDriver, null, null, null, "portrait", null);
+        Assert.assertEquals(metadata.orientation(), "portrait");
     }
 
     @Test
-    public void testOrientatioWithWrongParam(){
-        Assert.assertEquals(metadata.orientation("PARAM"), "portrait");
+    public void testOrientatioWithLandscape() {
+        metadata = new AndroidMetadata(androidDriver, null, null, null, "landscape", null);
+        Assert.assertEquals(metadata.orientation(), "landscape");
     }
 
     @Test
-    public void testOrientatioWithNullParam(){
-        Assert.assertEquals(metadata.orientation(null), "portrait");
+    public void testOrientatioWithWrongParam() {
+        metadata = new AndroidMetadata(androidDriver, null, null, null, "temp", null);
+        Assert.assertEquals(metadata.orientation(), "portrait");
+    }
+
+    @Test
+    public void testOrientatioWithNullParam() {
+        Assert.assertEquals(metadata.orientation(), "portrait");
     }
 
     @Test
     public void testOrientatioWithNullParamAndCaps(){
         when(androidDriver.getCapabilities().getCapability("orientation")).thenReturn(ScreenOrientation.LANDSCAPE);
-        Assert.assertEquals(metadata.orientation(null), "landscape");
+        Assert.assertEquals(metadata.orientation(), "landscape");
     }
 
     @Test
-    public void testOrientationAuto(){
+    public void testOrientationAuto() {
+        metadata = new AndroidMetadata(androidDriver, null, null, null, "auto", null);
         when(androidDriver.getOrientation()).thenReturn(ScreenOrientation.LANDSCAPE);
-        Assert.assertEquals(metadata.orientation("AUTO"), "landscape");
+        Assert.assertEquals(metadata.orientation(), "landscape");
     }
 }

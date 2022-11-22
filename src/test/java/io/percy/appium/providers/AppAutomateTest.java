@@ -14,7 +14,10 @@ import org.mockito.Mock;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.SessionId;
 
+import com.github.javafaker.Faker;
+
 import io.appium.java_client.android.AndroidDriver;
+import io.percy.appium.lib.Cache;
 import io.percy.appium.metadata.AndroidMetadata;
 
 @RunWith(org.mockito.junit.MockitoJUnitRunner.class)
@@ -30,14 +33,19 @@ public class AppAutomateTest {
     @Mock
     AndroidMetadata metadata;
 
+    Faker faker = new Faker();
+    Integer deviceScreenHeight = (int) faker.number().randomNumber(3, false);
+    Integer deviceScreenWidth = (int) faker.number().randomNumber(3, false);
+
     @Before
     public void setup() {
         when(androidDriver.getSessionId()).thenReturn(new SessionId("abc"));
-        appAutomate = new AppAutomate(androidDriver, metadata);
+        appAutomate = new AppAutomate(androidDriver);
     }
 
     @Test
     public void testGetDebugUrl() {
+        Cache.CACHE_MAP.clear();
         String sessionDetails = "{\"browser_url\":\"http://example_session.browserstack.com/\"}";
         when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
                 .thenReturn(sessionDetails);
@@ -106,7 +114,29 @@ public class AppAutomateTest {
         reqObject.put("arguments", arguments);
         when(androidDriver.executeScript(String.format("browserstack_executor: %s", reqObject.toString())))
                 .thenReturn(response);
-        appAutomate.executePercyScreenshotEnd(name ,percyScreenshotUrl, null);
+        appAutomate.executePercyScreenshotEnd(name, percyScreenshotUrl, null);
+    }
+
+    @Test
+    public void testDeviceName() {
+        String sessionDetails = "{\"device\":\"Samsung Galaxy S22\"}";
+        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
+                .thenReturn(sessionDetails);
+        Assert.assertEquals(appAutomate.deviceName(null), "Samsung Galaxy S22");
+    }
+
+    @Test
+    public void testDeviceNameWhenProvidedInParams() {
+        Assert.assertEquals(appAutomate.deviceName("Samsung Galaxy S22 Ultra"), "Samsung Galaxy S22 Ultra");
+    }
+
+    @Test
+    public void testPlatformVersion() {
+        Cache.CACHE_MAP.clear();
+        String sessionDetails = "{\"os_version\":\"13.1\"}";
+        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
+                .thenReturn(sessionDetails);
+        Assert.assertEquals(appAutomate.platformVersion(), "13");
     }
 
 }
