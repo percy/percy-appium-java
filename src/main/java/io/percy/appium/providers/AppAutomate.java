@@ -22,7 +22,9 @@ public class AppAutomate extends GenericProvider {
     }
 
     public static Boolean supports(AppiumDriver driver) {
-        if (driver.getRemoteAddress().getHost().toString().contains("browserstack")) {
+        String remoteAddress = driver.getRemoteAddress().getHost().toString();
+        if (remoteAddress.contains("browserstack")
+                || (System.getenv("AA_DOMAIN") != null && remoteAddress.contains(System.getenv("AA_DOMAIN")))) {
             return true;
         }
         return false;

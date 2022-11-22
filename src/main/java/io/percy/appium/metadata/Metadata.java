@@ -6,11 +6,18 @@ public abstract class Metadata {
     private static AppiumDriver driver;
     private String orientation;
     private String platformVersion;
+    private Integer statusBar;
+    private Integer navBar;
+    private String deviceName;
 
-    public Metadata(AppiumDriver driver, String platformVersion, String orientation) {
+    public Metadata(AppiumDriver driver, String deviceName, Integer statusBar, Integer navBar, String orientation,
+            String platformVersion) {
         Metadata.driver = driver;
         this.platformVersion = platformVersion;
         this.orientation = orientation;
+        this.statusBar = statusBar;
+        this.navBar = navBar;
+        this.deviceName = deviceName;
     }
 
     public String osName() {
@@ -53,6 +60,18 @@ public abstract class Metadata {
                 return "portrait";
             }
         }
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public Integer getNavBar() {
+        return navBar;
+    }
+
+    public Integer getStatusBar() {
+        return statusBar;
     }
 
     public abstract Integer deviceScreenWidth();

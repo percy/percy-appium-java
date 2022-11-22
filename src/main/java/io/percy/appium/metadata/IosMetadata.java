@@ -12,21 +12,16 @@ import io.percy.appium.lib.Cache;
 public class IosMetadata extends Metadata {
     private IOSDriver driver;
     private String sessionId;
-    private Integer statusBar;
-    private Integer navBar;
-    private String deviceName;
 
     public IosMetadata(AppiumDriver driver, String deviceName, Integer statusBar, Integer navBar, String orientation,
             String platformVersion) {
-        super(driver, platformVersion, orientation);
-        this.statusBar = statusBar;
-        this.navBar = navBar;
-        this.deviceName = deviceName;
+        super(driver, deviceName, statusBar, navBar, orientation, platformVersion);
         this.driver = (IOSDriver) driver;
         this.sessionId = driver.getSessionId().toString();
     }
 
     public String deviceName() {
+        String deviceName = getDeviceName();
         if (deviceName != null) {
             return deviceName;
         }
@@ -57,8 +52,9 @@ public class IosMetadata extends Metadata {
     }
 
     public Integer statBarHeight() {
-        if (statusBar != null) {
-            return statusBar;
+        Integer statBar = getStatusBar();
+        if (statBar != null) {
+            return statBar;
         }
         Integer statBarHeight = MetadataHelper.valueFromStaticDevicesInfo("statusBarHeight",
                 this.deviceName().toLowerCase());
@@ -88,6 +84,7 @@ public class IosMetadata extends Metadata {
     }
 
     public Integer navBarHeight() {
+        Integer navBar = getNavBar();
         if (navBar != null) {
             return navBar;
         }

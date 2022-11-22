@@ -12,21 +12,16 @@ import io.percy.appium.lib.Cache;
 public class AndroidMetadata extends Metadata {
     private AndroidDriver driver;
     private String sessionId;
-    private Integer statusBar;
-    private Integer navBar;
-    private String deviceName;
 
     public AndroidMetadata(AppiumDriver driver, String deviceName, Integer statusBar, Integer navBar,
             String orientation, String platformVersion) {
-        super(driver, platformVersion, orientation);
-        this.statusBar = statusBar;
-        this.navBar = navBar;
-        this.deviceName = deviceName;
+        super(driver, deviceName, statusBar, navBar, orientation, platformVersion);
         this.driver = (AndroidDriver) driver;
         this.sessionId = driver.getSessionId().toString();
     }
 
     public String deviceName() {
+        String deviceName = getDeviceName();
         if (deviceName != null) {
             return deviceName;
         }
@@ -49,13 +44,15 @@ public class AndroidMetadata extends Metadata {
     }
 
     public Integer statBarHeight() {
-        if (statusBar != null) {
-            return statusBar;
+        Integer statBar = getStatusBar();
+        if (statBar != null) {
+            return statBar;
         }
         return ((Long) getViewportRect().get("top")).intValue();
     }
 
     public Integer navBarHeight() {
+        Integer navBar = getNavBar();
         if (navBar != null) {
             return navBar;
         }
