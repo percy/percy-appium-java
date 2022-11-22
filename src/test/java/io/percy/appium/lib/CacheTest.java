@@ -14,8 +14,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 
-import com.github.javafaker.Faker;
-
 import io.appium.java_client.android.AndroidDriver;
 import io.percy.appium.metadata.AndroidMetadata;
 
@@ -33,12 +31,10 @@ public class CacheTest {
     HashMap<String, HashMap<String, Long>> sessionValue = new HashMap<String, HashMap<String, Long>>();
     Response session = new Response(new SessionId("abc"));
 
-    Faker faker = new Faker();
-    Long top = 100L;
-
     @Test
-    public void testDeviceScreenWidth() {
-        viewportRect.put("top", top);
+    public void testStatBarHeight() {
+        Cache.CACHE_MAP.clear();
+        viewportRect.put("top", 100L);
         sessionValue.put("viewportRect", viewportRect);
         session.setValue(sessionValue);
         when(driver.getSessionId()).thenReturn(new SessionId("abc"));
@@ -49,7 +45,7 @@ public class CacheTest {
 
     // Does not require execute script to be called second time
     @Test
-    public void testDeviceScreenWidthAgain() {
+    public void teststatBarHeightAgain() {
         when(driver.getSessionId()).thenReturn(new SessionId("abc"));
         metadata = new AndroidMetadata(driver, null, null, null, null, null);
         Assert.assertEquals(metadata.statBarHeight().intValue(), 100);
@@ -60,7 +56,7 @@ public class CacheTest {
 
     // Post clearing cache throws NullPointerException
     @Test
-    public void testDeviceScreenWidthThirdTime() {
+    public void testStatBarHeightThirdTime() {
         Cache.CACHE_MAP.clear();
         exception.expect(NullPointerException.class);
         when(driver.getSessionId()).thenReturn(new SessionId("abc"));
