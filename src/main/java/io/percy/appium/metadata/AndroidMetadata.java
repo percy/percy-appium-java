@@ -12,17 +12,30 @@ import io.percy.appium.lib.Cache;
 public class AndroidMetadata extends Metadata {
     private AndroidDriver driver;
     private String sessionId;
+    private Integer statusBar;
+    private Integer navBar;
+    private String deviceName;
 
-    public AndroidMetadata(AppiumDriver driver) {
-        super(driver);
+    public AndroidMetadata(AppiumDriver driver, String deviceName, Integer statusBar, Integer navBar,
+            String orientation, String platformVersion) {
+        super(driver, platformVersion, orientation);
+        this.statusBar = statusBar;
+        this.navBar = navBar;
+        this.deviceName = deviceName;
         this.driver = (AndroidDriver) driver;
         this.sessionId = driver.getSessionId().toString();
     }
 
-    public String osName() {
-        String osName = driver.getCapabilities().getCapability("platformName").toString();
-        osName = osName.substring(0, 1).toUpperCase() + osName.substring(1).toLowerCase();
-        return osName;
+    public String deviceName() {
+        if (deviceName != null) {
+            return deviceName;
+        }
+        Object device = driver.getCapabilities().getCapability("device");
+        if (device == null) {
+            Map desiredCaps = (Map) driver.getCapabilities().getCapability("desired");
+            device = desiredCaps.get("deviceName");
+        }
+        return device.toString();
     }
 
     public Integer deviceScreenWidth() {
@@ -36,10 +49,16 @@ public class AndroidMetadata extends Metadata {
     }
 
     public Integer statBarHeight() {
+        if (statusBar != null) {
+            return statusBar;
+        }
         return ((Long) getViewportRect().get("top")).intValue();
     }
 
     public Integer navBarHeight() {
+        if (navBar != null) {
+            return navBar;
+        }
         Integer fullDeviceScreenHeight = deviceScreenHeight();
         Integer deviceScreenHeight = ((Long) getViewportRect().get("height")).intValue();
         return fullDeviceScreenHeight - (deviceScreenHeight + statBarHeight());

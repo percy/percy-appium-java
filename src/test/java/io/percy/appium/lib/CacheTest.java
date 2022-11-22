@@ -43,7 +43,7 @@ public class CacheTest {
         session.setValue(sessionValue);
         when(driver.getSessionId()).thenReturn(new SessionId("abc"));
         when(driver.execute("getSession")).thenReturn(session);
-        metadata = new AndroidMetadata(driver);
+        metadata = new AndroidMetadata(driver, null, null, null, null, null);
         Assert.assertEquals(metadata.statBarHeight().intValue(), 100);
     }
 
@@ -51,7 +51,7 @@ public class CacheTest {
     @Test
     public void testDeviceScreenWidthAgain() {
         when(driver.getSessionId()).thenReturn(new SessionId("abc"));
-        metadata = new AndroidMetadata(driver);
+        metadata = new AndroidMetadata(driver, null, null, null, null, null);
         Assert.assertEquals(metadata.statBarHeight().intValue(), 100);
     }
 
@@ -64,7 +64,7 @@ public class CacheTest {
         Cache.CACHE_MAP.clear();
         exception.expect(NullPointerException.class);
         when(driver.getSessionId()).thenReturn(new SessionId("abc"));
-        metadata = new AndroidMetadata(driver);
+        metadata = new AndroidMetadata(driver, null, null, null, null, null);
         metadata.statBarHeight();
     }
 }

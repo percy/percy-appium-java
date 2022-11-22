@@ -79,9 +79,9 @@ public class AppPercy {
     /**
      * Take a screenshot and upload it to Percy.
      *
-     * @param name            The human-readable name of the screenshot. Should be
-     *                        unique.
-     * @param options         Optional screenshot params
+     * @param name    The human-readable name of the screenshot. Should be
+     *                unique.
+     * @param options Optional screenshot params
      */
     public void screenshot(String name, ScreenshotOptions options) {
         screenshot(name, false, options);
@@ -90,10 +90,10 @@ public class AppPercy {
     /**
      * Take a screenshot and upload it to Percy.
      *
-     * @param name            The human-readable name of the screenshot. Should be
-     *                        unique.
-     * @param fullScreen      It indicates if the app is a full screen
-     * @param options         Optional screenshot params
+     * @param name       The human-readable name of the screenshot. Should be
+     *                   unique.
+     * @param fullScreen It indicates if the app is a full screen
+     * @param options    Optional screenshot params
      */
     public void screenshot(String name, Boolean fullScreen, ScreenshotOptions options) {
         if (!isPercyEnabled || !percyOptions.percyOptionEnabled()) {

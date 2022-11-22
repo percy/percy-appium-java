@@ -15,42 +15,32 @@ import io.percy.appium.AppPercy;
 import io.percy.appium.lib.CliWrapper;
 import io.percy.appium.lib.Tile;
 import io.percy.appium.metadata.Metadata;
+import io.percy.appium.metadata.MetadataHelper;
 
 public class GenericProvider {
     private AppiumDriver driver;
     private Metadata metadata;
     private CliWrapper cliWrapper;
 
-    public GenericProvider(AppiumDriver driver, Metadata metadata) {
+    public GenericProvider(AppiumDriver driver) {
         this.driver = driver;
-        this.metadata = metadata;
         this.cliWrapper = new CliWrapper(driver);
     }
 
-    public JSONObject getTag(String deviceName, String orientation) {
+    public JSONObject getTag() {
         JSONObject tag = new JSONObject();
-        String name = deviceName;
-        if (deviceName == null) {
-            name = metadata.deviceName();
-        }
-        tag.put("name", name);
+        tag.put("name", metadata.deviceName());
         tag.put("osName", metadata.osName());
         tag.put("osVersion", metadata.platformVersion());
         tag.put("width", metadata.deviceScreenWidth());
         tag.put("height", metadata.deviceScreenHeight());
-        tag.put("orientation", metadata.orientation(orientation));
+        tag.put("orientation", metadata.orientation());
         return tag;
     }
 
-    public List<Tile> captureTiles(Boolean fullScreen, Integer statusBarHeight, Integer navBarHeight) {
-        Integer statusBar = statusBarHeight;
-        Integer navBar = navBarHeight;
-        if (statusBarHeight == null) {
-            statusBar = metadata.statBarHeight();
-        }
-        if (navBarHeight == null) {
-            navBar = metadata.navBarHeight();
-        }
+    public List<Tile> captureTiles(Boolean fullScreen) {
+        Integer statusBar = metadata.statBarHeight();
+        Integer navBar = metadata.navBarHeight();
         String srcString = captureScreenshot();
         String localFilePath = getAbsolutePath(srcString);
         Integer headerHeight = 0;
@@ -93,13 +83,24 @@ public class GenericProvider {
 
     public String screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,
             String orientation, Boolean fullScreen, String debugUrl) {
-        JSONObject tag = getTag(deviceName, orientation);
-        List<Tile> tiles = captureTiles(fullScreen, statusBarHeight, navBarHeight);
+        return screenshot(name, deviceName, statusBarHeight, navBarHeight, orientation, fullScreen, debugUrl, null);
+    }
+
+    public String screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,
+            String orientation, Boolean fullScreen, String debugUrl, String platformVersion) {
+        this.metadata = MetadataHelper.resolve(driver, deviceName, statusBarHeight, navBarHeight, orientation,
+                platformVersion);
+        JSONObject tag = getTag();
+        List<Tile> tiles = captureTiles(fullScreen);
         return cliWrapper.postScreenshot(name, tag, tiles, debugUrl);
     }
 
     public String getDebugUrl() {
         return null;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
     }
 
 }

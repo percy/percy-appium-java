@@ -12,14 +12,15 @@ import io.percy.appium.lib.Cache;
 
 public class MetadataHelper {
 
-    public static Metadata resolve(AppiumDriver driver) {
+    public static Metadata resolve(AppiumDriver driver, String deviceName, Integer statusBar, Integer navBar,
+            String orientation, String platformVersion) {
         String driverClass = "";
         try {
             driverClass = driver.getClass().toString();
             if (driverClass.contains("AndroidDriver")) {
-                return new AndroidMetadata(driver);
+                return new AndroidMetadata(driver, deviceName, statusBar, navBar, orientation, platformVersion);
             } else if (driverClass.contains("IOSDriver")) {
-                return new IosMetadata(driver);
+                return new IosMetadata(driver, deviceName, statusBar, navBar, orientation, platformVersion);
             } else {
                 throw new Exception("Driver class not found");
             }

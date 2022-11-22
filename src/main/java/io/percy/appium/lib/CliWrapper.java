@@ -64,8 +64,8 @@ public class CliWrapper {
     /**
      * POST the Screenshot taken from the app to the Percy CLI node process.
      *
-     * @param name       The human-readable name of the screenshot. Should be
-     *                   unique.
+     * @param name The human-readable name of the screenshot. Should be
+     *             unique.
      */
     public String postScreenshot(String name, JSONObject tag, List<Tile> tiles, String externalDebugUrl) {
         // Build a JSON object to POST back to the cli node process

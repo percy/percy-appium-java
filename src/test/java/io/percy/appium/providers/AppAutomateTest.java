@@ -40,7 +40,7 @@ public class AppAutomateTest {
     @Before
     public void setup() {
         when(androidDriver.getSessionId()).thenReturn(new SessionId("abc"));
-        appAutomate = new AppAutomate(androidDriver, metadata);
+        appAutomate = new AppAutomate(androidDriver);
     }
 
     @Test
@@ -50,15 +50,6 @@ public class AppAutomateTest {
         when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
                 .thenReturn(sessionDetails);
         Assert.assertEquals(appAutomate.getDebugUrl(), "http://example_session.browserstack.com/");
-    }
-
-    @Test
-    public void testGetOsVersion() {
-        Cache.CACHE_MAP.clear();
-        String sessionDetails = "{\"os_version\":\"13\"}";
-        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
-        Assert.assertEquals(appAutomate.getOsVersion(), "13");
     }
 
     @Test
@@ -89,31 +80,6 @@ public class AppAutomateTest {
     @Test
     public void testExecutePercyScreenshotEndWhenNullExceptionDoesNotThrow() {
         appAutomate.executePercyScreenshotEnd("", "", "");
-    }
-
-    @Test
-    public void testGetTag(){
-        Cache.CACHE_MAP.clear();
-        when(metadata.deviceName()).thenReturn("Samsung Galaxy s22");
-        when(metadata.osName()).thenReturn("Android");
-        when(metadata.platformVersion()).thenReturn(null);
-        when(metadata.orientation("AUTO")).thenReturn("LANDSCAPE");
-        when(metadata.deviceScreenHeight()).thenReturn(deviceScreenHeight);
-        when(metadata.deviceScreenWidth()).thenReturn(deviceScreenWidth);
-        String sessionDetails = "{\"os_version\":\"13.1\"}";
-        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
-
-
-        AppAutomate appAutomate = new AppAutomate(androidDriver, metadata);
-        
-        JSONObject tile = appAutomate.getTag(null, "AUTO");
-        Assert.assertEquals(tile.get("name"), "Samsung Galaxy s22");
-        Assert.assertEquals(tile.get("osName"), "Android");
-        Assert.assertEquals(tile.get("osVersion"), "13");
-        Assert.assertEquals(tile.get("width"), deviceScreenWidth);
-        Assert.assertEquals(tile.get("height"), deviceScreenHeight);
-        Assert.assertEquals(tile.get("orientation"), "LANDSCAPE");
     }
 
     @Test
@@ -148,7 +114,29 @@ public class AppAutomateTest {
         reqObject.put("arguments", arguments);
         when(androidDriver.executeScript(String.format("browserstack_executor: %s", reqObject.toString())))
                 .thenReturn(response);
-        appAutomate.executePercyScreenshotEnd(name ,percyScreenshotUrl, null);
+        appAutomate.executePercyScreenshotEnd(name, percyScreenshotUrl, null);
+    }
+
+    @Test
+    public void testDeviceName() {
+        String sessionDetails = "{\"device\":\"Samsung Galaxy S22\"}";
+        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
+                .thenReturn(sessionDetails);
+        Assert.assertEquals(appAutomate.deviceName(null), "Samsung Galaxy S22");
+    }
+
+    @Test
+    public void testDeviceNameWhenProvidedInParams() {
+        Assert.assertEquals(appAutomate.deviceName("Samsung Galaxy S22 Ultra"), "Samsung Galaxy S22 Ultra");
+    }
+
+    @Test
+    public void testPlatformVersion() {
+        Cache.CACHE_MAP.clear();
+        String sessionDetails = "{\"os_version\":\"13.1\"}";
+        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
+                .thenReturn(sessionDetails);
+        Assert.assertEquals(appAutomate.platformVersion(), "13");
     }
 
 }

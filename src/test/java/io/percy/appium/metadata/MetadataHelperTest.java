@@ -35,12 +35,13 @@ public class MetadataHelperTest {
 
     @Test
     public void testResolveIOSDriver() {
-        Assert.assertEquals(MetadataHelper.resolve(iosDriver).getClass(), IosMetadata.class);
+        Assert.assertEquals(MetadataHelper.resolve(iosDriver, null, null, null, null, null).getClass(), IosMetadata.class);
     }
 
     @Test
     public void testResolveAndroidDriver() {
-        Assert.assertEquals(MetadataHelper.resolve(androidDriver).getClass(), AndroidMetadata.class);
+        Assert.assertEquals(MetadataHelper.resolve(androidDriver, null, null, null, null, null).getClass(),
+                AndroidMetadata.class);
     }
 
     @Rule
@@ -49,7 +50,7 @@ public class MetadataHelperTest {
     @Test
     public void testResolveRemoteWebDriver() throws Exception {
         exception.expect(Exception.class);
-        Assert.assertEquals(MetadataHelper.resolve((AppiumDriver) webDriver), null);
+        Assert.assertEquals(MetadataHelper.resolve((AppiumDriver) webDriver, null, null, null, null, null), null);
     }
 
     @Test

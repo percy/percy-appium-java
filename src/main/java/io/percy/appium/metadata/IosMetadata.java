@@ -12,17 +12,30 @@ import io.percy.appium.lib.Cache;
 public class IosMetadata extends Metadata {
     private IOSDriver driver;
     private String sessionId;
+    private Integer statusBar;
+    private Integer navBar;
+    private String deviceName;
 
-    public IosMetadata(AppiumDriver driver) {
-        super(driver);
+    public IosMetadata(AppiumDriver driver, String deviceName, Integer statusBar, Integer navBar, String orientation,
+            String platformVersion) {
+        super(driver, platformVersion, orientation);
+        this.statusBar = statusBar;
+        this.navBar = navBar;
+        this.deviceName = deviceName;
         this.driver = (IOSDriver) driver;
         this.sessionId = driver.getSessionId().toString();
     }
 
+    public String deviceName() {
+        if (deviceName != null) {
+            return deviceName;
+        }
+        return driver.getCapabilities().getCapability("deviceName").toString();
+    }
+
     public String osName() {
         String osName = driver.getCapabilities().getCapability("platformName").toString();
-        osName = osName.substring(0, 1).toLowerCase() + osName.substring(1).toUpperCase();
-        return osName;
+        return osName.substring(0, 1).toLowerCase() + osName.substring(1).toUpperCase();
     }
 
     public Integer deviceScreenWidth() {
@@ -44,6 +57,9 @@ public class IosMetadata extends Metadata {
     }
 
     public Integer statBarHeight() {
+        if (statusBar != null) {
+            return statusBar;
+        }
         Integer statBarHeight = MetadataHelper.valueFromStaticDevicesInfo("statusBarHeight",
                 this.deviceName().toLowerCase());
         Integer pixelRatio = MetadataHelper.valueFromStaticDevicesInfo("pixelRatio",
@@ -72,6 +88,9 @@ public class IosMetadata extends Metadata {
     }
 
     public Integer navBarHeight() {
+        if (navBar != null) {
+            return navBar;
+        }
         return 0;
     }
 
