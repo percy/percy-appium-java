@@ -12,6 +12,7 @@ npm install `@percy/cli`:
 ```sh-session
 $ npm install --save-dev @percy/cli
 ```
+Note: Minimum required version for @percy/cli is 1.15.0 for this package to work correctly.
 
 Add percy-appium-app to your project dependencies. If you're using Maven:
 
