@@ -2,6 +2,9 @@ package io.percy.appium.providers;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -38,7 +41,7 @@ public class GenericProvider {
         return tag;
     }
 
-    public List<Tile> captureTiles(Boolean fullScreen) {
+    public List<Tile> captureTiles(Boolean fullScreen) throws IOException {
         Integer statusBar = metadata.statBarHeight();
         Integer navBar = metadata.navBarHeight();
         String srcString = captureScreenshot();
@@ -54,27 +57,30 @@ public class GenericProvider {
         return true;
     }
 
-    private String getAbsolutePath(String srcString) {
-        String dirPath = getDirPath();
-        String filePath = dirPath + UUID.randomUUID().toString() + ".png";
+    private String getAbsolutePath(String srcString) throws IOException {
+        Path dirPath = getDirPath();
+        String filePath = Paths.get(
+            dirPath.toString(), UUID.randomUUID().toString() + ".png").toAbsolutePath().toString();
         try {
             byte[] data = Base64.decodeBase64(srcString);
             FileOutputStream outputStream = new FileOutputStream(filePath);
             outputStream.write(data);
             outputStream.close();
         } catch (IOException e) {
-            AppPercy.log("Failed to write to file");
+            AppPercy.log("Failed to write to file: " + filePath);
+            throw e;
         }
         return filePath;
     }
 
-    private String getDirPath() {
-        String os = System.getProperty("os.name");
-        if (os.contains("Mac") || os.contains("Linux")) {
-            return "/tmp/";
-        } else {
-            return "C:\\Users\\AppData\\Local\\Temp\\";
+    private Path getDirPath() throws IOException {
+        String tempDir = System.getenv().getOrDefault("PERCY_TMP_DIR", null);
+        if (tempDir == null) {
+            tempDir = System.getProperty("java.io.tmpdir");
         }
+        Path tempDirPath = Paths.get(tempDir);
+        Files.createDirectories(tempDirPath);
+        return tempDirPath;
     }
 
     private String captureScreenshot() {
@@ -82,12 +88,12 @@ public class GenericProvider {
     }
 
     public String screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,
-            String orientation, Boolean fullScreen, String debugUrl) {
+            String orientation, Boolean fullScreen, String debugUrl) throws IOException {
         return screenshot(name, deviceName, statusBarHeight, navBarHeight, orientation, fullScreen, debugUrl, null);
     }
 
     public String screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,
-            String orientation, Boolean fullScreen, String debugUrl, String platformVersion) {
+            String orientation, Boolean fullScreen, String debugUrl, String platformVersion) throws IOException {
         this.metadata = MetadataHelper.resolve(driver, deviceName, statusBarHeight, navBarHeight, orientation,
                 platformVersion);
         JSONObject tag = getTag();

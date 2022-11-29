@@ -113,7 +113,7 @@ public class AppPercy {
             log("Error taking screenshot " + name);
             log(e.toString(), "debug");
             if (!ignoreErrors) {
-                throw new RuntimeException("Error taking screenshot " + name);
+                throw new RuntimeException("Error taking screenshot " + name, e);
             }
         }
     }
