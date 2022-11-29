@@ -74,8 +74,8 @@ public class GenericProvider {
     }
 
     private Path getDirPath() throws IOException {
-        String tempDir = System.getenv().getOrDefault("PERCY_TMP_DIR", null); 
-        if (tempDir == null) { 
+        String tempDir = System.getenv().getOrDefault("PERCY_TMP_DIR", null);
+        if (tempDir == null) {
             tempDir = System.getProperty("java.io.tmpdir");
         }
         Path tempDirPath = Paths.get(tempDir);
