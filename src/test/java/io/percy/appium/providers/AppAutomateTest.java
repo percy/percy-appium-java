@@ -59,7 +59,7 @@ public class AppAutomateTest {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        Assert.assertEquals(appAutomate.supports(androidDriver), true);
+        Assert.assertEquals(AppAutomate.supports(androidDriver), true);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class AppAutomateTest {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        Assert.assertEquals(appAutomate.supports(androidDriver), false);
+        Assert.assertEquals(AppAutomate.supports(androidDriver), false);
     }
 
     @Test

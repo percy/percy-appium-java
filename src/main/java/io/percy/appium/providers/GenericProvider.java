@@ -69,12 +69,10 @@ public class GenericProvider {
     }
 
     private String getDirPath() {
-        String os = System.getProperty("os.name");
-        if (os.contains("Mac") || os.contains("Linux")) {
-            return "/tmp/";
-        } else {
-            return "C:\\Users\\AppData\\Local\\Temp\\";
-        }
+        String tempDir = System.getenv().getOrDefault("PERCY_TMP_DIR", null); 
+        if (tempDir != null) return tempDir;
+
+        return System.getProperty("java.io.tmpdir");
     }
 
     private String captureScreenshot() {

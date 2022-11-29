@@ -77,7 +77,7 @@ public class GenericProviderTest {
         genericProvider.setMetadata(new AndroidMetadata(androidDriver, null, null, null, null, null));
 
         Tile tile = genericProvider.captureTiles(false).get(0);
-        Assert.assertTrue(tile.getLocalFilePath().contains("/tmp"));
+        Assert.assertTrue(tile.getLocalFilePath().endsWith(".png"));
         Assert.assertEquals(tile.getStatusBarHeight().intValue(), top.intValue());
         Assert.assertEquals(tile.getNavBarHeight().intValue(), 2160 - (height + top));
         Assert.assertEquals(tile.getHeaderHeight().intValue(), 0);
@@ -87,8 +87,7 @@ public class GenericProviderTest {
 
     @Test
     public void testSupports() {
-        GenericProvider genericProvider = new GenericProvider(androidDriver);
-        Assert.assertEquals(genericProvider.supports(androidDriver), true);
+        Assert.assertEquals(GenericProvider.supports(androidDriver), true);
     }
 
     @Test
