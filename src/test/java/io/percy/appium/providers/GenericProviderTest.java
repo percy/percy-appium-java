@@ -6,6 +6,7 @@ import io.percy.appium.metadata.AndroidMetadata;
 
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import org.json.JSONObject;
@@ -64,7 +65,7 @@ public class GenericProviderTest {
     }
 
     @Test
-    public void testcaptureTiles() {
+    public void testcaptureTiles() throws IOException {
         viewportRect.put("top", top);
         viewportRect.put("height", height);
         sessionValue.put("viewportRect", viewportRect);
