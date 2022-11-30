@@ -39,17 +39,16 @@ public class AppAutomateTest {
 
     @Before
     public void setup() {
+        Cache.CACHE_MAP.clear();
         when(androidDriver.getSessionId()).thenReturn(new SessionId("abc"));
         appAutomate = new AppAutomate(androidDriver);
     }
 
     @Test
     public void testGetDebugUrl() {
-        Cache.CACHE_MAP.clear();
-        String sessionDetails = "{\"browser_url\":\"http://example_session.browserstack.com/\"}";
-        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
-        Assert.assertEquals(appAutomate.getDebugUrl(), "http://example_session.browserstack.com/");
+        JSONObject result = new JSONObject("{\"buildHash\":\"abc\", \"sessionHash\":\"def\"}");
+        appAutomate.setSessionDetails(result);
+        Assert.assertEquals(appAutomate.getDebugUrl(), "https://app-automate.browserstack.com/dashboard/v2/builds/abc/sessions/def");
     }
 
     @Test
@@ -119,9 +118,8 @@ public class AppAutomateTest {
 
     @Test
     public void testDeviceName() {
-        String sessionDetails = "{\"device\":\"Samsung Galaxy S22\"}";
-        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
+        JSONObject result = new JSONObject("{\"deviceName\":\"Samsung Galaxy S22\"}");
+        appAutomate.setSessionDetails(result);
         Assert.assertEquals(appAutomate.deviceName(null), "Samsung Galaxy S22");
     }
 
@@ -132,10 +130,8 @@ public class AppAutomateTest {
 
     @Test
     public void testPlatformVersion() {
-        Cache.CACHE_MAP.clear();
-        String sessionDetails = "{\"os_version\":\"13.1\"}";
-        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
+        JSONObject result = new JSONObject("{\"osVersion\":\"13.1\"}");
+        appAutomate.setSessionDetails(result);
         Assert.assertEquals(appAutomate.platformVersion(), "13");
     }
 

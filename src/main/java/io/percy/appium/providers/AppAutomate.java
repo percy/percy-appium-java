@@ -18,7 +18,9 @@ public class AppAutomate extends GenericProvider {
     }
 
     public String getDebugUrl() {
-        return getSessionDetails(driver).get("browser_url").toString();
+        String buildHash = getSessionDetails().get("buildHash").toString();
+        String sessionHash = getSessionDetails().get("sessionHash").toString();
+        return "https://app-automate.browserstack.com/dashboard/v2/builds/" + buildHash + "/sessions/" + sessionHash;
     }
 
     public static Boolean supports(AppiumDriver driver) {
@@ -43,6 +45,7 @@ public class AppAutomate extends GenericProvider {
                 String resultString = driver
                         .executeScript(String.format("browserstack_executor: %s", reqObject.toString())).toString();
                 JSONObject result = new JSONObject(resultString);
+                setSessionDetails(result);
                 markedPercySession = result.get("success").toString() == "true";
             }
         } catch (Exception e) {
@@ -95,20 +98,20 @@ public class AppAutomate extends GenericProvider {
         if (deviceName != null) {
             return deviceName;
         }
-        return getSessionDetails(driver).get("device").toString();
+        return getSessionDetails().get("deviceName").toString();
     }
 
     public String platformVersion() {
-        return getSessionDetails(driver).get("os_version").toString().split("\\.")[0];
+        return getSessionDetails().get("osVersion").toString().split("\\.")[0];
     }
 
-    public static JSONObject getSessionDetails(AppiumDriver driver) {
+    public static void setSessionDetails(JSONObject jsonObject) {
         if (Cache.CACHE_MAP.get("getSessionDetails_" + sessionId) == null) {
-            String sessionDetails = (String) driver
-                    .executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}");
-            JSONObject sessionDetailsJsonObject = new JSONObject(sessionDetails);
-            Cache.CACHE_MAP.put("getSessionDetails_" + sessionId, sessionDetailsJsonObject);
+            Cache.CACHE_MAP.put("getSessionDetails_" + sessionId, jsonObject);
         }
+    }
+
+    public static JSONObject getSessionDetails() {
         return (JSONObject) Cache.CACHE_MAP.get("getSessionDetails_" + sessionId);
     }
 
