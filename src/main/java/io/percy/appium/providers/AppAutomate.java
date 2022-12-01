@@ -85,7 +85,7 @@ public class AppAutomate extends GenericProvider {
         super.setDebugUrl(getDebugUrl(result));
         try {
             percyScreenshotUrl = super.screenshot(name, device, statusBarHeight, navBarHeight, orientation,
-                    fullScreen, result.getString("osVersion"));
+                    fullScreen, result.getString("osVersion").split("\\.")[0]);
         } catch (Exception e) {
             error = e.getMessage();
         }
