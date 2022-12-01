@@ -6,11 +6,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.openqa.selenium.remote.SessionId;
 
 import io.appium.java_client.android.AndroidDriver;
 
@@ -19,11 +17,6 @@ public class ProviderResolverTest {
 
     @Mock
     AndroidDriver androidDriver;
-
-    @Before
-    public void setup() {
-        when(androidDriver.getSessionId()).thenReturn(new SessionId("abc"));
-    }
 
     @Test
     public void testAppAutomate() {

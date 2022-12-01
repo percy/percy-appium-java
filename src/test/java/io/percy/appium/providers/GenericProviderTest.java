@@ -91,10 +91,4 @@ public class GenericProviderTest {
         Assert.assertEquals(GenericProvider.supports(androidDriver), true);
     }
 
-    @Test
-    public void testGetDebugUrl() {
-        GenericProvider genericProvider = new GenericProvider(androidDriver);
-        Assert.assertEquals(genericProvider.getDebugUrl(), null);
-    }
-
 }

@@ -24,6 +24,7 @@ public class GenericProvider {
     private AppiumDriver driver;
     private Metadata metadata;
     private CliWrapper cliWrapper;
+    private String debugUrl = null;
 
     public GenericProvider(AppiumDriver driver) {
         this.driver = driver;
@@ -88,12 +89,12 @@ public class GenericProvider {
     }
 
     public String screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,
-            String orientation, Boolean fullScreen, String debugUrl) throws IOException {
-        return screenshot(name, deviceName, statusBarHeight, navBarHeight, orientation, fullScreen, debugUrl, null);
+            String orientation, Boolean fullScreen) throws IOException {
+        return screenshot(name, deviceName, statusBarHeight, navBarHeight, orientation, fullScreen, null);
     }
 
     public String screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,
-            String orientation, Boolean fullScreen, String debugUrl, String platformVersion) throws IOException {
+            String orientation, Boolean fullScreen, String platformVersion) throws IOException {
         this.metadata = MetadataHelper.resolve(driver, deviceName, statusBarHeight, navBarHeight, orientation,
                 platformVersion);
         JSONObject tag = getTag();
@@ -101,12 +102,12 @@ public class GenericProvider {
         return cliWrapper.postScreenshot(name, tag, tiles, debugUrl);
     }
 
-    public String getDebugUrl() {
-        return null;
-    }
-
     public void setMetadata(Metadata metadata) {
         this.metadata = metadata;
+    }
+
+    public void setDebugUrl(String debugUrl) {
+        this.debugUrl = debugUrl;
     }
 
 }
