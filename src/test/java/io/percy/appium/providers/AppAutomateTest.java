@@ -12,12 +12,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.remote.SessionId;
 
 import com.github.javafaker.Faker;
 
 import io.appium.java_client.android.AndroidDriver;
-import io.percy.appium.lib.Cache;
 import io.percy.appium.metadata.AndroidMetadata;
 
 @RunWith(org.mockito.junit.MockitoJUnitRunner.class)
@@ -39,17 +37,13 @@ public class AppAutomateTest {
 
     @Before
     public void setup() {
-        when(androidDriver.getSessionId()).thenReturn(new SessionId("abc"));
         appAutomate = new AppAutomate(androidDriver);
     }
 
     @Test
     public void testGetDebugUrl() {
-        Cache.CACHE_MAP.clear();
-        String sessionDetails = "{\"browser_url\":\"http://example_session.browserstack.com/\"}";
-        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
-        Assert.assertEquals(appAutomate.getDebugUrl(), "http://example_session.browserstack.com/");
+        JSONObject result = new JSONObject("{\"buildHash\":\"abc\", \"sessionHash\":\"def\"}");
+        Assert.assertEquals(appAutomate.getDebugUrl(result), "https://app-automate.browserstack.com/dashboard/v2/builds/abc/sessions/def");
     }
 
     @Test
@@ -119,24 +113,13 @@ public class AppAutomateTest {
 
     @Test
     public void testDeviceName() {
-        String sessionDetails = "{\"device\":\"Samsung Galaxy S22\"}";
-        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
-        Assert.assertEquals(appAutomate.deviceName(null), "Samsung Galaxy S22");
+        JSONObject result = new JSONObject("{\"deviceName\":\"Samsung Galaxy S22\"}");
+        Assert.assertEquals(appAutomate.deviceName(null, result), "Samsung Galaxy S22");
     }
 
     @Test
     public void testDeviceNameWhenProvidedInParams() {
-        Assert.assertEquals(appAutomate.deviceName("Samsung Galaxy S22 Ultra"), "Samsung Galaxy S22 Ultra");
-    }
-
-    @Test
-    public void testPlatformVersion() {
-        Cache.CACHE_MAP.clear();
-        String sessionDetails = "{\"os_version\":\"13.1\"}";
-        when(androidDriver.executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}"))
-                .thenReturn(sessionDetails);
-        Assert.assertEquals(appAutomate.platformVersion(), "13");
+        Assert.assertEquals(appAutomate.deviceName("Samsung Galaxy S22 Ultra", null), "Samsung Galaxy S22 Ultra");
     }
 
 }

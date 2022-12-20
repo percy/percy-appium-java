@@ -4,21 +4,20 @@ import org.json.JSONObject;
 
 import io.appium.java_client.AppiumDriver;
 import io.percy.appium.AppPercy;
-import io.percy.appium.lib.Cache;
 
 public class AppAutomate extends GenericProvider {
     private AppiumDriver driver;
     private Boolean markedPercySession = true;
-    private static String sessionId;
 
     public AppAutomate(AppiumDriver driver) {
         super(driver);
         this.driver = driver;
-        this.sessionId = driver.getSessionId().toString();
     }
 
-    public String getDebugUrl() {
-        return getSessionDetails(driver).get("browser_url").toString();
+    public String getDebugUrl(JSONObject result) {
+        String buildHash = result.getString("buildHash");
+        String sessionHash = result.getString("sessionHash");
+        return "https://app-automate.browserstack.com/dashboard/v2/builds/" + buildHash + "/sessions/" + sessionHash;
     }
 
     public static Boolean supports(AppiumDriver driver) {
@@ -29,7 +28,7 @@ public class AppAutomate extends GenericProvider {
         return false;
     }
 
-    public void executePercyScreenshotBegin(String name) {
+    public JSONObject executePercyScreenshotBegin(String name) {
         try {
             if (markedPercySession) {
                 JSONObject arguments = new JSONObject();
@@ -44,10 +43,12 @@ public class AppAutomate extends GenericProvider {
                         .executeScript(String.format("browserstack_executor: %s", reqObject.toString())).toString();
                 JSONObject result = new JSONObject(resultString);
                 markedPercySession = result.get("success").toString() == "true";
+                return result;
             }
         } catch (Exception e) {
             AppPercy.log("BrowserStack executer failed");
         }
+        return null;
     }
 
     public void executePercyScreenshotEnd(String name, String percyScreenshotUrl, String error) {
@@ -76,14 +77,15 @@ public class AppAutomate extends GenericProvider {
     }
 
     public String screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,
-            String orientation, Boolean fullScreen, String debugUrl) {
-        executePercyScreenshotBegin(name);
+            String orientation, Boolean fullScreen) {
+        JSONObject result = executePercyScreenshotBegin(name);
         String percyScreenshotUrl = "";
         String error = null;
-        String device = deviceName(deviceName);
+        String device = deviceName(deviceName, result);
+        super.setDebugUrl(getDebugUrl(result));
         try {
             percyScreenshotUrl = super.screenshot(name, device, statusBarHeight, navBarHeight, orientation,
-                    fullScreen, debugUrl, platformVersion());
+                    fullScreen, result.getString("osVersion").split("\\.")[0]);
         } catch (Exception e) {
             error = e.getMessage();
         }
@@ -91,25 +93,11 @@ public class AppAutomate extends GenericProvider {
         return null;
     }
 
-    public String deviceName(String deviceName) {
+    public String deviceName(String deviceName, JSONObject result) {
         if (deviceName != null) {
             return deviceName;
         }
-        return getSessionDetails(driver).get("device").toString();
-    }
-
-    public String platformVersion() {
-        return getSessionDetails(driver).get("os_version").toString().split("\\.")[0];
-    }
-
-    public static JSONObject getSessionDetails(AppiumDriver driver) {
-        if (Cache.CACHE_MAP.get("getSessionDetails_" + sessionId) == null) {
-            String sessionDetails = (String) driver
-                    .executeScript("browserstack_executor: {\"action\": \"getSessionDetails\"}");
-            JSONObject sessionDetailsJsonObject = new JSONObject(sessionDetails);
-            Cache.CACHE_MAP.put("getSessionDetails_" + sessionId, sessionDetailsJsonObject);
-        }
-        return (JSONObject) Cache.CACHE_MAP.get("getSessionDetails_" + sessionId);
+        return result.getString("deviceName");
     }
 
 }

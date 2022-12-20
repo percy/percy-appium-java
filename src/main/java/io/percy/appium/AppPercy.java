@@ -104,10 +104,10 @@ public class AppPercy {
             GenericProvider provider = ProviderResolver.resolveProvider(driver);
             if (options != null) {
                 provider.screenshot(name, options.getDeviceName(), options.getStatusBarHeight(),
-                        options.getNavBarHeight(), options.getOrientation(), fullScreen, provider.getDebugUrl());
+                        options.getNavBarHeight(), options.getOrientation(), fullScreen);
             } else {
                 provider.screenshot(name, null, null, null, null,
-                        fullScreen, provider.getDebugUrl());
+                        fullScreen);
             }
         } catch (Exception e) {
             log("Error taking screenshot " + name);
@@ -120,7 +120,6 @@ public class AppPercy {
 
     protected void finalize() throws Throwable {
         Set<String> set = new HashSet<>();
-        set.add("getSessionDetails_" + sessionId);
         set.add("percyOptions_" + sessionId);
         set.add("viewportRect_" + sessionId);
         set.add("getDevicesJson");
