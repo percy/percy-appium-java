@@ -87,7 +87,7 @@ public class AppAutomateTest {
 
     @Test
     public void testExecutePercyScreenshot() {
-        String response = "{\"success\":\"true\"}";
+        String response = "{\"result\":\"sha\"}";
         JSONObject arguments = new JSONObject();
         arguments.put("state", "screenshot");
         arguments.put("percyBuildId", System.getenv("PERCY_BUILD_ID"));
