@@ -8,6 +8,7 @@ import org.json.JSONObject;
 public class Tile {
     // File path where screenshot is stored
     private String localFilePath;
+    private String sha;
     private Integer statusBarHeight;
     private Integer navBarHeight;
     private Integer headerHeight;
@@ -15,13 +16,14 @@ public class Tile {
     private Boolean fullScreen;
 
     public Tile(String localFilePath, Integer statusBarHeight, Integer navBarHeight, Integer headerHeight,
-            Integer footerHeight, Boolean fullScreen) {
+            Integer footerHeight, Boolean fullScreen, String sha) {
         this.localFilePath = localFilePath;
         this.statusBarHeight = statusBarHeight;
         this.navBarHeight = navBarHeight;
         this.headerHeight = headerHeight;
         this.footerHeight = footerHeight;
         this.fullScreen = fullScreen;
+        this.sha = sha;
     }
 
     public static List<JSONObject> getTilesAsJson(List<Tile> tilesList) {
@@ -34,6 +36,7 @@ public class Tile {
             tileData.put("headerHeight", tile.headerHeight);
             tileData.put("footerHeight", tile.footerHeight);
             tileData.put("fullscreen", tile.fullScreen);
+            tileData.put("sha", tile.sha);
             tiles.add(tileData);
         }
         return tiles;
@@ -41,6 +44,10 @@ public class Tile {
 
     public String getLocalFilePath() {
         return localFilePath;
+    }
+
+    public String getSha() {
+        return sha;
     }
 
     public Integer getStatusBarHeight() {

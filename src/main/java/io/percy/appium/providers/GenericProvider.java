@@ -50,7 +50,7 @@ public class GenericProvider {
         Integer headerHeight = 0;
         Integer footerHeight = 0;
         List<Tile> tiles = new ArrayList<Tile>();
-        tiles.add(new Tile(localFilePath, statusBar, navBar, headerHeight, footerHeight, fullScreen));
+        tiles.add(new Tile(localFilePath, statusBar, navBar, headerHeight, footerHeight, fullScreen, null));
         return tiles;
     }
 
@@ -108,6 +108,10 @@ public class GenericProvider {
 
     public void setDebugUrl(String debugUrl) {
         this.debugUrl = debugUrl;
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
     }
 
 }

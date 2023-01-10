@@ -18,7 +18,7 @@ public class TileTest {
 
     @Test
     public void testGetClientInfo() {
-        Tile tile = new Tile("/tmp", statusBarHeight, navigationBarHeight, 0, 0, false);
+        Tile tile = new Tile("/tmp", statusBarHeight, navigationBarHeight, 0, 0, false, "sha");
         List<Tile> tiles = new ArrayList<Tile>();
         tiles.add(tile);
         JSONObject jsonTile = Tile.getTilesAsJson(tiles).get(0);
@@ -28,6 +28,7 @@ public class TileTest {
         Assert.assertEquals(jsonTile.getInt("headerHeight"), 0);
         Assert.assertEquals(jsonTile.getInt("footerHeight"), 0);
         Assert.assertEquals(jsonTile.get("fullscreen"), false);
+        Assert.assertEquals(jsonTile.get("sha"), "sha");
     }
 
 }
