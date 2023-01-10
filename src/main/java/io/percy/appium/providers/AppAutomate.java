@@ -1,9 +1,14 @@
 package io.percy.appium.providers;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONObject;
 
 import io.appium.java_client.AppiumDriver;
 import io.percy.appium.AppPercy;
+import io.percy.appium.lib.Tile;
 
 public class AppAutomate extends GenericProvider {
     private AppiumDriver driver;
@@ -74,6 +79,37 @@ public class AppAutomate extends GenericProvider {
         } catch (Exception e) {
             AppPercy.log("BrowserStack executer failed");
         }
+    }
+
+    public String executePercyScreenshot() {
+        try {
+            if (markedPercySession) {
+                JSONObject arguments = new JSONObject();
+                arguments.put("state", "screenshot");
+                arguments.put("percyBuildId", System.getenv("PERCY_BUILD_ID"));
+                JSONObject reqObject = new JSONObject();
+                reqObject.put("action", "percyScreenshot");
+                reqObject.put("arguments", arguments);
+                String resultString = driver
+                        .executeScript(String.format("browserstack_executor: %s", reqObject.toString())).toString();
+                JSONObject result = new JSONObject(resultString);
+                return result.get("result").toString();
+            }
+        } catch (Exception e) {
+            AppPercy.log(e.getMessage());
+        }
+        return null;
+    }
+
+    public List<Tile> captureTiles(Boolean fullScreen) throws IOException {
+        Integer statusBar = metadata.statBarHeight();
+        Integer navBar = metadata.navBarHeight();
+        String sha = executePercyScreenshot();
+        Integer headerHeight = 0;
+        Integer footerHeight = 0;
+        List<Tile> tiles = new ArrayList<Tile>();
+        tiles.add(new Tile(null, statusBar, navBar, headerHeight, footerHeight, fullScreen, sha));
+        return tiles;
     }
 
     public String screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,

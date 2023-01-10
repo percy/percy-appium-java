@@ -22,7 +22,7 @@ import io.percy.appium.metadata.MetadataHelper;
 
 public class GenericProvider {
     private AppiumDriver driver;
-    private Metadata metadata;
+    protected Metadata metadata;
     private CliWrapper cliWrapper;
     private String debugUrl = null;
 
@@ -50,7 +50,7 @@ public class GenericProvider {
         Integer headerHeight = 0;
         Integer footerHeight = 0;
         List<Tile> tiles = new ArrayList<Tile>();
-        tiles.add(new Tile(localFilePath, statusBar, navBar, headerHeight, footerHeight, fullScreen));
+        tiles.add(new Tile(localFilePath, statusBar, navBar, headerHeight, footerHeight, fullScreen, null));
         return tiles;
     }
 

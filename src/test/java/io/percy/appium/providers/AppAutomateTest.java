@@ -4,6 +4,7 @@ import static org.mockito.Mockito.when;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -12,6 +13,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.SessionId;
 
 import com.github.javafaker.Faker;
 
@@ -31,7 +34,13 @@ public class AppAutomateTest {
     @Mock
     AndroidMetadata metadata;
 
+    HashMap<String, Long> viewportRect = new HashMap<String, Long>();
+    HashMap<String, HashMap<String, Long>> sessionValue = new HashMap<String, HashMap<String, Long>>();
+    Response session = new Response(new SessionId("abc"));
+
     Faker faker = new Faker();
+    Long top = faker.number().randomNumber(3, false);
+    Long height = faker.number().randomNumber(3, false);
     Integer deviceScreenHeight = (int) faker.number().randomNumber(3, false);
     Integer deviceScreenWidth = (int) faker.number().randomNumber(3, false);
 
@@ -74,6 +83,20 @@ public class AppAutomateTest {
     @Test
     public void testExecutePercyScreenshotEndWhenNullExceptionDoesNotThrow() {
         appAutomate.executePercyScreenshotEnd("", "", "");
+    }
+
+    @Test
+    public void testExecutePercyScreenshot() {
+        String response = "{\"success\":\"true\"}";
+        JSONObject arguments = new JSONObject();
+        arguments.put("state", "screenshot");
+        arguments.put("percyBuildId", System.getenv("PERCY_BUILD_ID"));
+        JSONObject reqObject = new JSONObject();
+        reqObject.put("action", "percyScreenshot");
+        reqObject.put("arguments", arguments);
+        when(androidDriver.executeScript(String.format("browserstack_executor: %s", reqObject.toString())))
+                .thenReturn(response);
+        appAutomate.executePercyScreenshot();
     }
 
     @Test
