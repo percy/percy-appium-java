@@ -102,8 +102,8 @@ public class AppAutomate extends GenericProvider {
     }
 
     public List<Tile> captureTiles(Boolean fullScreen) throws IOException {
-        Integer statusBar = metadata.statBarHeight();
-        Integer navBar = metadata.navBarHeight();
+        Integer statusBar = getMetadata().statBarHeight();
+        Integer navBar = getMetadata().navBarHeight();
         String sha = executePercyScreenshot();
         Integer headerHeight = 0;
         Integer footerHeight = 0;

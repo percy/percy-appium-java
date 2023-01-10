@@ -22,7 +22,7 @@ import io.percy.appium.metadata.MetadataHelper;
 
 public class GenericProvider {
     private AppiumDriver driver;
-    protected Metadata metadata;
+    private Metadata metadata;
     private CliWrapper cliWrapper;
     private String debugUrl = null;
 
@@ -108,6 +108,10 @@ public class GenericProvider {
 
     public void setDebugUrl(String debugUrl) {
         this.debugUrl = debugUrl;
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
     }
 
 }
