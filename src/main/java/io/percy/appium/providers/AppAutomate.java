@@ -85,6 +85,7 @@ public class AppAutomate extends GenericProvider {
         JSONObject arguments = new JSONObject();
         arguments.put("state", "screenshot");
         arguments.put("percyBuildId", System.getenv("PERCY_BUILD_ID"));
+        arguments.put("screenshotType", "SinglePage");
         JSONObject reqObject = new JSONObject();
         reqObject.put("action", "percyScreenshot");
         reqObject.put("arguments", arguments);
