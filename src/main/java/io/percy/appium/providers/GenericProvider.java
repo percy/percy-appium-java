@@ -46,7 +46,6 @@ public class GenericProvider {
         Integer statusBar = metadata.statBarHeight();
         Integer navBar = metadata.navBarHeight();
         String srcString = captureScreenshot();
-        System.out.println("^^^^^^^^");
         String localFilePath = getAbsolutePath(srcString);
         Integer headerHeight = 0;
         Integer footerHeight = 0;
@@ -86,7 +85,6 @@ public class GenericProvider {
     }
 
     private String captureScreenshot() {
-        System.out.println("{}{}{}{}{}{}{}");
         return driver.getScreenshotAs(OutputType.BASE64);
     }
 
