@@ -31,7 +31,7 @@ public class GenericProvider {
         this.cliWrapper = new CliWrapper(driver);
     }
 
-    public JSONObject getTag() {
+    public JSONObject getTag(Metadata metadata) {
         JSONObject tag = new JSONObject();
         tag.put("name", metadata.deviceName());
         tag.put("osName", metadata.osName());
@@ -46,6 +46,7 @@ public class GenericProvider {
         Integer statusBar = metadata.statBarHeight();
         Integer navBar = metadata.navBarHeight();
         String srcString = captureScreenshot();
+        System.out.println("^^^^^^^^");
         String localFilePath = getAbsolutePath(srcString);
         Integer headerHeight = 0;
         Integer footerHeight = 0;
@@ -85,6 +86,7 @@ public class GenericProvider {
     }
 
     private String captureScreenshot() {
+        System.out.println("{}{}{}{}{}{}{}");
         return driver.getScreenshotAs(OutputType.BASE64);
     }
 
@@ -97,7 +99,7 @@ public class GenericProvider {
             String orientation, Boolean fullScreen, String platformVersion) throws IOException {
         this.metadata = MetadataHelper.resolve(driver, deviceName, statusBarHeight, navBarHeight, orientation,
                 platformVersion);
-        JSONObject tag = getTag();
+        JSONObject tag = getTag(this.metadata);
         List<Tile> tiles = captureTiles(fullScreen);
         return cliWrapper.postScreenshot(name, tag, tiles, debugUrl);
     }
