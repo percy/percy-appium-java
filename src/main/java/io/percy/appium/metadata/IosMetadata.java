@@ -91,4 +91,8 @@ public class IosMetadata extends Metadata {
         return 0;
     }
 
+    public Integer scaleFactor() {
+        return (Integer) driver.getSessionDetails().get("pixelRatio");
+    }
+
 }

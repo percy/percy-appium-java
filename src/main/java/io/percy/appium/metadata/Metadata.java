@@ -84,4 +84,6 @@ public abstract class Metadata {
 
     public abstract Integer navBarHeight();
 
+    public abstract Integer scaleFactor();
+
 }

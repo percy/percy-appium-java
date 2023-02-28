@@ -16,6 +16,7 @@ import org.openqa.selenium.OutputType;
 import io.appium.java_client.AppiumDriver;
 import io.percy.appium.AppPercy;
 import io.percy.appium.lib.CliWrapper;
+import io.percy.appium.lib.ScreenshotOptions;
 import io.percy.appium.lib.Tile;
 import io.percy.appium.metadata.Metadata;
 import io.percy.appium.metadata.MetadataHelper;
@@ -31,7 +32,7 @@ public class GenericProvider {
         this.cliWrapper = new CliWrapper(driver);
     }
 
-    public JSONObject getTag(Metadata metadata) {
+    public JSONObject getTag() {
         JSONObject tag = new JSONObject();
         tag.put("name", metadata.deviceName());
         tag.put("osName", metadata.osName());
@@ -42,7 +43,11 @@ public class GenericProvider {
         return tag;
     }
 
-    public List<Tile> captureTiles(Boolean fullScreen) throws IOException {
+    public List<Tile> captureTiles(Boolean fullScreen, ScreenshotOptions options) throws IOException, Exception {
+        if (options.getFullpageScreenshot()) {
+            AppPercy.log("Full page screeshot is only supported on App Automate. "
+            + "Falling back to single page screenshot.");
+        }
         Integer statusBar = metadata.statBarHeight();
         Integer navBar = metadata.navBarHeight();
         String srcString = captureScreenshot();
@@ -88,17 +93,16 @@ public class GenericProvider {
         return driver.getScreenshotAs(OutputType.BASE64);
     }
 
-    public String screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,
-            String orientation, Boolean fullScreen) throws IOException {
-        return screenshot(name, deviceName, statusBarHeight, navBarHeight, orientation, fullScreen, null);
+    public String screenshot(String name, ScreenshotOptions options, Boolean fullScreen) throws Exception {
+        return screenshot(name, options, fullScreen, null, null);
     }
 
-    public String screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,
-            String orientation, Boolean fullScreen, String platformVersion) throws IOException {
-        this.metadata = MetadataHelper.resolve(driver, deviceName, statusBarHeight, navBarHeight, orientation,
-                platformVersion);
-        JSONObject tag = getTag(this.metadata);
-        List<Tile> tiles = captureTiles(fullScreen);
+    public String screenshot(String name, ScreenshotOptions options,
+        Boolean fullScreen, String platformVersion, String deviceName) throws Exception {
+        this.metadata = MetadataHelper.resolve(driver, deviceName, options.getStatusBarHeight(),
+            options.getNavBarHeight(), options.getOrientation(), platformVersion);
+        JSONObject tag = getTag();
+        List<Tile> tiles = captureTiles(fullScreen, options);
         return cliWrapper.postScreenshot(name, tag, tiles, debugUrl);
     }
 
@@ -106,12 +110,12 @@ public class GenericProvider {
         this.metadata = metadata;
     }
 
-    public void setDebugUrl(String debugUrl) {
-        this.debugUrl = debugUrl;
-    }
-
     public Metadata getMetadata() {
         return metadata;
+    }
+
+    public void setDebugUrl(String debugUrl) {
+        this.debugUrl = debugUrl;
     }
 
 }

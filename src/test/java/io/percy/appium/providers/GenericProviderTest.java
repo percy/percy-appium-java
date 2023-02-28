@@ -1,6 +1,7 @@
 package io.percy.appium.providers;
 
 import io.appium.java_client.android.AndroidDriver;
+import io.percy.appium.lib.ScreenshotOptions;
 import io.percy.appium.lib.Tile;
 import io.percy.appium.metadata.AndroidMetadata;
 
@@ -65,7 +66,9 @@ public class GenericProviderTest {
     }
 
     @Test
-    public void testcaptureTiles() throws IOException {
+    public void testcaptureTiles() throws IOException, Exception {
+        ScreenshotOptions options = new ScreenshotOptions();
+        options.setFullPageScreenshot(false);
         viewportRect.put("top", top);
         viewportRect.put("height", height);
         sessionValue.put("viewportRect", viewportRect);
@@ -77,7 +80,7 @@ public class GenericProviderTest {
         GenericProvider genericProvider = new GenericProvider(androidDriver);
         genericProvider.setMetadata(new AndroidMetadata(androidDriver, null, null, null, null, null));
 
-        Tile tile = genericProvider.captureTiles(false).get(0);
+        Tile tile = genericProvider.captureTiles(false, options).get(0);
         Assert.assertTrue(tile.getLocalFilePath().endsWith(".png"));
         Assert.assertEquals(tile.getStatusBarHeight().intValue(), top.intValue());
         Assert.assertEquals(tile.getNavBarHeight().intValue(), 2160 - (height + top));
@@ -89,6 +92,14 @@ public class GenericProviderTest {
     @Test
     public void testSupports() {
         Assert.assertEquals(GenericProvider.supports(androidDriver), true);
+    }
+
+    @Test
+    public void testGetSetMetadata() {
+        AndroidMetadata metadata = new AndroidMetadata(androidDriver, "dummy", null, null, null, null);
+        GenericProvider genericProvider = new GenericProvider(androidDriver);
+        genericProvider.setMetadata(metadata);
+        Assert.assertEquals(genericProvider.getMetadata(), metadata);
     }
 
 }

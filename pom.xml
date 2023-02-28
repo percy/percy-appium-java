@@ -36,6 +36,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <exec.cleanupDaemonThreads>false</exec.cleanupDaemonThreads>
     <checkstyle.config.location>src/test/java/io/percy/appium/checkstyles.xml</checkstyle.config.location>
   </properties>
 

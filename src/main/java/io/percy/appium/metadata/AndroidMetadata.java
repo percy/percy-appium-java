@@ -78,4 +78,8 @@ public class AndroidMetadata extends Metadata {
         return (Map) session.getValue();
     }
 
+    public Integer scaleFactor() {
+        return 1;
+    }
+
 }

@@ -1,32 +1,22 @@
 package io.percy.appium.providers;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.io.File;
-import java.io.FileWriter;
 import java.util.List;
-import java.util.*;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import io.appium.java_client.AppiumDriver;
 import io.percy.appium.AppPercy;
-import io.percy.appium.lib.CliWrapper;
+import io.percy.appium.lib.ScreenshotOptions;
 import io.percy.appium.lib.Tile;
-import io.percy.appium.metadata.Metadata;
-import io.percy.appium.metadata.MetadataHelper;
-
 public class AppAutomate extends GenericProvider {
     private AppiumDriver driver;
-    private CliWrapper cliWrapper;
-    private Metadata metadata;
     private Boolean markedPercySession = true;
 
     public AppAutomate(AppiumDriver driver) {
         super(driver);
         this.driver = driver;
-        this.cliWrapper = new CliWrapper(driver);
     }
 
     public String getDebugUrl(JSONObject result) {
@@ -81,7 +71,6 @@ public class AppAutomate extends GenericProvider {
                 JSONObject reqObject = new JSONObject();
                 reqObject.put("action", "percyScreenshot");
                 reqObject.put("arguments", arguments);
-                
                 String resultString = driver
                         .executeScript(String.format("browserstack_executor: %s", reqObject.toString())).toString();
                 JSONObject result = new JSONObject(resultString);
@@ -92,64 +81,67 @@ public class AppAutomate extends GenericProvider {
         }
     }
 
-    public String executePercyScreenshot() {
-        JSONObject arguments = new JSONObject();
-        JSONObject args = new JSONObject();
-        args.put("numOfTiles", 5);
-
-        arguments.put("state", "screenshot");
-        arguments.put("percyBuildId", System.getenv("PERCY_BUILD_ID"));
-        arguments.put("screenshotType", "fullpage");
-        arguments.put("scaleFactor", 1);
-        arguments.put("options", args);
-    
-        JSONObject reqObject = new JSONObject();
-        reqObject.put("action", "percyScreenshot");
-        reqObject.put("arguments", arguments);
-        String resultString = driver
-                .executeScript(String.format("browserstack_executor: %s", reqObject.toString())).toString();
-        JSONObject result = new JSONObject(resultString);
-        return result.get("result").toString();
+    public String executePercyScreenshot(ScreenshotOptions options, Integer scaleFactor,
+        Integer deviceHeight) throws Exception {
+        try {
+            JSONObject arguments = new JSONObject();
+            JSONObject args = new JSONObject();
+            args.put("numOfTiles", options.getScreenLengths());
+            args.put("deviceHeight", deviceHeight);
+            arguments.put("state", "screenshot");
+            arguments.put("percyBuildId", System.getenv("PERCY_BUILD_ID"));
+            arguments.put("screenshotType", "fullpage");
+            arguments.put("scaleFactor", scaleFactor);
+            arguments.put("options", args);
+            JSONObject reqObject = new JSONObject();
+            reqObject.put("action", "percyScreenshot");
+            reqObject.put("arguments", arguments);
+            String resultString = driver
+                    .executeScript(String.format("browserstack_executor: %s", reqObject.toString())).toString();
+            JSONObject result = new JSONObject(resultString);
+            return result.get("result").toString();
+        } catch (Exception e) {
+            throw new Exception("Screenshot command failed");
+        }
     }
 
-    public List<Tile> captureTiles(Boolean fullScreen) throws IOException {
+    public List<Tile> captureTiles(Boolean fullScreen, ScreenshotOptions options) throws Exception {
+        if (!options.getFullpageScreenshot()) {
+            return super.captureTiles(fullScreen, options);
+        }
+
         Integer statusBar = getMetadata().statBarHeight();
         Integer navBar = getMetadata().navBarHeight();
-        String reqObject = executePercyScreenshot();
-        JSONArray jsonarray = new JSONArray(reqObject);
-        Integer headerHeight = 0;
-        Integer footerHeight = 0;
-        JSONObject object = new JSONObject(reqObject);
+        String response = executePercyScreenshot(options, getMetadata().scaleFactor(),
+            getMetadata().deviceScreenHeight());
+        JSONArray jsonarray = new JSONArray(response);
         List<Tile> tiles = new ArrayList<Tile>();
         for (int i = 0; i < jsonarray.length(); i++) {
             JSONObject jsonobject = jsonarray.getJSONObject(i);
             String sha = jsonobject.getString("sha");
+            Integer headerHeight = jsonobject.getInt("header_height");
+            Integer footerHeight = jsonobject.getInt("footer_height");
             tiles.add(new Tile(null, statusBar, navBar, headerHeight, footerHeight, fullScreen, sha));
         }
         return tiles;
     }
 
-    public String screenshot(String name, String deviceName, Integer statusBarHeight, Integer navBarHeight,
-            String orientation, Boolean fullScreen) throws IOException {
+    public String screenshot(String name, ScreenshotOptions options, Boolean fullScreen) {
         JSONObject result = executePercyScreenshotBegin(name);
         String percyScreenshotUrl = "";
         String error = null;
-        String device = deviceName(deviceName, result);
-        String platformVersion =result.getString("osVersion").split("\\.")[0];
-        this.metadata = MetadataHelper.resolve(driver, device, statusBarHeight, navBarHeight, orientation,
-                platformVersion);
+        String device = deviceName(options.getDeviceName(), result);
         super.setDebugUrl(getDebugUrl(result));
-        List<Tile> tiles = new ArrayList<>();
         try {
-            tiles = captureTiles(fullScreen);
+            percyScreenshotUrl = super.screenshot(name, options, fullScreen,
+                result.getString("osVersion").split("\\.")[0], device);
         } catch (Exception e) {
             error = e.getMessage();
         }
-        JSONObject tag = getTag(this.metadata);
-        percyScreenshotUrl = cliWrapper.postScreenshot(name, tag, tiles, "debugUrl");
         executePercyScreenshotEnd(name, percyScreenshotUrl, error);
         return null;
     }
+
 
     public String deviceName(String deviceName, JSONObject result) {
         if (deviceName != null) {

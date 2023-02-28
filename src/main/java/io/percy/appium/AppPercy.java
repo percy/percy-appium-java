@@ -103,11 +103,9 @@ public class AppPercy {
         try {
             GenericProvider provider = ProviderResolver.resolveProvider(driver);
             if (options != null) {
-                provider.screenshot(name, options.getDeviceName(), options.getStatusBarHeight(),
-                        options.getNavBarHeight(), options.getOrientation(), fullScreen);
+                provider.screenshot(name, options, fullScreen);
             } else {
-                provider.screenshot(name, null, null, null, null,
-                        fullScreen);
+                provider.screenshot(name, new ScreenshotOptions(), fullScreen);
             }
         } catch (Exception e) {
             log("Error taking screenshot " + name);
