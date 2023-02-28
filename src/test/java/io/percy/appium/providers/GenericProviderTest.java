@@ -1,6 +1,7 @@
 package io.percy.appium.providers;
 
 import io.appium.java_client.android.AndroidDriver;
+import io.percy.appium.lib.Cache;
 import io.percy.appium.lib.ScreenshotOptions;
 import io.percy.appium.lib.Tile;
 import io.percy.appium.metadata.AndroidMetadata;
@@ -42,6 +43,7 @@ public class GenericProviderTest {
 
     @Before
     public void setup() {
+        Cache.CACHE_MAP.clear();
         when(androidDriver.getCapabilities()).thenReturn(capabilities);
         when(androidDriver.getSessionId()).thenReturn(new SessionId("abc"));
         when(capabilities.getCapability("deviceScreenSize")).thenReturn("1080x2160");
