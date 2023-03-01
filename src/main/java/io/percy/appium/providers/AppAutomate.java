@@ -118,7 +118,7 @@ public class AppAutomate extends GenericProvider {
         List<Tile> tiles = new ArrayList<Tile>();
         for (int i = 0; i < jsonarray.length(); i++) {
             JSONObject jsonobject = jsonarray.getJSONObject(i);
-            String sha = jsonobject.getString("sha");
+            String sha = jsonobject.getString("sha").split("-")[0];
             Integer headerHeight = jsonobject.getInt("header_height");
             Integer footerHeight = jsonobject.getInt("footer_height");
             tiles.add(new Tile(null, statusBar, navBar, headerHeight, footerHeight, fullScreen, sha));

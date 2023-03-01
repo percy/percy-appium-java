@@ -92,7 +92,7 @@ public class IosMetadata extends Metadata {
     }
 
     public Integer scaleFactor() {
-        return (Integer) driver.getSessionDetails().get("pixelRatio");
+        return Integer.valueOf(driver.getSessionDetails().get("pixelRatio").toString());
     }
 
 }
