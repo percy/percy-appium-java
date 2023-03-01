@@ -55,7 +55,9 @@ public class GenericProvider {
         Integer headerHeight = 0;
         Integer footerHeight = 0;
         List<Tile> tiles = new ArrayList<Tile>();
-        tiles.add(new Tile(localFilePath, statusBar, navBar, headerHeight, footerHeight, options.getFullScreen(), null));
+        tiles.add(new Tile(
+            localFilePath, statusBar, navBar, headerHeight, footerHeight, options.getFullScreen(), null
+        ));
         return tiles;
     }
 
