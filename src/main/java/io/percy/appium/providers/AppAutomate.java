@@ -105,9 +105,9 @@ public class AppAutomate extends GenericProvider {
         }
     }
 
-    public List<Tile> captureTiles(Boolean fullScreen, ScreenshotOptions options) throws Exception {
-        if (!options.getFullpageScreenshot()) {
-            return super.captureTiles(fullScreen, options);
+    public List<Tile> captureTiles(ScreenshotOptions options) throws Exception {
+        if (!options.getFullPage()) {
+            return super.captureTiles(options);
         }
 
         Integer statusBar = getMetadata().statBarHeight();
@@ -121,19 +121,19 @@ public class AppAutomate extends GenericProvider {
             String sha = jsonobject.getString("sha").split("-")[0];
             Integer headerHeight = jsonobject.getInt("header_height");
             Integer footerHeight = jsonobject.getInt("footer_height");
-            tiles.add(new Tile(null, statusBar, navBar, headerHeight, footerHeight, fullScreen, sha));
+            tiles.add(new Tile(null, statusBar, navBar, headerHeight, footerHeight, options.getFullScreen(), sha));
         }
         return tiles;
     }
 
-    public String screenshot(String name, ScreenshotOptions options, Boolean fullScreen) {
+    public String screenshot(String name, ScreenshotOptions options) {
         JSONObject result = executePercyScreenshotBegin(name);
         String percyScreenshotUrl = "";
         String error = null;
         String device = deviceName(options.getDeviceName(), result);
         super.setDebugUrl(getDebugUrl(result));
         try {
-            percyScreenshotUrl = super.screenshot(name, options, fullScreen,
+            percyScreenshotUrl = super.screenshot(name, options,
                 result.getString("osVersion").split("\\.")[0], device);
         } catch (Exception e) {
             error = e.getMessage();

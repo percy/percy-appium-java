@@ -43,8 +43,8 @@ public class GenericProvider {
         return tag;
     }
 
-    public List<Tile> captureTiles(Boolean fullScreen, ScreenshotOptions options) throws IOException, Exception {
-        if (options.getFullpageScreenshot()) {
+    public List<Tile> captureTiles(ScreenshotOptions options) throws IOException, Exception {
+        if (options.getFullPage()) {
             AppPercy.log("Full page screeshot is only supported on App Automate. "
             + "Falling back to single page screenshot.");
         }
@@ -55,7 +55,7 @@ public class GenericProvider {
         Integer headerHeight = 0;
         Integer footerHeight = 0;
         List<Tile> tiles = new ArrayList<Tile>();
-        tiles.add(new Tile(localFilePath, statusBar, navBar, headerHeight, footerHeight, fullScreen, null));
+        tiles.add(new Tile(localFilePath, statusBar, navBar, headerHeight, footerHeight, options.getFullScreen(), null));
         return tiles;
     }
 
@@ -93,16 +93,16 @@ public class GenericProvider {
         return driver.getScreenshotAs(OutputType.BASE64);
     }
 
-    public String screenshot(String name, ScreenshotOptions options, Boolean fullScreen) throws Exception {
-        return screenshot(name, options, fullScreen, null, null);
+    public String screenshot(String name, ScreenshotOptions options) throws Exception {
+        return screenshot(name, options, null, null);
     }
 
     public String screenshot(String name, ScreenshotOptions options,
-        Boolean fullScreen, String platformVersion, String deviceName) throws Exception {
+        String platformVersion, String deviceName) throws Exception {
         this.metadata = MetadataHelper.resolve(driver, deviceName, options.getStatusBarHeight(),
             options.getNavBarHeight(), options.getOrientation(), platformVersion);
         JSONObject tag = getTag();
-        List<Tile> tiles = captureTiles(fullScreen, options);
+        List<Tile> tiles = captureTiles(options);
         return cliWrapper.postScreenshot(name, tag, tiles, debugUrl);
     }
 

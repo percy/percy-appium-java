@@ -101,14 +101,14 @@ public class AppAutomateTest {
     @Test
     public void testcaptureTilesForSinglePage() throws Exception {
         ScreenshotOptions options = new ScreenshotOptions();
-        options.setFullPageScreenshot(false);
+        options.setFullPage(false);
         when(androidDriver.getScreenshotAs(OutputType.BASE64))
                 .thenReturn("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAADwCAYAAAA+VemSAAAgAEl...==");
 
         AppAutomate appAutomateProvider = new AppAutomate(androidDriver);
         appAutomateProvider.setMetadata(new AndroidMetadata(androidDriver, null, null, null, null, null));
 
-        Tile tile = appAutomateProvider.captureTiles(false, options).get(0);
+        Tile tile = appAutomateProvider.captureTiles(options).get(0);
         Assert.assertTrue(tile.getLocalFilePath().endsWith(".png"));
         Assert.assertEquals(tile.getStatusBarHeight().intValue(), top.intValue());
         Assert.assertEquals(tile.getNavBarHeight().intValue(), 2160 - (height + top));
@@ -133,7 +133,7 @@ public class AppAutomateTest {
         reqObject.put("action", "percyScreenshot");
         reqObject.put("arguments", arguments);
         ScreenshotOptions options = new ScreenshotOptions();
-        options.setFullPageScreenshot(true);
+        options.setFullPage(true);
 
         when(androidDriver.executeScript(String.format("browserstack_executor: %s", reqObject.toString())))
                 .thenReturn(response);
@@ -141,7 +141,7 @@ public class AppAutomateTest {
         AppAutomate appAutomateProvider = new AppAutomate(androidDriver);
         appAutomateProvider.setMetadata(new AndroidMetadata(androidDriver, null, null, null, null, null));
 
-        Tile tile = appAutomateProvider.captureTiles(false, options).get(0);
+        Tile tile = appAutomateProvider.captureTiles(options).get(0);
         Assert.assertEquals(tile.getStatusBarHeight().intValue(), top.intValue());
         Assert.assertEquals(tile.getNavBarHeight().intValue(), 2160 - (height + top));
         Assert.assertEquals(tile.getHeaderHeight().intValue(), 200);
@@ -191,7 +191,7 @@ public class AppAutomateTest {
         JSONObject arguments = new JSONObject();
         ScreenshotOptions options = new ScreenshotOptions();
         options.setScreenLengths(4);
-        options.setFullPageScreenshot(true);
+        options.setFullPage(true);
         JSONObject args = new JSONObject();
         args.put("numOfTiles", 4);
         args.put("deviceHeight", 2160);

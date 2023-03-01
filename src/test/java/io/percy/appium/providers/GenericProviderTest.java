@@ -70,7 +70,7 @@ public class GenericProviderTest {
     @Test
     public void testcaptureTiles() throws IOException, Exception {
         ScreenshotOptions options = new ScreenshotOptions();
-        options.setFullPageScreenshot(false);
+        options.setFullPage(false);
         viewportRect.put("top", top);
         viewportRect.put("height", height);
         sessionValue.put("viewportRect", viewportRect);
@@ -82,7 +82,7 @@ public class GenericProviderTest {
         GenericProvider genericProvider = new GenericProvider(androidDriver);
         genericProvider.setMetadata(new AndroidMetadata(androidDriver, null, null, null, null, null));
 
-        Tile tile = genericProvider.captureTiles(false, options).get(0);
+        Tile tile = genericProvider.captureTiles(options).get(0);
         Assert.assertTrue(tile.getLocalFilePath().endsWith(".png"));
         Assert.assertEquals(tile.getStatusBarHeight().intValue(), top.intValue());
         Assert.assertEquals(tile.getNavBarHeight().intValue(), 2160 - (height + top));

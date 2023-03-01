@@ -5,7 +5,8 @@ public class ScreenshotOptions {
     private Integer statusBarHeight = null;
     private Integer navBarHeight = null;
     private String orientation = null;
-    private Boolean fullpageScreenshot = false;
+    private Boolean fullPage = false;
+    private Boolean fullScreen = false;
     private Integer screenLengths = 4;
 
     public String getDeviceName() {
@@ -24,8 +25,12 @@ public class ScreenshotOptions {
         return orientation;
     }
 
-    public Boolean getFullpageScreenshot() {
-        return fullpageScreenshot;
+    public Boolean getFullPage() {
+        return fullPage;
+    }
+
+    public Boolean getFullScreen() {
+        return fullScreen;
     }
 
     public Integer getScreenLengths() {
@@ -48,8 +53,12 @@ public class ScreenshotOptions {
         orientation = orientationParam;
     }
 
-    public void setFullPageScreenshot(Boolean fullpageScreenshotParam) {
-        fullpageScreenshot = fullpageScreenshotParam;
+    public void setFullPage(Boolean fullPageParam) {
+        fullPage = fullPageParam;
+    }
+
+    public void setFullScreen(Boolean fullScreenParam) {
+        fullScreen = fullScreenParam;
     }
 
     public void setScreenLengths(Integer screenLengthsParam) {
