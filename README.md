@@ -20,7 +20,7 @@ Add percy-appium-app to your project dependencies. If you're using Maven:
 <dependency>
   <groupId>io.percy</groupId>
   <artifactId>percy-appium-app</artifactId>
-  <version>0.0.5</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 
