@@ -102,16 +102,14 @@ public class AppPercy {
         percyOptions.setPercyIgnoreErrors();
         try {
             GenericProvider provider = ProviderResolver.resolveProvider(driver);
-            if (options != null) {
-                provider.screenshot(name, options.getDeviceName(), options.getStatusBarHeight(),
-                        options.getNavBarHeight(), options.getOrientation(), fullScreen);
-            } else {
-                provider.screenshot(name, null, null, null, null,
-                        fullScreen);
+            if (options == null) {
+                options = new ScreenshotOptions();
             }
+            options.setFullScreen(fullScreen);
+            provider.screenshot(name, options);
         } catch (Exception e) {
             log("Error taking screenshot " + name);
-            log(e.toString(), "debug");
+            log(e.toString());
             if (!ignoreErrors) {
                 throw new RuntimeException("Error taking screenshot " + name, e);
             }

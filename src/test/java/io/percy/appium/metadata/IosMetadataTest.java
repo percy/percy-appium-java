@@ -6,6 +6,7 @@ import io.percy.appium.lib.Cache;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -165,5 +166,13 @@ public class IosMetadataTest {
         metadata = new IosMetadata(driver, null, null, null, "auto", null);
         when(driver.getOrientation()).thenReturn(ScreenOrientation.LANDSCAPE);
         Assert.assertEquals(metadata.orientation(), "landscape");
+    }
+
+    @Test
+    public void testScaleFactor() {
+        Map details = new HashMap<>();
+        details.put("pixelRatio", 2);
+        when(driver.getSessionDetails()).thenReturn(details);
+        Assert.assertEquals(metadata.scaleFactor().intValue(), 2);
     }
 }

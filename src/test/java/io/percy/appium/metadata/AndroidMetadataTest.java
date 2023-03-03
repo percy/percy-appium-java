@@ -137,6 +137,11 @@ public class AndroidMetadataTest {
     }
 
     @Test
+    public void testScaleFactor() {
+        Assert.assertEquals(metadata.scaleFactor().intValue(), 1);
+    }
+
+    @Test
     public void testOrientatioWithNullParamAndCaps(){
         when(androidDriver.getCapabilities().getCapability("orientation")).thenReturn(ScreenOrientation.LANDSCAPE);
         Assert.assertEquals(metadata.orientation(), "landscape");

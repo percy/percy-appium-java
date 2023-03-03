@@ -20,7 +20,7 @@ Add percy-appium-app to your project dependencies. If you're using Maven:
 <dependency>
   <groupId>io.percy</groupId>
   <artifactId>percy-appium-app</artifactId>
-  <version>0.0.5</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 
@@ -80,14 +80,15 @@ The screenshot method arguments:
 
 - `name` (**required**) - The screenshot name; must be unique to each screenshot
 - Additional screenshot options (overrides any project options):
-  - `fullScreen ` - It indicates if the app is a full screen
-  - `options` - Optional screenshot params:
+  - `fullScreen ` - (**optional**) It indicates if the app is a full screen
+  - `options` - (**optional**) screenshot params:
     Use `ScreenshotOptions` to set following params to override
       - `deviceName` - Device name on which screenshot is taken
-      - `statusBarHeight` - Height of status bar for the device
-      - `navBarHeight` - Height of navigation bar for the device
+      - `statusBarHeight` - int; Height of status bar for the device
+      - `navBarHeight` - int; Height of navigation bar for the device
       - `orientation`  - Orientation of the application
-
+      - `FullPage`: boolean; [Experimental] only supported on App Automate driver sessions [ needs @percy/cli 1.20.2+ ]
+      - `ScreenLengths`: int; [Experimental] max screen lengths for fullPage [ needs @percy/cli 1.20.2+ ]
 ### Migrating Config
 
 If you have a previous Percy configuration file, migrate it to the newest version with the
