@@ -87,8 +87,8 @@ The screenshot method arguments:
       - `statusBarHeight` - int; Height of status bar for the device
       - `navBarHeight` - int; Height of navigation bar for the device
       - `orientation`  - Orientation of the application
-      - `FullPage`: boolean; [Experimental] only supported on App Automate driver sessions [ needs @percy/cli 1.20+ ]
-      - `ScreenLengths`: int; [Experimental] max screen lengths for fullPage [ needs @percy/cli 1.20+ ]
+      - `FullPage`: boolean; [Experimental] only supported on App Automate driver sessions [ needs @percy/cli 1.20.1+ ]
+      - `ScreenLengths`: int; [Experimental] max screen lengths for fullPage [ needs @percy/cli 1.20.1+ ]
 ### Migrating Config
 
 If you have a previous Percy configuration file, migrate it to the newest version with the
