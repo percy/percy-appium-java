@@ -18,7 +18,7 @@ public class PercyOptions {
         Map percyOptionsW3CProtocol = getPercyOptions();
         Object percyEnabledJsonProtocol = driver.getCapabilities().getCapability("percy.enabled");
         if (percyOptionsW3CProtocol == null && percyEnabledJsonProtocol == null) {
-            AppPercy.log("Percy options not provided in capabilitiies, considering enabled");
+            AppPercy.log("Percy options not provided in capabilitiies, considering enabled", "debug");
             return true;
         } else if ((percyEnabledJsonProtocol != null && percyEnabledJsonProtocol.toString() == "false")
                 || (percyOptionsW3CProtocol != null && percyOptionsW3CProtocol.get("enabled").toString() == "false")) {
@@ -32,7 +32,7 @@ public class PercyOptions {
         Map percyOptionsW3CProtocol = getPercyOptions();
         Object percyIgnoreErrorsJsonProtocol = driver.getCapabilities().getCapability("percy.ignoreErrors");
         if (percyOptionsW3CProtocol == null && percyIgnoreErrorsJsonProtocol == null) {
-            AppPercy.log("Percy options not provided in capabilitiies, ignoring errors by default");
+            AppPercy.log("Percy options not provided in capabilitiies, ignoring errors by default", "debug");
             return true;
         } else if ((percyIgnoreErrorsJsonProtocol != null && percyIgnoreErrorsJsonProtocol.toString() == "false")
                 || (percyOptionsW3CProtocol != null
