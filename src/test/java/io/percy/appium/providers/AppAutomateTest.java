@@ -69,6 +69,11 @@ public class AppAutomateTest {
     }
 
     @Test
+    public void testGetDebugUrlWhenResultIsNull() {
+        Assert.assertEquals(appAutomate.getDebugUrl(null), null);
+    }
+
+    @Test
     public void testSupports() {
         try {
             when(androidDriver.getRemoteAddress()).thenReturn(new URL("http://browserstack.com/"));

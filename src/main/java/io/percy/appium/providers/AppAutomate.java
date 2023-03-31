@@ -20,6 +20,10 @@ public class AppAutomate extends GenericProvider {
     }
 
     public String getDebugUrl(JSONObject result) {
+        if (result == null) {
+            return null;
+        }
+
         String buildHash = result.getString("buildHash");
         String sessionHash = result.getString("sessionHash");
         return "https://app-automate.browserstack.com/dashboard/v2/builds/" + buildHash + "/sessions/" + sessionHash;
