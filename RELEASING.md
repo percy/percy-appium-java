@@ -45,6 +45,14 @@ You can also download installers from http://www.gnupg.org/download/ .
 Download the private key from 1password. It is a file attached to the secure note titled "Java release private key".
 
 Note: Update Expiry date for key using gpg --edit-key KEY_ID
+```
+> gpg --list-keys
+find key id from output 
+> gpg --edit-key KEY_ID
+gpg> key 1
+gpg> expire
+gpg> save
+```
 
 Import the key into your local gpg keyring:
 
