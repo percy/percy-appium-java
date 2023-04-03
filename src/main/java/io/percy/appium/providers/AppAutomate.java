@@ -20,6 +20,10 @@ public class AppAutomate extends GenericProvider {
     }
 
     public String getDebugUrl(JSONObject result) {
+        if (result == null) {
+            return null;
+        }
+
         String buildHash = result.getString("buildHash");
         String sessionHash = result.getString("sessionHash");
         return "https://app-automate.browserstack.com/dashboard/v2/builds/" + buildHash + "/sessions/" + sessionHash;
@@ -131,10 +135,11 @@ public class AppAutomate extends GenericProvider {
         String percyScreenshotUrl = "";
         String error = null;
         String device = deviceName(options.getDeviceName(), result);
+        String osVersion = osVersion(result);
+
         super.setDebugUrl(getDebugUrl(result));
         try {
-            percyScreenshotUrl = super.screenshot(name, options,
-                result.getString("osVersion").split("\\.")[0], device);
+            percyScreenshotUrl = super.screenshot(name, options, osVersion, device);
         } catch (Exception e) {
             error = e.getMessage();
         }
@@ -142,12 +147,15 @@ public class AppAutomate extends GenericProvider {
         return null;
     }
 
+    public String osVersion(JSONObject result) {
+        return result != null ? result.getString("osVersion").split("\\.")[0] : null;
+    }
 
     public String deviceName(String deviceName, JSONObject result) {
         if (deviceName != null) {
             return deviceName;
         }
-        return result.getString("deviceName");
+        return result != null ? result.getString("deviceName") : null;
     }
 
 }

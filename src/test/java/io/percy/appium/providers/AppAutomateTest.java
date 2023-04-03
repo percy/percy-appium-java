@@ -69,6 +69,11 @@ public class AppAutomateTest {
     }
 
     @Test
+    public void testGetDebugUrlWhenResultIsNull() {
+        Assert.assertEquals(appAutomate.getDebugUrl(null), null);
+    }
+
+    @Test
     public void testSupports() {
         try {
             when(androidDriver.getRemoteAddress()).thenReturn(new URL("http://browserstack.com/"));
@@ -212,6 +217,28 @@ public class AppAutomateTest {
     public void testDeviceName() {
         JSONObject result = new JSONObject("{\"deviceName\":\"Samsung Galaxy S22\"}");
         Assert.assertEquals(appAutomate.deviceName(null, result), "Samsung Galaxy S22");
+    }
+
+    @Test
+    public void testDeviceNameWithPassedDeviceName() {
+        JSONObject result = new JSONObject("{\"deviceName\":\"Samsung Galaxy S22\"}");
+        Assert.assertEquals(appAutomate.deviceName("Custom name", result), "Custom name");
+    }
+
+    @Test
+    public void testDeviceNameWithNullResult() {
+        Assert.assertEquals(appAutomate.deviceName(null, null), null);
+    }
+
+    @Test
+    public void testOsName() {
+        JSONObject result = new JSONObject("{\"osVersion\":\"13.6\"}");
+        Assert.assertEquals(appAutomate.osVersion(result), "13");
+    }
+
+    @Test
+    public void testOsNameWithNullResult() {
+        Assert.assertEquals(appAutomate.osVersion(null), null);
     }
 
     @Test
