@@ -20,11 +20,14 @@ Add percy-appium-app to your project dependencies. If you're using Maven:
 <dependency>
   <groupId>io.percy</groupId>
   <artifactId>percy-appium-app</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
 </dependency>
 ```
 
 If you're using a different build system, see https://search.maven.org/artifact/io.percy/percy-appium-app for details for your specific system.
+
+> Note: This package is tested on Java versions 8, 11, 12, 13, 17 as part of unit tests. It should ideally work on all Java 8+ versions.
+
 
 ## Usage
 
