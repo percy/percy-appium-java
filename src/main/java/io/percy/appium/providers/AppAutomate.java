@@ -10,6 +10,7 @@ import io.appium.java_client.AppiumDriver;
 import io.percy.appium.AppPercy;
 import io.percy.appium.lib.ScreenshotOptions;
 import io.percy.appium.lib.Tile;
+
 public class AppAutomate extends GenericProvider {
     private AppiumDriver driver;
     private Boolean markedPercySession = true;
@@ -86,12 +87,14 @@ public class AppAutomate extends GenericProvider {
     }
 
     public String executePercyScreenshot(ScreenshotOptions options, Integer scaleFactor,
-        Integer deviceHeight) throws Exception {
+            Integer deviceHeight) throws Exception {
         try {
             JSONObject arguments = new JSONObject();
             JSONObject args = new JSONObject();
             args.put("numOfTiles", options.getScreenLengths());
             args.put("deviceHeight", deviceHeight);
+            args.put("scollableXpath", options.getScrollableXpath());
+            args.put("scrollableId", options.getScrollableId());
             arguments.put("state", "screenshot");
             arguments.put("percyBuildId", System.getenv("PERCY_BUILD_ID"));
             arguments.put("screenshotType", "fullpage");
@@ -117,7 +120,7 @@ public class AppAutomate extends GenericProvider {
         Integer statusBar = getMetadata().statBarHeight();
         Integer navBar = getMetadata().navBarHeight();
         String response = executePercyScreenshot(options, getMetadata().scaleFactor(),
-            getMetadata().deviceScreenHeight());
+                getMetadata().deviceScreenHeight());
         JSONArray jsonarray = new JSONArray(response);
         List<Tile> tiles = new ArrayList<Tile>();
         for (int i = 0; i < jsonarray.length(); i++) {
