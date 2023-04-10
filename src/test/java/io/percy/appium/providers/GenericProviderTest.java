@@ -124,7 +124,9 @@ public class GenericProviderTest {
         GenericProvider genericProvider = new GenericProvider(androidDriver);
         genericProvider.setMetadata(metadata);
 
-        JSONObject result = genericProvider.ignoreElementObject(selector, location, size);
+        when(mockElement.getLocation()).thenReturn(location);
+        when(mockElement.getSize()).thenReturn(size);
+        JSONObject result = genericProvider.ignoreElementObject(selector, mockElement);
 
         Assert.assertEquals(selector, result.getString("selector"));
 

@@ -110,8 +110,6 @@ public class GenericProvider {
         JSONObject tag = getTag();
         List<Tile> tiles = captureTiles(options);
         JSONObject ignoreRegion = findIgnoredRegions(options);
-        System.out.println("askdhskjdsjdf");
-        System.out.println(ignoreRegion.toString());
         return cliWrapper.postScreenshot(name, tag, tiles, debugUrl, ignoreRegion);
     }
 
@@ -140,7 +138,9 @@ public class GenericProvider {
         return ignoredElementsLocations;
     }
 
-    public JSONObject ignoreElementObject(String selector, Point location, Dimension size) {
+    public JSONObject ignoreElementObject(String selector, MobileElement element) {
+        Point location = element.getLocation();
+        Dimension size = element.getSize();
         double scaleFactor = metadata.scaleFactor();
         JSONObject coOrdinates = new JSONObject();
         coOrdinates.put("top", location.getY() * scaleFactor);
@@ -159,11 +159,8 @@ public class GenericProvider {
         for (String xpath : xpaths) {
             try {
                 MobileElement element = (MobileElement) driver.findElementByXPath(xpath);
-
-                Point location = element.getLocation();
-                Dimension size = element.getSize();
                 String selector = String.format("xpath: %s", xpath);
-                JSONObject ignoredRegion = ignoreElementObject(selector, location, size);
+                JSONObject ignoredRegion = ignoreElementObject(selector, element);
                 ignoredElementsArray.put(ignoredRegion);
             } catch (Exception e) {
                 AppPercy.log(String.format("Appium Element with xpath: %s not found. Ignoring this xpath.", xpath));
@@ -176,10 +173,8 @@ public class GenericProvider {
         for (String id : ids) {
             try {
                 MobileElement element = (MobileElement) driver.findElementByAccessibilityId(id);
-                Point location = element.getLocation();
-                Dimension size = element.getSize();
                 String selector = String.format("id: %s", id);
-                JSONObject ignoredRegion = ignoreElementObject(selector, location, size);
+                JSONObject ignoredRegion = ignoreElementObject(selector, element);
                 ignoredElementsArray.put(ignoredRegion);
 
             } catch (Exception e) {
@@ -192,12 +187,10 @@ public class GenericProvider {
     public void ignoreRegionsByElement(JSONArray ignoredElementsArray, List<MobileElement> elements) {
         for (int index = 0; index < elements.size(); index++) {
             try {
-                Point location = elements.get(index).getLocation();
-                Dimension size = elements.get(index).getSize();
                 String type = elements.get(index).getAttribute("class");
                 String selector = String.format("element: %d %s", index, type);
 
-                JSONObject ignoredRegion = ignoreElementObject(selector, location, size);
+                JSONObject ignoredRegion = ignoreElementObject(selector, elements.get(index));
                 ignoredElementsArray.put(ignoredRegion);
             } catch (Exception e) {
                 AppPercy.log(String.format("Correct Mobile Element not passed at index %d.", index));
