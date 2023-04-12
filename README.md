@@ -92,6 +92,33 @@ The screenshot method arguments:
       - `orientation`  - Orientation of the application
       - `FullPage`: boolean; [Experimental] only supported on App Automate driver sessions [ needs @percy/cli 1.20.2+ ]
       - `ScreenLengths`: int; [Experimental] max screen lengths for fullPage [ needs @percy/cli 1.20.2+ ]
+      - `ScrollableXpath` (**optional**) - [Experimental] scrollable element xpath for fullpage [ needs @percy/cli 1.20.2+ ]; string
+      - `ScrollableId` (**optional**) - [Experimental] scrollable element accessibility id for fullpage [ needs @percy/cli 1.20.2+ ]; string
+      - `IgnoreRegionXpaths` (**optional**) - elements xpaths that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]; list of string
+      - `IgnoreRegionAccessibilityIds` (**optional**) - elements accessibility_ids that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]; list of string
+      - `IgnoreRegionAppiumElements` (**optional**) - appium elements that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]; list of appium element object
+      - `CustomIgnoreRegions` (**optional**) - custom locations that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]; list of ignore_region object
+      - IgnoreRegion:-
+        - Description: This class represents a rectangular area on a screen that needs to be ignored for visual diff.
+        - constructor:-
+          ```
+          var ignoreRegion = new IgnoreRegion();
+          ignoreRegion.setTop() = top;
+          ignoreRegion.setBottom = bottom;
+          ignoreRegion.setLeft = left;
+          ignoreRegion.setRight = right;
+          ```
+        - Parameters:
+
+          `Top` (int): Top coordinate of the ignore region.
+
+          `Bottom` (int): Bottom coordinate of the ignore region.
+
+          `Left` (int): Left coordinate of the ignore region.
+
+          `Right` (int): Right coordinate of the ignore region.
+        - Raises:ValueError: If top, bottom, left, or right is less than 0 or top is greater than or equal to bottom or left is greater than or equal to right.
+        - valid: Ignore region should be within the boundaries of the screen.
 ### Migrating Config
 
 If you have a previous Percy configuration file, migrate it to the newest version with the
