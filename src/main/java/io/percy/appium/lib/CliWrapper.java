@@ -67,13 +67,15 @@ public class CliWrapper {
      * @param name The human-readable name of the screenshot. Should be
      *             unique.
      */
-    public String postScreenshot(String name, JSONObject tag, List<Tile> tiles, String externalDebugUrl) {
+    public String postScreenshot(String name, JSONObject tag, List<Tile> tiles, String externalDebugUrl,
+            JSONObject ignoredElementsData) {
         // Build a JSON object to POST back to the cli node process
         JSONObject data = new JSONObject();
         data.put("name", name);
         data.put("tag", tag);
         data.put("tiles", Tile.getTilesAsJson(tiles));
         data.put("externalDebugUrl", externalDebugUrl);
+        data.put("ignoredElementsData", ignoredElementsData);
         data.put("clientInfo", env.getClientInfo());
         data.put("environmentInfo", env.getEnvironmentInfo());
 
