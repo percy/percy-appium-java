@@ -227,7 +227,7 @@ public class GenericProviderTest {
         JSONArray ignoredElementsArray = new JSONArray();
         List<IgnoreRegion> customLocations = new ArrayList<>();
 
-        IgnoreRegion customRegion = new IgnoreRegion();
+        IgnoreRegion customRegion = new IgnoreRegion(0, 0, 0, 0);
         customRegion.setTop(50);
         customRegion.setBottom(100);
         customRegion.setLeft(200);

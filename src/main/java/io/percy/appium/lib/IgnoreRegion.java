@@ -6,6 +6,16 @@ public class IgnoreRegion {
     private int left;
     private int right;
 
+    public IgnoreRegion(int top, int bottom, int left, int right) {
+        if (top < 0 || bottom < 0 || left < 0 || right < 0) {
+            throw new IllegalArgumentException("Only Positive integer is allowed!");
+        }
+        this.top = top;
+        this.bottom = bottom;
+        this.left = left;
+        this.right = right;
+    }
+
     public int getTop() {
         return top;
     }
