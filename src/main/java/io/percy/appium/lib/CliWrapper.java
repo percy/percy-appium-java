@@ -19,10 +19,8 @@ import io.percy.appium.Environment;
 
 public class CliWrapper {
     // Maybe get the CLI server address
-    public static String PERCY_SERVER_ADDRESS = System.getenv().getOrDefault("PERCY_SERVER_ADDRESS",
+    private static String PERCY_SERVER_ADDRESS = System.getenv().getOrDefault("PERCY_SERVER_ADDRESS",
             "http://localhost:5338");
-    public static String PERCY_BUILD_ID;
-    public static String PERCY_BUILD_URL;
 
     // Environment information like Java, driver, & SDK versions
     private Environment env;
@@ -46,8 +44,8 @@ public class CliWrapper {
             String responseString = EntityUtils.toString(entity, "UTF-8");
             JSONObject myObject = new JSONObject(responseString);
             JSONObject buildJsonObject = (JSONObject) myObject.get("build");
-            PERCY_BUILD_ID = (String) buildJsonObject.get("id");
-            PERCY_BUILD_URL = (String) buildJsonObject.get("url");
+            Environment.setPercyBuildID((String) buildJsonObject.get("id"));
+            Environment.setPercyBuildUrl((String) buildJsonObject.get("url"));
 
             if (statusCode != 200) {
                 throw new RuntimeException("Failed with HTTP error code : " + statusCode);

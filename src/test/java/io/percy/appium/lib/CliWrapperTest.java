@@ -13,6 +13,7 @@ import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
 
 import io.appium.java_client.android.AndroidDriver;
+import io.percy.appium.Environment;
 
 @RunWith(org.mockito.junit.MockitoJUnitRunner.class)
 public class CliWrapperTest {
@@ -21,7 +22,6 @@ public class CliWrapperTest {
     AndroidDriver androidDriver;
     @Before
     public void setup() throws JSONException {
-        CliWrapper.PERCY_SERVER_ADDRESS = "http://127.0.0.1:5338";
         JSONObject responseJsonObject = new JSONObject();
         JSONObject buildObject = new JSONObject();
         buildObject.put("id", "27591981");
@@ -43,7 +43,7 @@ public class CliWrapperTest {
     public void testHealthcheck() {
         CliWrapper cliWrapper = new CliWrapper(androidDriver);
         cliWrapper.healthcheck();
-        Assert.assertEquals(CliWrapper.PERCY_BUILD_ID, "27591981");
-        Assert.assertEquals(CliWrapper.PERCY_BUILD_URL, "https://percy.io/9560f98d/app-proj-temp/builds/27591981");
+        Assert.assertEquals(Environment.getPercyBuildID(), "27591981");
+        Assert.assertEquals(Environment.getPercyBuildUrl(), "https://percy.io/9560f98d/app-proj-temp/builds/27591981");
     }
 }
