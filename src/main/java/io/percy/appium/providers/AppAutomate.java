@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import io.appium.java_client.AppiumDriver;
 import io.percy.appium.AppPercy;
+import io.percy.appium.lib.CliWrapper;
 import io.percy.appium.lib.ScreenshotOptions;
 import io.percy.appium.lib.Tile;
 
@@ -43,8 +44,8 @@ public class AppAutomate extends GenericProvider {
             if (markedPercySession) {
                 JSONObject arguments = new JSONObject();
                 arguments.put("state", "begin");
-                arguments.put("percyBuildId", System.getenv("PERCY_BUILD_ID"));
-                arguments.put("percyBuildUrl", System.getenv("PERCY_BUILD_URL"));
+                arguments.put("percyBuildId", CliWrapper.PERCY_BUILD_ID);
+                arguments.put("percyBuildUrl", CliWrapper.PERCY_BUILD_URL);
                 arguments.put("name", name);
                 JSONObject reqObject = new JSONObject();
                 reqObject.put("action", "percyScreenshot");
@@ -96,7 +97,7 @@ public class AppAutomate extends GenericProvider {
             args.put("scollableXpath", options.getScrollableXpath());
             args.put("scrollableId", options.getScrollableId());
             arguments.put("state", "screenshot");
-            arguments.put("percyBuildId", System.getenv("PERCY_BUILD_ID"));
+            arguments.put("percyBuildId", CliWrapper.PERCY_BUILD_ID);
             arguments.put("screenshotType", "fullpage");
             arguments.put("scaleFactor", scaleFactor);
             arguments.put("options", args);
