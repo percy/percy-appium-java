@@ -131,7 +131,7 @@ public class AppAutomateTest {
         args.put("numOfTiles", 4);
         args.put("deviceHeight", 2160);
         arguments.put("state", "screenshot");
-        arguments.put("percyBuildId", System.getenv("PERCY_BUILD_ID"));
+        arguments.put("percyBuildId", Environment.getPercyBuildID());
         arguments.put("screenshotType", "fullpage");
         arguments.put("scaleFactor", 1);
         arguments.put("options", args);
