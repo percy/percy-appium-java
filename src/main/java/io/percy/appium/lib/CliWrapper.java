@@ -2,6 +2,7 @@ package io.percy.appium.lib;
 
 import java.util.List;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -39,6 +40,12 @@ public class CliWrapper {
             // Executing the Get request
             HttpResponse response = httpClient.execute(httpget);
             int statusCode = response.getStatusLine().getStatusCode();
+            HttpEntity entity = response.getEntity();
+            String responseString = EntityUtils.toString(entity, "UTF-8");
+            JSONObject myObject = new JSONObject(responseString);
+            JSONObject buildJsonObject = (JSONObject) myObject.get("build");
+            Environment.setPercyBuildID((String) buildJsonObject.get("id"));
+            Environment.setPercyBuildUrl((String) buildJsonObject.get("url"));
 
             if (statusCode != 200) {
                 throw new RuntimeException("Failed with HTTP error code : " + statusCode);

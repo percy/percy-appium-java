@@ -30,4 +30,17 @@ public class EnvironmentTest {
         Assert.assertTrue(environment.getEnvironmentInfo().contains("appium-java; AndroidDriver"));
     }
 
+    @Test
+    public void testSetPercyBuildId() {
+        Environment.setPercyBuildID("123");
+        Assert.assertEquals(Environment.getPercyBuildID(), "123");
+    }
+
+    @Test
+    public void testSetPercyBuildUrl() {
+        String buildUrl = "https://percy.io/9560f98d/app-proj-temp/builds/27591981";
+        Environment.setPercyBuildUrl(buildUrl);
+        Assert.assertEquals(Environment.getPercyBuildUrl(), buildUrl);
+    }
+
 }

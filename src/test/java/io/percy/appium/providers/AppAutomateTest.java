@@ -20,6 +20,7 @@ import org.openqa.selenium.remote.SessionId;
 import com.github.javafaker.Faker;
 
 import io.appium.java_client.android.AndroidDriver;
+import io.percy.appium.Environment;
 import io.percy.appium.lib.Cache;
 import io.percy.appium.lib.ScreenshotOptions;
 import io.percy.appium.lib.Tile;
@@ -130,7 +131,7 @@ public class AppAutomateTest {
         args.put("numOfTiles", 4);
         args.put("deviceHeight", 2160);
         arguments.put("state", "screenshot");
-        arguments.put("percyBuildId", System.getenv("PERCY_BUILD_ID"));
+        arguments.put("percyBuildId", Environment.getPercyBuildID());
         arguments.put("screenshotType", "fullpage");
         arguments.put("scaleFactor", 1);
         arguments.put("options", args);
@@ -161,8 +162,8 @@ public class AppAutomateTest {
         String name = "First";
         JSONObject arguments = new JSONObject();
         arguments.put("state", "begin");
-        arguments.put("percyBuildId", System.getenv("PERCY_BUILD_ID"));
-        arguments.put("percyBuildUrl", System.getenv("PERCY_BUILD_URL"));
+        arguments.put("percyBuildId", Environment.getPercyBuildID());
+        arguments.put("percyBuildUrl", Environment.getPercyBuildUrl());
         arguments.put("name", name);
         JSONObject reqObject = new JSONObject();
         reqObject.put("action", "percyScreenshot");
@@ -201,7 +202,7 @@ public class AppAutomateTest {
         args.put("numOfTiles", 4);
         args.put("deviceHeight", 2160);
         arguments.put("state", "screenshot");
-        arguments.put("percyBuildId", System.getenv("PERCY_BUILD_ID"));
+        arguments.put("percyBuildId", Environment.getPercyBuildID());
         arguments.put("screenshotType", "fullpage");
         arguments.put("scaleFactor", 1);
         arguments.put("options", args);
