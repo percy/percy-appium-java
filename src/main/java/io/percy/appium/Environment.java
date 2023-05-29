@@ -4,7 +4,7 @@ import io.appium.java_client.AppiumDriver;
 
 public class Environment {
     private AppiumDriver driver;
-    public static final String SDK_VERSION = "1.0.2";
+    public static final String SDK_VERSION = "1.1.2";
     private static final String SDK_NAME = "percy-appium-app";
     private static String percyBuildID;
     private static String percyBuildUrl;
