@@ -130,9 +130,11 @@ public class AppPercy {
 
     public static void log(String message, String logLevel) {
         if (logLevel == "debug" && PERCY_DEBUG) {
-            System.out.println(LABEL + " " + message);
+            System.out.println(LABEL + " [\u001b[35m" + message + "\u001b[91m]");
         } else if (logLevel == "info") {
             System.out.println(LABEL + " " + message);
+        } else if (logLevel == "warn") {
+            System.out.println(LABEL + " [\u001b[35m" + message + "\u001b[93m]");
         }
     }
 

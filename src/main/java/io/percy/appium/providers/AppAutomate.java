@@ -168,11 +168,11 @@ public class AppAutomate extends GenericProvider {
         Object appiumVersionJsonProtocol = driver.getCapabilities().getCapability("browserstack.appium_version");
         if (bstackOptions == null && appiumVersionJsonProtocol == null) {
             AppPercy.log("Unable to fetch Appium version, "
-                    + "Appium version should be >= 1.19 for Fullpage Screenshot", "debug");
+                    + "Appium version should be >= 1.19 for Fullpage Screenshot", "warn");
         } else if ((appiumVersionJsonProtocol != null && !appiumVersionCheck(appiumVersionJsonProtocol.toString()))
                 || (bstackOptions != null && !appiumVersionCheck(bstackOptions.get("appiumVersion").toString()))) {
             AppPercy.log("Appium version should be >= 1.19 for Fullpage Screenshot, "
-                    + "Falling back to single page screenshot.");
+                    + "Falling back to single page screenshot.", "warn");
             return false;
         }
         return true;
