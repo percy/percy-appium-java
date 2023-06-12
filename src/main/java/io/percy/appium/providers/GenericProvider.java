@@ -49,7 +49,7 @@ public class GenericProvider {
     }
 
     public List<Tile> captureTiles(ScreenshotOptions options) throws IOException, Exception {
-        if (options.getFullPage()) {
+        if (options.getFullPage() && !AppAutomate.supports(driver)) {
             AppPercy.log("Full page screeshot is only supported on App Automate. "
                     + "Falling back to single page screenshot.");
         }
