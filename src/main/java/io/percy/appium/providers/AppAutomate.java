@@ -164,13 +164,15 @@ public class AppAutomate extends GenericProvider {
     }
 
     public Boolean verifyCorrectAppiumVersion() {
-        Map bstackOptionsW3CProtocol = (Map) driver.getCapabilities().getCapability("bstack:options");
+        Map bstackOptions = (Map) driver.getCapabilities().getCapability("bstack:options");
         Object appiumVersionJsonProtocol = driver.getCapabilities().getCapability("browserstack.appium_version");
-        if (bstackOptionsW3CProtocol == null && appiumVersionJsonProtocol == null) {
-            AppPercy.log("Unable to fetch Appium version, Appium version should be >= 1.19 for Fullpage Screenshot", "debug");
+        if (bstackOptions == null && appiumVersionJsonProtocol == null) {
+            AppPercy.log("Unable to fetch Appium version, "
+                    + "Appium version should be >= 1.19 for Fullpage Screenshot", "debug");
         } else if ((appiumVersionJsonProtocol != null && !appiumVersionCheck(appiumVersionJsonProtocol.toString()))
-                || (bstackOptionsW3CProtocol != null && !appiumVersionCheck(bstackOptionsW3CProtocol.get("appiumVersion").toString()))) {
-            AppPercy.log("Appium version should be >= 1.19 for Fullpage Screenshot, Falling back to single page screenshot.");
+                || (bstackOptions != null && !appiumVersionCheck(bstackOptions.get("appiumVersion").toString()))) {
+            AppPercy.log("Appium version should be >= 1.19 for Fullpage Screenshot, "
+                    + "Falling back to single page screenshot.");
             return false;
         }
         return true;

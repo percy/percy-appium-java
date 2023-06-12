@@ -61,7 +61,8 @@ public class CliWrapper {
                 return false;
             } else {
                 if (minorVersion < 25 && revision < 0) {
-                    AppPercy.log("Percy CLI version, " + version + " is not the minimim version required, some features might not work as expected.");
+                    AppPercy.log("Percy CLI version, " + version
+                        + " is not the minimim version required, some features might not work as expected.");
                 }
             }
 
