@@ -2,6 +2,7 @@ package io.percy.appium.providers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -114,7 +115,7 @@ public class AppAutomate extends GenericProvider {
     }
 
     public List<Tile> captureTiles(ScreenshotOptions options) throws Exception {
-        if (!options.getFullPage()) {
+        if (!options.getFullPage() || !verifyCorrectAppiumVersion()) {
             return super.captureTiles(options);
         }
 
@@ -160,6 +161,28 @@ public class AppAutomate extends GenericProvider {
             return deviceName;
         }
         return result != null ? result.getString("deviceName") : null;
+    }
+
+    public Boolean verifyCorrectAppiumVersion() {
+        Map bstackOptionsW3CProtocol = (Map) driver.getCapabilities().getCapability("bstack:options");
+        Object appiumVersionJsonProtocol = driver.getCapabilities().getCapability("browserstack.appium_version");
+        if (bstackOptionsW3CProtocol == null && appiumVersionJsonProtocol == null) {
+            AppPercy.log("Unable to fetch Appium version, Appium version should be >= 1.19 for Fullpage Screenshot", "debug");
+        } else if ((appiumVersionJsonProtocol != null && !appiumVersionCheck(appiumVersionJsonProtocol.toString()))
+                || (bstackOptionsW3CProtocol != null && !appiumVersionCheck(bstackOptionsW3CProtocol.get("appiumVersion").toString()))) {
+            AppPercy.log("Appium version should be >= 1.19 for Fullpage Screenshot, Falling back to single page screenshot.");
+            return false;
+        }
+        return true;
+    }
+
+    private Boolean appiumVersionCheck(String appiumVersion) {
+        Integer majorVersion = Integer.parseInt(appiumVersion.split("\\.")[0]);
+        Integer minorVersion = Integer.parseInt(appiumVersion.split("\\.")[1]);
+        if (majorVersion == 2 || (majorVersion == 1 && minorVersion > 18)) {
+            return true;
+        }
+        return false;
     }
 
 }

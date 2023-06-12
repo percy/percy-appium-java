@@ -39,6 +39,7 @@ public class AppAutomateTest {
     @Mock
     AndroidMetadata metadata;
 
+    HashMap<String, String> bstackCaps = new HashMap<String, String>();
     HashMap<String, Long> viewportRect = new HashMap<String, Long>();
     HashMap<String, HashMap<String, Long>> sessionValue = new HashMap<String, HashMap<String, Long>>();
     Response session = new Response(new SessionId("abc"));
@@ -245,6 +246,32 @@ public class AppAutomateTest {
     @Test
     public void testDeviceNameWhenProvidedInParams() {
         Assert.assertEquals(appAutomate.deviceName("Samsung Galaxy S22 Ultra", null), "Samsung Galaxy S22 Ultra");
+    }
+
+    @Test
+    public void verifyCorrectAppiumVersionFalseJWP() {
+        when(capabilities.getCapability("browserstack.appium_version")).thenReturn("1.19.1");
+        Assert.assertEquals(appAutomate.verifyCorrectAppiumVersion(), true);
+    }
+
+    @Test
+    public void verifyCorrectAppiumVersionTrueJWP() {
+        when(capabilities.getCapability("browserstack.appium_version")).thenReturn("1.17.0");
+        Assert.assertEquals(appAutomate.verifyCorrectAppiumVersion(), false);
+    }
+
+    @Test
+    public void verifyCorrectAppiumVersionFalseW3C() {
+        bstackCaps.put("appiumVersion", "1.19.1");
+        when(capabilities.getCapability("bstack:options")).thenReturn(bstackCaps);
+        Assert.assertEquals(appAutomate.verifyCorrectAppiumVersion(), true);
+    }
+
+    @Test
+    public void verifyCorrectAppiumVersionTrueW3C() {
+        bstackCaps.put("appiumVersion", "1.17.0");
+        when(capabilities.getCapability("bstack:options")).thenReturn(bstackCaps);
+        Assert.assertEquals(appAutomate.verifyCorrectAppiumVersion(), false);
     }
 
 }
