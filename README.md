@@ -38,7 +38,6 @@ This is an example test using the `percy.screenshot` function.
 import io.percy.appium.AppPercy;
 
 public class Example {
-  private static AppPercy percy;
 
   public static void main(String[] args) throws MalformedURLException, InterruptedException {
     DesiredCapabilities caps = new DesiredCapabilities();
@@ -47,7 +46,7 @@ public class Example {
     AndroidDriver<AndroidElement> driver = new AndroidDriver<AndroidElement>(
       new URL("http://hub.browserstack.com/wd/hub"), caps);
 
-    percy = new AppPercy(driver);
+    AppPercy percy = new AppPercy(driver);
     percy.screenshot("First Screenshot");
     driver.quit();
   }
