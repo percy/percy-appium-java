@@ -24,22 +24,42 @@ public class Percy {
     }
 
     public void screenshot(String name) {
-        try { percy.screenshot(name); } catch (Exception e) {}
+        try {
+            percy.screenshot(name);
+        } catch (Exception ignore) {
+
+        }
     }
 
     public void screenshot(String name, Map<String, Object> options) {
-        try { percy.screenshot(name, options); } catch (Exception e) {}
+        try {
+            percy.screenshot(name, options);
+        } catch (Exception ignore) {
+
+        }
     }
 
     public void screenshot(String name, Boolean fullScreen) {
-        try { percy.screenshot(name, fullScreen); } catch (Exception e) {}
+        try {
+            percy.screenshot(name, fullScreen);
+        } catch (Exception ignore) {
+
+        }
     }
 
     public void screenshot(String name, ScreenshotOptions options) {
-        try { percy.screenshot(name, options); } catch (Exception e) {}
+        try {
+            percy.screenshot(name, options);
+        } catch (Exception ignore) {
+
+        }
     }
 
     public void screenshot(String name, Boolean fullScreen, ScreenshotOptions options) {
-        try { percy.screenshot(name, fullScreen, options); } catch (Exception e) {}
+        try {
+            percy.screenshot(name, fullScreen, options);
+        } catch (Exception ignore) {
+
+        }
     }
 }

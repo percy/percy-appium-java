@@ -5,16 +5,18 @@ import io.appium.java_client.MobileElement;
 import io.percy.appium.lib.CliWrapper;
 import io.percy.appium.lib.PercyOptions;
 
-import java.util.*;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 public class PercyOnAutomate extends IPercy {
     private final AppiumDriver driver;
-    private final CliWrapper cliWrapper;
+    private CliWrapper cliWrapper;
     private final PercyOptions percyOptions;
     /**
      * Is the Percy server running or not
      */
-    private final boolean isPercyEnabled;
+    private Boolean isPercyEnabled = null;
     private static Boolean ignoreErrors = true;
 
     /**
@@ -25,7 +27,6 @@ public class PercyOnAutomate extends IPercy {
         this.driver = driver;
         this.cliWrapper = new CliWrapper(driver);
         this.percyOptions = new PercyOptions(driver);
-        this.isPercyEnabled = cliWrapper.healthcheck();
         ignoreErrors = percyOptions.setPercyIgnoreErrors();
     }
 
@@ -50,6 +51,9 @@ public class PercyOnAutomate extends IPercy {
     @Override
     public void screenshot(String name, Map<String, Object> options) {
         try {
+            if (isPercyEnabled == null) {
+                this.isPercyEnabled = this.cliWrapper.healthcheck();
+            }
             if (!isPercyEnabled || !percyOptions.percyOptionEnabled()) {
                 return;
             }
@@ -60,7 +64,8 @@ public class PercyOnAutomate extends IPercy {
 
             String ignoreElementKey = "ignore_region_appium_elements";
             if (options != null && options.containsKey(ignoreElementKey)) {
-                List<String> ignoreElementIds =  getElementIdFromElement((List<MobileElement>) options.get(ignoreElementKey));
+                List<String> ignoreElementIds =
+                        getElementIdFromElement((List<MobileElement>) options.get(ignoreElementKey));
                 options.remove(ignoreElementKey);
                 options.put("ignore_region_elements", ignoreElementIds);
             }
@@ -82,5 +87,9 @@ public class PercyOnAutomate extends IPercy {
             ignoredElementsArray.add(elementId);
         }
         return ignoredElementsArray;
+    }
+    // Following method added for test cases.
+    protected void setCliWrapper(CliWrapper cli) {
+        this.cliWrapper = cli;
     }
 }

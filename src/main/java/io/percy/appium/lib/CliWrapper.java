@@ -109,8 +109,8 @@ public class CliWrapper {
         return null;
     }
 
-    public String postScreenshotPOA(String name, String sessionId, String commandExecutorUrl, Map<String, Object> capabilities,
-                                    Map<String, Object> options) {
+    public String postScreenshotPOA(String name, String sessionId, String commandExecutorUrl,
+                                Map<String, Object> capabilities, Map<String, Object> options) {
         // Build a JSON object to POST back to the cli node process
         JSONObject data = new JSONObject();
         data.put("snapshotName", name);
