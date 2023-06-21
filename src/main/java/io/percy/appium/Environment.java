@@ -8,6 +8,7 @@ public class Environment {
     private static final String SDK_NAME = "percy-appium-app";
     private static String percyBuildID;
     private static String percyBuildUrl;
+    private static String sessionType;
 
     public Environment(AppiumDriver driver) {
         this.driver = driver;
@@ -41,4 +42,11 @@ public class Environment {
         percyBuildUrl = buildUrlParam;
     }
 
+    public static String getSessionType() {
+        return sessionType;
+    }
+
+    public static void setSessionType(String type) {
+        sessionType = type;
+    }
 }

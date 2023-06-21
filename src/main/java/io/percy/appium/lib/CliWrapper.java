@@ -1,6 +1,7 @@
 package io.percy.appium.lib;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -46,6 +47,7 @@ public class CliWrapper {
             JSONObject buildJsonObject = (JSONObject) myObject.get("build");
             Environment.setPercyBuildID((String) buildJsonObject.get("id"));
             Environment.setPercyBuildUrl((String) buildJsonObject.get("url"));
+            Environment.setSessionType((String) myObject.get("type"));
 
             if (statusCode != 200) {
                 throw new RuntimeException("Failed with HTTP error code : " + statusCode);
@@ -100,6 +102,31 @@ public class CliWrapper {
             HttpResponse response = httpClient.execute(request);
             JSONObject jsonResponse = new JSONObject(EntityUtils.toString(response.getEntity()));
             return jsonResponse.getString("link");
+        } catch (Exception ex) {
+            AppPercy.log(ex.toString(), "debug");
+            AppPercy.log("Could not post screenshot " + name);
+        }
+        return null;
+    }
+
+    public String postScreenshotPOA(String name, String sessionId, String commandExecutorUrl, Map<String, Object> capabilities,
+                                    Map<String, Object> options) {
+        // Build a JSON object to POST back to the cli node process
+        JSONObject data = new JSONObject();
+        data.put("snapshotName", name);
+        data.put("sessionId", sessionId);
+        data.put("commandExecutorUrl", commandExecutorUrl);
+        data.put("capabilities", capabilities);
+        data.put("options", options);
+        data.put("clientInfo", env.getClientInfo());
+        data.put("environmentInfo", env.getEnvironmentInfo());
+
+        StringEntity entity = new StringEntity(data.toString(), ContentType.APPLICATION_JSON);
+
+        try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+            HttpPost request = new HttpPost(PERCY_SERVER_ADDRESS + "/percy/automateScreenshot");
+            request.setEntity(entity);
+            HttpResponse response = httpClient.execute(request);
         } catch (Exception ex) {
             AppPercy.log(ex.toString(), "debug");
             AppPercy.log("Could not post screenshot " + name);
