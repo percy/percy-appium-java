@@ -111,14 +111,31 @@ The screenshot method arguments:
         - Parameters:
 
           `Top` (int): Top coordinate of the ignore region.
-
           `Bottom` (int): Bottom coordinate of the ignore region.
-
           `Left` (int): Left coordinate of the ignore region.
-
           `Right` (int): Right coordinate of the ignore region.
         - Raises:IllegalArgumentException: If top, bottom, left, or right is less than 0 or top is greater than or equal to bottom or left is greater than or equal to right.
         - valid: Ignore region should be within the boundaries of the screen.
+
+## Running with Hybrid Apps
+
+For a hybrid app, we need to switch to native context before taking screenshot.
+
+- Add a helper method similar to following:
+```java
+public void percyScreenshotFlutter(String name, ScreenshotOptions options) {
+    // switch to native context
+    driver.context("NATIVE_APP");
+    percy.screenshot(name, options);
+    // switch back to flutter context
+    driver.context("FLUTTER");
+}
+```
+
+- Call percyScreenshotFlutter helper function when you want to take screenshot.
+```java
+percyScreenshotFlutter(name, options);
+```
 ### Migrating Config
 
 If you have a previous Percy configuration file, migrate it to the newest version with the
