@@ -121,7 +121,7 @@ The screenshot method arguments:
 
 For a hybrid app, we need to switch to native context before taking screenshot.
 
-- Add a helper method similar to following:
+- Add a helper method similar to following for say flutter based hybrid app:
 ```java
 public void percyScreenshotFlutter(String name, ScreenshotOptions options) {
     // switch to native context
@@ -136,6 +136,11 @@ public void percyScreenshotFlutter(String name, ScreenshotOptions options) {
 ```java
 percyScreenshotFlutter(name, options);
 ```
+
+> Note: 
+>
+> For other hybrid apps the `await driver.switchContext('FLUTTER');` would change to context that it uses like say WEBVIEW etc.
+>
 ### Migrating Config
 
 If you have a previous Percy configuration file, migrate it to the newest version with the
