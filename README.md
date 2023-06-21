@@ -139,7 +139,7 @@ percyScreenshotFlutter(name, options);
 
 > Note: 
 >
-> For other hybrid apps the `await driver.switchContext('FLUTTER');` would change to context that it uses like say WEBVIEW etc.
+> For other hybrid apps the `driver.context("FLUTTER");` would change to context that it uses like say WEBVIEW etc.
 >
 ### Migrating Config
 
