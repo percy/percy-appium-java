@@ -123,10 +123,10 @@ For a hybrid app, we need to switch to native context before taking screenshot.
 
 - Add a helper method similar to following for say flutter based hybrid app:
 ```java
-public void percyScreenshotFlutter(AppiumDriver driver, String name, ScreenshotOptions options) {
+public void percyScreenshotFlutter(AppPercy appPercy, AppiumDriver driver, String name, ScreenshotOptions options) {
     // switch to native context
     driver.context("NATIVE_APP");
-    percy.screenshot(name, options);
+    appPercy.screenshot(name, options);
     // switch back to flutter context
     driver.context("FLUTTER");
 }
@@ -134,7 +134,7 @@ public void percyScreenshotFlutter(AppiumDriver driver, String name, ScreenshotO
 
 - Call percyScreenshotFlutter helper function when you want to take screenshot.
 ```java
-percyScreenshotFlutter(driver, name, options);
+percyScreenshotFlutter(appPercy, driver, name, options);
 ```
 
 > Note: 
