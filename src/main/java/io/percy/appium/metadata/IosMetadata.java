@@ -46,7 +46,7 @@ public class IosMetadata extends Metadata {
         Integer deviceScreenHeight = MetadataHelper.valueFromStaticDevicesInfo("screenHeight",
                 this.deviceName().toLowerCase());
         if (deviceScreenHeight == 0) {
-            deviceScreenHeight = ((Long) getViewportRect().get("height")).intValue();
+            deviceScreenHeight = ((Long) getViewportRect().get("height")).intValue() + statBarHeight();
         }
         return deviceScreenHeight;
     }
