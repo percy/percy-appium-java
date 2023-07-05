@@ -76,7 +76,7 @@ public class IosMetadataTest {
     @Test
     public void testDeviceScreenHeight() {
         when(capabilities.getCapability("deviceName")).thenReturn("iphone 12 pro");
-        Assert.assertEquals(metadata.deviceScreenHeight().intValue(), height.intValue());
+        Assert.assertEquals(metadata.deviceScreenHeight().intValue(), height.intValue() + top.intValue());
     }
 
     @Test
