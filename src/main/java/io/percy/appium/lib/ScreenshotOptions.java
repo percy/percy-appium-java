@@ -19,6 +19,7 @@ public class ScreenshotOptions {
     private List<IgnoreRegion> customIgnoreRegions = new ArrayList<IgnoreRegion>();
     private String scrollableXpath = null;
     private String scrollableId = null;
+    private Boolean forceFullPage = false;
 
     public String getDeviceName() {
         return deviceName;
@@ -46,6 +47,10 @@ public class ScreenshotOptions {
 
     public Integer getScreenLengths() {
         return screenLengths;
+    }
+
+    public Boolean getForceFullPage() {
+        return forceFullPage;
     }
 
     public void setDeviceName(String deviceNameParam) {
@@ -122,5 +127,9 @@ public class ScreenshotOptions {
 
     public void setScrollableId(String scrollableId) {
         this.scrollableId = scrollableId;
+    }
+
+    public void setForceFullPage(Boolean forceFullPage) {
+        this.forceFullPage = forceFullPage;
     }
 }

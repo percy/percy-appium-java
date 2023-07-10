@@ -12,6 +12,7 @@ import io.percy.appium.AppPercy;
 import io.percy.appium.Environment;
 import io.percy.appium.lib.ScreenshotOptions;
 import io.percy.appium.lib.Tile;
+import net.bytebuddy.jar.asm.Opcodes;
 
 public class AppAutomate extends GenericProvider {
     private AppiumDriver driver;
@@ -97,6 +98,7 @@ public class AppAutomate extends GenericProvider {
             args.put("deviceHeight", deviceHeight);
             args.put("scollableXpath", options.getScrollableXpath());
             args.put("scrollableId", options.getScrollableId());
+            args.put("FORCE_FULL_PAGE", options.getForceFullPage());
             arguments.put("state", "screenshot");
             arguments.put("percyBuildId", Environment.getPercyBuildID());
             arguments.put("screenshotType", "fullpage");

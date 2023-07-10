@@ -67,7 +67,8 @@ public class AppAutomateTest {
     @Test
     public void testGetDebugUrl() {
         JSONObject result = new JSONObject("{\"buildHash\":\"abc\", \"sessionHash\":\"def\"}");
-        Assert.assertEquals(appAutomate.getDebugUrl(result), "https://app-automate.browserstack.com/dashboard/v2/builds/abc/sessions/def");
+        Assert.assertEquals(appAutomate.getDebugUrl(result),
+                "https://app-automate.browserstack.com/dashboard/v2/builds/abc/sessions/def");
     }
 
     @Test
@@ -202,6 +203,7 @@ public class AppAutomateTest {
         JSONObject args = new JSONObject();
         args.put("numOfTiles", 4);
         args.put("deviceHeight", 2160);
+        args.put("FORCE_FULL_PAGE", false);
         arguments.put("state", "screenshot");
         arguments.put("percyBuildId", Environment.getPercyBuildID());
         arguments.put("screenshotType", "fullpage");
