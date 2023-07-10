@@ -132,6 +132,8 @@ public class AppAutomateTest {
         JSONObject args = new JSONObject();
         args.put("numOfTiles", 4);
         args.put("deviceHeight", 2160);
+        args.put("FORCE_FULL_PAGE", false);
+
         arguments.put("state", "screenshot");
         arguments.put("percyBuildId", Environment.getPercyBuildID());
         arguments.put("screenshotType", "fullpage");

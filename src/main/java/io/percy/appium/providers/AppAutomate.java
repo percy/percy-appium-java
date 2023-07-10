@@ -12,7 +12,6 @@ import io.percy.appium.AppPercy;
 import io.percy.appium.Environment;
 import io.percy.appium.lib.ScreenshotOptions;
 import io.percy.appium.lib.Tile;
-import net.bytebuddy.jar.asm.Opcodes;
 
 public class AppAutomate extends GenericProvider {
     private AppiumDriver driver;
