@@ -41,4 +41,8 @@ public class Environment {
         percyBuildUrl = buildUrlParam;
     }
 
+    public static Boolean getForceFullPage() {
+        return System.getenv().getOrDefault("FORCE_FULL_PAGE", "false").equals("true");
+    }
+
 }
