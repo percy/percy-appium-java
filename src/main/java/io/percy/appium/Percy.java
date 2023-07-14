@@ -16,7 +16,7 @@ public class Percy {
         this.cliWrapper = new CliWrapper(driver);
         Boolean isPercyEnabled = cliWrapper.healthcheck();
 
-        if (Environment.getSessionType() == "automate") {
+        if (Environment.getSessionType().equals("automate")) {
             percy = new PercyOnAutomate(driver);
         } else {
             percy = new AppPercy(driver);
