@@ -14,7 +14,7 @@ import io.percy.appium.providers.ProviderResolver;
 /**
  * Percy client for visual testing.
  */
-public class AppPercy {
+public class AppPercy extends IPercy {
     /**
      * Appium Driver we'll use for accessing the apps to screenshot.
      */
@@ -61,6 +61,7 @@ public class AppPercy {
      * @param name The human-readable name of the screenshot. Should be unique.
      *
      */
+    @Override
     public void screenshot(String name) {
         screenshot(name, false, null);
     }
@@ -72,6 +73,7 @@ public class AppPercy {
      *                   unique.
      * @param fullScreen It indicates if the app is a full screen
      */
+    @Override
     public void screenshot(String name, Boolean fullScreen) {
         screenshot(name, fullScreen, null);
     }
@@ -83,6 +85,7 @@ public class AppPercy {
      *                unique.
      * @param options Optional screenshot params
      */
+    @Override
     public void screenshot(String name, ScreenshotOptions options) {
         screenshot(name, false, options);
     }
@@ -95,6 +98,7 @@ public class AppPercy {
      * @param fullScreen It indicates if the app is a full screen
      * @param options    Optional screenshot params
      */
+    @Override
     public void screenshot(String name, Boolean fullScreen, ScreenshotOptions options) {
         if (!isPercyEnabled || !percyOptions.percyOptionEnabled()) {
             return;
