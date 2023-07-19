@@ -43,4 +43,11 @@ public class EnvironmentTest {
         Assert.assertEquals(Environment.getPercyBuildUrl(), buildUrl);
     }
 
+    @Test
+    public void testSetSessionType() {
+        String type = "automate";
+        Environment.setSessionType(type);
+        Assert.assertEquals(Environment.getSessionType(), type);
+    }
+
 }
