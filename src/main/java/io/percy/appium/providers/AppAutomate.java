@@ -96,8 +96,7 @@ public class AppAutomate extends GenericProvider {
                 screenshotType = "singlepage";
             }
             String projectId = "percy-prod";
-            if (Environment.getEnablePercyDev())
-            {
+            if (Environment.getEnablePercyDev()) {
                 projectId = "percy-dev";
             }
             JSONObject arguments = new JSONObject();
