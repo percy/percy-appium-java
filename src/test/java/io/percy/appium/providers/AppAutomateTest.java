@@ -110,19 +110,36 @@ public class AppAutomateTest {
     public void testcaptureTilesForSinglePage() throws Exception {
         ScreenshotOptions options = new ScreenshotOptions();
         options.setFullPage(false);
-        when(androidDriver.getScreenshotAs(OutputType.BASE64))
-                .thenReturn("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAADwCAYAAAA+VemSAAAgAEl...==");
+        String response = "{\"result\":\"[{'header_height': 200, 'footer_height': 100, 'sha': 'sha'}]\"}";
+        JSONObject arguments = new JSONObject();
+        JSONObject args = new JSONObject();
+        args.put("numOfTiles", 4);
+        args.put("deviceHeight", 2160);
+        args.put("FORCE_FULL_PAGE", false);
+
+        arguments.put("state", "screenshot");
+        arguments.put("percyBuildId", Environment.getPercyBuildID());
+        arguments.put("screenshotType", "singlepage");
+        arguments.put("projectId", "percy-prod");
+        arguments.put("scaleFactor", 1);
+        arguments.put("options", args);
+        JSONObject reqObject = new JSONObject();
+        reqObject.put("action", "percyScreenshot");
+        reqObject.put("arguments", arguments);
+
+        when(androidDriver.executeScript(String.format("browserstack_executor: %s", reqObject.toString())))
+                .thenReturn(response);
 
         AppAutomate appAutomateProvider = new AppAutomate(androidDriver);
         appAutomateProvider.setMetadata(new AndroidMetadata(androidDriver, null, null, null, null, null));
 
         Tile tile = appAutomateProvider.captureTiles(options).get(0);
-        Assert.assertTrue(tile.getLocalFilePath().endsWith(".png"));
         Assert.assertEquals(tile.getStatusBarHeight().intValue(), top.intValue());
         Assert.assertEquals(tile.getNavBarHeight().intValue(), 2160 - (height + top));
-        Assert.assertEquals(tile.getHeaderHeight().intValue(), 0);
-        Assert.assertEquals(tile.getFooterHeight().intValue(), 0);
+        Assert.assertEquals(tile.getHeaderHeight().intValue(), 200);
+        Assert.assertEquals(tile.getFooterHeight().intValue(), 100);
         Assert.assertEquals(tile.getFullScreen(), false);
+        Assert.assertEquals(tile.getSha(), "sha");
     }
 
     @Test
@@ -137,6 +154,7 @@ public class AppAutomateTest {
         arguments.put("state", "screenshot");
         arguments.put("percyBuildId", Environment.getPercyBuildID());
         arguments.put("screenshotType", "fullpage");
+        arguments.put("projectId", "percy-prod");
         arguments.put("scaleFactor", 1);
         arguments.put("options", args);
         JSONObject reqObject = new JSONObject();
@@ -209,6 +227,7 @@ public class AppAutomateTest {
         arguments.put("state", "screenshot");
         arguments.put("percyBuildId", Environment.getPercyBuildID());
         arguments.put("screenshotType", "fullpage");
+        arguments.put("projectId", "percy-prod");
         arguments.put("scaleFactor", 1);
         arguments.put("options", args);
         JSONObject reqObject = new JSONObject();

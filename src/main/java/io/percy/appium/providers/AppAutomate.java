@@ -91,6 +91,15 @@ public class AppAutomate extends GenericProvider {
     public String executePercyScreenshot(ScreenshotOptions options, Integer scaleFactor,
             Integer deviceHeight) throws Exception {
         try {
+            String screenshotType = "fullpage";
+            if (!options.getFullPage() || !verifyCorrectAppiumVersion()) {
+                screenshotType = "singlepage";
+            }
+            String projectId = "percy-prod";
+            if (Environment.getEnablePercyDev())
+            {
+                projectId = "percy-dev";
+            }
             JSONObject arguments = new JSONObject();
             JSONObject args = new JSONObject();
             args.put("numOfTiles", options.getScreenLengths());
@@ -100,8 +109,9 @@ public class AppAutomate extends GenericProvider {
             args.put("FORCE_FULL_PAGE", Environment.getForceFullPage());
             arguments.put("state", "screenshot");
             arguments.put("percyBuildId", Environment.getPercyBuildID());
-            arguments.put("screenshotType", "fullpage");
+            arguments.put("screenshotType", screenshotType);
             arguments.put("scaleFactor", scaleFactor);
+            arguments.put("projectId", projectId);
             arguments.put("options", args);
             JSONObject reqObject = new JSONObject();
             reqObject.put("action", "percyScreenshot");
@@ -116,7 +126,7 @@ public class AppAutomate extends GenericProvider {
     }
 
     public List<Tile> captureTiles(ScreenshotOptions options) throws Exception {
-        if (!options.getFullPage() || !verifyCorrectAppiumVersion()) {
+        if (Environment.getDisableRemoteUploads()) {
             return super.captureTiles(options);
         }
 
