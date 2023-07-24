@@ -97,6 +97,7 @@ public class AppAutomate extends GenericProvider {
             }
             String projectId = "percy-prod";
             if (Environment.getEnablePercyDev()) {
+                System.out.print("HELLO");
                 projectId = "percy-dev";
             }
             JSONObject arguments = new JSONObject();
@@ -126,6 +127,12 @@ public class AppAutomate extends GenericProvider {
 
     public List<Tile> captureTiles(ScreenshotOptions options) throws Exception {
         if (Environment.getDisableRemoteUploads()) {
+            if (options.getFullPage()) {
+                AppPercy.log(
+                "Full page screenshots are only supported when \"PERCY_DISABLE_REMOTE_UPLOADS\" is not set",
+                "warn"
+                );
+            }
             return super.captureTiles(options);
         }
 
