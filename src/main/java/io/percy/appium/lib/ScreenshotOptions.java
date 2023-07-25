@@ -104,11 +104,11 @@ public class ScreenshotOptions {
         this.ignoreRegionAppiumElements = ignoreRegionAppiumElements;
     }
 
-    public List<IgnoreRegion> getCustomIgnoreRegions() {
+    public List<Region> getCustomIgnoreRegions() {
         return customIgnoreRegions;
     }
 
-    public void setCustomIgnoreRegions(List<IgnoreRegion> customIgnoreRegions) {
+    public void setCustomIgnoreRegions(List<Region> customIgnoreRegions) {
         this.customIgnoreRegions = customIgnoreRegions;
     }
 
