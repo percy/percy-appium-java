@@ -63,8 +63,21 @@ public class PercyOnAutomate extends IPercy {
             Map<String, Object> capabilities = driver.getCapabilities().asMap();
 
             String ignoreElementKey = "ignore_region_appium_elements";
+            String ignoreElementAltKey = "ignoreRegionAppiumElements";
             String considerElementKey = "consider_region_appium_elements";
+            String considerElementAltKey = "considerRegionAppiumElements";
+
             if (options != null) {
+                if (options.containsKey(ignoreElementAltKey)) {
+                    options.put(ignoreElementKey, options.get(ignoreElementAltKey));
+                    options.remove(ignoreElementAltKey);
+                }
+
+                if (options.containsKey(considerElementAltKey)) {
+                    options.put(considerElementKey, options.get(considerElementAltKey));
+                    options.remove(considerElementAltKey);
+                }
+
                 if (options.containsKey(ignoreElementKey)) {
                     List<String> ignoreElementIds =
                             getElementIdFromElement((List<MobileElement>) options.get(ignoreElementKey));
