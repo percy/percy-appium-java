@@ -97,7 +97,6 @@ public class AppAutomate extends GenericProvider {
             }
             String projectId = "percy-prod";
             if (Environment.getEnablePercyDev()) {
-                System.out.print("HELLO");
                 projectId = "percy-dev";
             }
             JSONObject arguments = new JSONObject();
