@@ -103,7 +103,7 @@ public class GenericProvider {
         return screenshot(name, options, null, null);
     }
 
-    private JSONObject getObjectForArray(string key, JSONArray arr) {
+    private JSONObject getObjectForArray(String key, JSONArray arr) {
         JSONObject elementsData = new JSONObject();
         elementsData.put(key, arr);
 
@@ -128,7 +128,14 @@ public class GenericProvider {
             options.getConsiderRegionAppiumElements(),
             options.getCustomConsiderRegions()
         );
-        return cliWrapper.postScreenshot(name, tag, tiles, debugUrl, getObjectForArray("ignoreElementsData", ignoreRegion), getObjectForArray("considerElementsData", considerRegion));
+        return cliWrapper.postScreenshot(
+            name,
+            tag,
+            tiles,
+            debugUrl,
+            getObjectForArray("ignoreElementsData", ignoreRegion),
+            getObjectForArray("considerElementsData", considerRegion)
+        );
     }
 
     public void setMetadata(Metadata metadata) {
@@ -143,7 +150,12 @@ public class GenericProvider {
         this.debugUrl = debugUrl;
     }
 
-    public JSONObject findRegions(List<string> xpaths, List<string> accessibilityIds, List<MobileElement> elements, List<Region> locations) {
+    public JSONArray findRegions(
+        List<string> xpaths,
+        List<string> accessibilityIds,
+        List<MobileElement> elements,
+        List<Region> locations
+    ) {
         JSONArray elementsArray = new JSONArray();
         getRegionsByXpath(elementsArray, xpaths);
         getRegionsByIds(elementsArray, accessibilityIds);
@@ -214,12 +226,12 @@ public class GenericProvider {
         }
     }
 
-    public void getRegionsByLocation(JSONArray elementsArray, List<IgnoreRegion> customLocations) {
+    public void getRegionsByLocation(JSONArray elementsArray, List<Region> customLocations) {
         int width = metadata.deviceScreenWidth();
         int height = metadata.deviceScreenHeight();
         for (int index = 0; index < customLocations.size(); index++) {
             try {
-                IgnoreRegion customLocation = customLocations.get(index);
+                Region customLocation = customLocations.get(index);
                 if (customLocation.isValid(width, height)) {
                     String selector = "custom region " + index;
                     JSONObject region = new JSONObject();
