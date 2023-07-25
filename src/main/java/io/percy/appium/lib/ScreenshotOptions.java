@@ -16,7 +16,11 @@ public class ScreenshotOptions {
     private List<String> ignoreRegionXpaths = new ArrayList<String>();
     private List<String> ignoreRegionAccessibilityIds = new ArrayList<String>();
     private List<MobileElement> ignoreRegionAppiumElements = new ArrayList<MobileElement>();
-    private List<IgnoreRegion> customIgnoreRegions = new ArrayList<IgnoreRegion>();
+    private List<Region> customIgnoreRegions = new ArrayList<Region>();
+    private List<String> considerRegionXpaths = new ArrayList<String>();
+    private List<String> considerRegionAccessibilityIds = new ArrayList<String>();
+    private List<MobileElement> considerRegionAppiumElements = new ArrayList<MobileElement>();
+    private List<Region> customConsiderRegions = new ArrayList<Region>();
     private String scrollableXpath = null;
     private String scrollableId = null;
 
@@ -106,6 +110,38 @@ public class ScreenshotOptions {
 
     public void setCustomIgnoreRegions(List<IgnoreRegion> customIgnoreRegions) {
         this.customIgnoreRegions = customIgnoreRegions;
+    }
+
+    public List<String> getConsiderRegionXpaths() {
+        return considerRegionXpaths;
+    }
+
+    public void setConsiderRegionXpaths(List<String> considerRegionXpaths) {
+        this.considerRegionXpaths = considerRegionXpaths;
+    }
+
+    public List<String> getConsiderRegionAccessibilityIds() {
+        return considerRegionAccessibilityIds;
+    }
+
+    public void setConsiderRegionAccessibilityIds(List<String> considerRegionAccessibilityIds) {
+        this.considerRegionAccessibilityIds = considerRegionAccessibilityIds;
+    }
+
+    public List<MobileElement> getConsiderRegionAppiumElements() {
+        return considerRegionAppiumElements;
+    }
+
+    public void setConsiderRegionAppiumElements(List<MobileElement> considerRegionAppiumElements) {
+        this.considerRegionAppiumElements = considerRegionAppiumElements;
+    }
+
+    public List<Region> getCustomConsiderRegions() {
+        return customConsiderRegions;
+    }
+
+    public void setCustomConsiderRegions(List<Region> customConsiderRegions) {
+        this.customConsiderRegions = customConsiderRegions;
     }
 
     public String getScrollableXpath() {
