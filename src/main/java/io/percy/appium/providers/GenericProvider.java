@@ -20,7 +20,7 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.percy.appium.AppPercy;
 import io.percy.appium.lib.CliWrapper;
-import io.percy.appium.lib.IgnoreRegion;
+import io.percy.appium.lib.Region;
 import io.percy.appium.lib.ScreenshotOptions;
 import io.percy.appium.lib.Tile;
 import io.percy.appium.metadata.Metadata;
@@ -116,13 +116,13 @@ public class GenericProvider {
                 options.getNavBarHeight(), options.getOrientation(), platformVersion);
         JSONObject tag = getTag();
         List<Tile> tiles = captureTiles(options);
-        JSONObject ignoreRegion = findRegions(
+        JSONArray ignoreRegions = findRegions(
             options.getIgnoreRegionXpaths(),
             options.getIgnoreRegionAccessibilityIds(),
             options.getIgnoreRegionAppiumElements(),
             options.getCustomIgnoreRegions()
         );
-        JSONObject considerRegion = findRegions(
+        JSONArray considerRegions = findRegions(
             options.getConsiderRegionXpaths(),
             options.getConsiderRegionAccessibilityIds(),
             options.getConsiderRegionAppiumElements(),
@@ -133,8 +133,8 @@ public class GenericProvider {
             tag,
             tiles,
             debugUrl,
-            getObjectForArray("ignoreElementsData", ignoreRegion),
-            getObjectForArray("considerElementsData", considerRegion)
+            getObjectForArray("ignoreElementsData", ignoreRegions),
+            getObjectForArray("considerElementsData", considerRegions)
         );
     }
 
@@ -151,8 +151,8 @@ public class GenericProvider {
     }
 
     public JSONArray findRegions(
-        List<string> xpaths,
-        List<string> accessibilityIds,
+        List<String> xpaths,
+        List<String> accessibilityIds,
         List<MobileElement> elements,
         List<Region> locations
     ) {
