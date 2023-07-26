@@ -46,6 +46,14 @@ public class Environment {
         return System.getenv().getOrDefault("FORCE_FULL_PAGE", "false").equals("true");
     }
 
+    public static Boolean getDisableRemoteUploads() {
+        return System.getenv().getOrDefault("PERCY_DISABLE_REMOTE_UPLOADS", "false").equals("true");
+    }
+
+    public static Boolean getEnablePercyDev() {
+        return System.getenv().getOrDefault("PERCY_ENABLE_DEV", "false").equals("true");
+    }
+
     public static String getSessionType() {
         return sessionType;
     }
