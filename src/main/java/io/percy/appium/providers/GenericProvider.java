@@ -20,7 +20,7 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.percy.appium.AppPercy;
 import io.percy.appium.lib.CliWrapper;
-import io.percy.appium.lib.IgnoreRegion;
+import io.percy.appium.lib.Region;
 import io.percy.appium.lib.ScreenshotOptions;
 import io.percy.appium.lib.Tile;
 import io.percy.appium.metadata.Metadata;
@@ -103,14 +103,39 @@ public class GenericProvider {
         return screenshot(name, options, null, null);
     }
 
+    private JSONObject getObjectForArray(String key, JSONArray arr) {
+        JSONObject elementsData = new JSONObject();
+        elementsData.put(key, arr);
+
+        return elementsData;
+    }
+
     public String screenshot(String name, ScreenshotOptions options,
             String platformVersion, String deviceName) throws Exception {
         this.metadata = MetadataHelper.resolve(driver, deviceName, options.getStatusBarHeight(),
                 options.getNavBarHeight(), options.getOrientation(), platformVersion);
         JSONObject tag = getTag();
         List<Tile> tiles = captureTiles(options);
-        JSONObject ignoreRegion = findIgnoredRegions(options);
-        return cliWrapper.postScreenshot(name, tag, tiles, debugUrl, ignoreRegion);
+        JSONArray ignoreRegions = findRegions(
+            options.getIgnoreRegionXpaths(),
+            options.getIgnoreRegionAccessibilityIds(),
+            options.getIgnoreRegionAppiumElements(),
+            options.getCustomIgnoreRegions()
+        );
+        JSONArray considerRegions = findRegions(
+            options.getConsiderRegionXpaths(),
+            options.getConsiderRegionAccessibilityIds(),
+            options.getConsiderRegionAppiumElements(),
+            options.getCustomConsiderRegions()
+        );
+        return cliWrapper.postScreenshot(
+            name,
+            tag,
+            tiles,
+            debugUrl,
+            getObjectForArray("ignoreElementsData", ignoreRegions),
+            getObjectForArray("considerElementsData", considerRegions)
+        );
     }
 
     public void setMetadata(Metadata metadata) {
@@ -125,20 +150,22 @@ public class GenericProvider {
         this.debugUrl = debugUrl;
     }
 
-    public JSONObject findIgnoredRegions(ScreenshotOptions options) {
-        JSONArray ignoredElementsArray = new JSONArray();
-        ignoreRegionsByXpaths(ignoredElementsArray, options.getIgnoreRegionXpaths());
-        ignoreRegionsByIds(ignoredElementsArray, options.getIgnoreRegionAccessibilityIds());
-        ignoreRegionsByElement(ignoredElementsArray, options.getIgnoreRegionAppiumElements());
-        addCustomIgnoreRegions(ignoredElementsArray, options.getCustomIgnoreRegions());
+    public JSONArray findRegions(
+        List<String> xpaths,
+        List<String> accessibilityIds,
+        List<MobileElement> elements,
+        List<Region> locations
+    ) {
+        JSONArray elementsArray = new JSONArray();
+        getRegionsByXpath(elementsArray, xpaths);
+        getRegionsByIds(elementsArray, accessibilityIds);
+        getRegionsByElements(elementsArray, elements);
+        getRegionsByLocation(elementsArray, locations);
 
-        JSONObject ignoredElementsLocations = new JSONObject();
-        ignoredElementsLocations.put("ignoreElementsData", ignoredElementsArray);
-
-        return ignoredElementsLocations;
+        return elementsArray;
     }
 
-    public JSONObject ignoreElementObject(String selector, MobileElement element) {
+    public JSONObject getRegionObject(String selector, MobileElement element) {
         Point location = element.getLocation();
         Dimension size = element.getSize();
         double scaleFactor = metadata.scaleFactor();
@@ -155,13 +182,13 @@ public class GenericProvider {
         return jsonObject;
     }
 
-    public void ignoreRegionsByXpaths(JSONArray ignoredElementsArray, List<String> xpaths) {
+    public void getRegionsByXpath(JSONArray elementsArray, List<String> xpaths) {
         for (String xpath : xpaths) {
             try {
                 MobileElement element = (MobileElement) driver.findElementByXPath(xpath);
                 String selector = String.format("xpath: %s", xpath);
-                JSONObject ignoredRegion = ignoreElementObject(selector, element);
-                ignoredElementsArray.put(ignoredRegion);
+                JSONObject region = getRegionObject(selector, element);
+                elementsArray.put(region);
             } catch (Exception e) {
                 AppPercy.log(String.format("Appium Element with xpath: %s not found. Ignoring this xpath.", xpath));
                 AppPercy.log(e.toString(), "debug");
@@ -169,13 +196,13 @@ public class GenericProvider {
         }
     }
 
-    public void ignoreRegionsByIds(JSONArray ignoredElementsArray, List<String> ids) {
+    public void getRegionsByIds(JSONArray elementsArray, List<String> ids) {
         for (String id : ids) {
             try {
                 MobileElement element = (MobileElement) driver.findElementByAccessibilityId(id);
                 String selector = String.format("id: %s", id);
-                JSONObject ignoredRegion = ignoreElementObject(selector, element);
-                ignoredElementsArray.put(ignoredRegion);
+                JSONObject region = getRegionObject(selector, element);
+                elementsArray.put(region);
 
             } catch (Exception e) {
                 AppPercy.log(String.format("Appium Element with id: %d not found. Ignoring this id.", id));
@@ -184,14 +211,14 @@ public class GenericProvider {
         }
     }
 
-    public void ignoreRegionsByElement(JSONArray ignoredElementsArray, List<MobileElement> elements) {
+    public void getRegionsByElements(JSONArray elementsArray, List<MobileElement> elements) {
         for (int index = 0; index < elements.size(); index++) {
             try {
                 String type = elements.get(index).getAttribute("class");
                 String selector = String.format("element: %d %s", index, type);
 
-                JSONObject ignoredRegion = ignoreElementObject(selector, elements.get(index));
-                ignoredElementsArray.put(ignoredRegion);
+                JSONObject region = getRegionObject(selector, elements.get(index));
+                elementsArray.put(region);
             } catch (Exception e) {
                 AppPercy.log(String.format("Correct Mobile Element not passed at index %d.", index));
                 AppPercy.log(e.toString(), "debug");
@@ -199,26 +226,26 @@ public class GenericProvider {
         }
     }
 
-    public void addCustomIgnoreRegions(JSONArray ignoredElementsArray, List<IgnoreRegion> customLocations) {
+    public void getRegionsByLocation(JSONArray elementsArray, List<Region> customLocations) {
         int width = metadata.deviceScreenWidth();
         int height = metadata.deviceScreenHeight();
         for (int index = 0; index < customLocations.size(); index++) {
             try {
-                IgnoreRegion customLocation = customLocations.get(index);
+                Region customLocation = customLocations.get(index);
                 if (customLocation.isValid(width, height)) {
-                    String selector = "custom ignore region " + index;
-                    JSONObject ignoredRegion = new JSONObject();
+                    String selector = "custom region " + index;
+                    JSONObject region = new JSONObject();
                     JSONObject coordinates = new JSONObject();
                     coordinates.put("top", customLocation.getTop());
                     coordinates.put("bottom", customLocation.getBottom());
                     coordinates.put("left", customLocation.getLeft());
                     coordinates.put("right", customLocation.getRight());
-                    ignoredRegion.put("selector", selector);
-                    ignoredRegion.put("co_ordinates", coordinates);
-                    ignoredElementsArray.put(ignoredRegion);
+                    region.put("selector", selector);
+                    region.put("co_ordinates", coordinates);
+                    elementsArray.put(region);
                 } else {
                     AppPercy.log(
-                            String.format("Values passed in custom ignored region at index: %d is not valid", index));
+                            String.format("Values passed in custom region at index: %d is not valid", index));
                 }
             } catch (Exception e) {
                 AppPercy.log(e.toString(), "debug");

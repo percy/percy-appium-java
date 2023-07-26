@@ -63,11 +63,34 @@ public class PercyOnAutomate extends IPercy {
             Map<String, Object> capabilities = driver.getCapabilities().asMap();
 
             String ignoreElementKey = "ignore_region_appium_elements";
-            if (options != null && options.containsKey(ignoreElementKey)) {
-                List<String> ignoreElementIds =
-                        getElementIdFromElement((List<MobileElement>) options.get(ignoreElementKey));
-                options.remove(ignoreElementKey);
-                options.put("ignore_region_elements", ignoreElementIds);
+            String ignoreElementAltKey = "ignoreRegionAppiumElements";
+            String considerElementKey = "consider_region_appium_elements";
+            String considerElementAltKey = "considerRegionAppiumElements";
+
+            if (options != null) {
+                if (options.containsKey(ignoreElementAltKey)) {
+                    options.put(ignoreElementKey, options.get(ignoreElementAltKey));
+                    options.remove(ignoreElementAltKey);
+                }
+
+                if (options.containsKey(considerElementAltKey)) {
+                    options.put(considerElementKey, options.get(considerElementAltKey));
+                    options.remove(considerElementAltKey);
+                }
+
+                if (options.containsKey(ignoreElementKey)) {
+                    List<String> ignoreElementIds =
+                            getElementIdFromElement((List<MobileElement>) options.get(ignoreElementKey));
+                    options.remove(ignoreElementKey);
+                    options.put("ignore_region_elements", ignoreElementIds);
+                }
+
+                if (options.containsKey(considerElementKey)) {
+                    List<String> considerElementIds =
+                            getElementIdFromElement((List<MobileElement>) options.get(considerElementKey));
+                    options.remove(considerElementKey);
+                    options.put("consider_region_elements", considerElementIds);
+                }
             }
 
             cliWrapper.postScreenshotPOA(name, sessionId, remoteWebAddress, capabilities, options);

@@ -3,7 +3,7 @@ package io.percy.appium.providers;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import io.percy.appium.lib.Cache;
-import io.percy.appium.lib.IgnoreRegion;
+import io.percy.appium.lib.Region;
 import io.percy.appium.lib.ScreenshotOptions;
 import io.percy.appium.lib.Tile;
 import io.percy.appium.metadata.AndroidMetadata;
@@ -116,7 +116,7 @@ public class GenericProviderTest {
     }
 
     @Test
-    public void testIgnoreElementObject() {
+    public void testGetRegionObject() {
         String selector = "test_selector";
         Point location = new Point(10, 20);
         Dimension size = new Dimension(30, 40);
@@ -126,7 +126,7 @@ public class GenericProviderTest {
 
         when(mockElement.getLocation()).thenReturn(location);
         when(mockElement.getSize()).thenReturn(size);
-        JSONObject result = genericProvider.ignoreElementObject(selector, mockElement);
+        JSONObject result = genericProvider.getRegionObject(selector, mockElement);
 
         Assert.assertEquals(selector, result.getString("selector"));
 
@@ -138,8 +138,8 @@ public class GenericProviderTest {
     }
 
     @Test
-    public void testIgnoreRegionsByXpaths() {
-        JSONArray ignoredElementsArray = new JSONArray();
+    public void testGetRegionsByXpath() {
+        JSONArray elementsArray = new JSONArray();
         List<String> xpaths = new ArrayList<>();
         xpaths.add("//div[@class='example']");
 
@@ -154,12 +154,12 @@ public class GenericProviderTest {
         GenericProvider genericProvider = new GenericProvider(androidDriver);
         genericProvider.setMetadata(metadata);
 
-        genericProvider.ignoreRegionsByXpaths(ignoredElementsArray, xpaths);
+        genericProvider.getRegionsByXpath(elementsArray, xpaths);
 
         verify(androidDriver).findElementByXPath("//div[@class='example']");
-        JSONObject ignoredRegion = ignoredElementsArray.getJSONObject(0);
-        Assert.assertEquals("xpath: //div[@class='example']", ignoredRegion.get("selector"));
-        JSONObject coOrdinates = ignoredRegion.getJSONObject("co_ordinates");
+        JSONObject region = elementsArray.getJSONObject(0);
+        Assert.assertEquals("xpath: //div[@class='example']", region.get("selector"));
+        JSONObject coOrdinates = region.getJSONObject("co_ordinates");
         Assert.assertEquals(location.getY(), coOrdinates.getInt("top"));
         Assert.assertEquals((location.getY() + size.getHeight()), coOrdinates.getInt("bottom"));
         Assert.assertEquals(location.getX(), coOrdinates.getInt("left"));
@@ -167,8 +167,8 @@ public class GenericProviderTest {
     }
 
     @Test
-    public void testIgnoreRegionsByIds() {
-        JSONArray ignoredElementsArray = new JSONArray();
+    public void testGetRegionsByIds() {
+        JSONArray elementsArray = new JSONArray();
         List<String> ids = new ArrayList<>();
         ids.add("some id");
 
@@ -183,12 +183,12 @@ public class GenericProviderTest {
         GenericProvider genericProvider = new GenericProvider(androidDriver);
         genericProvider.setMetadata(metadata);
 
-        genericProvider.ignoreRegionsByIds(ignoredElementsArray, ids);
+        genericProvider.getRegionsByIds(elementsArray, ids);
 
         verify(androidDriver).findElementByAccessibilityId("some id");
-        JSONObject ignoredRegion = ignoredElementsArray.getJSONObject(0);
-        Assert.assertEquals("id: some id", ignoredRegion.get("selector"));
-        JSONObject coOrdinates = ignoredRegion.getJSONObject("co_ordinates");
+        JSONObject region = elementsArray.getJSONObject(0);
+        Assert.assertEquals("id: some id", region.get("selector"));
+        JSONObject coOrdinates = region.getJSONObject("co_ordinates");
         Assert.assertEquals(location.getY(), coOrdinates.getInt("top"));
         Assert.assertEquals((location.getY() + size.getHeight()), coOrdinates.getInt("bottom"));
         Assert.assertEquals(location.getX(), coOrdinates.getInt("left"));
@@ -196,8 +196,8 @@ public class GenericProviderTest {
     }
 
     @Test
-    public void testIgnoreRegionsByElement() {
-        JSONArray ignoredElementsArray = new JSONArray();
+    public void testGetRegionsByElement() {
+        JSONArray elementsArray = new JSONArray();
         Point location = new Point(10, 20);
         Dimension size = new Dimension(100, 200);
         List<MobileElement> elements = new ArrayList<>();
@@ -209,13 +209,13 @@ public class GenericProviderTest {
         AndroidMetadata metadata = new AndroidMetadata(androidDriver, "dummy", null, null, null, null);
         GenericProvider genericProvider = new GenericProvider(androidDriver);
         genericProvider.setMetadata(metadata);
-        genericProvider.ignoreRegionsByElement(ignoredElementsArray, elements);
+        genericProvider.getRegionsByElements(elementsArray, elements);
 
         String expectedSelector1 = "element: 0 Button";
-        Assert.assertEquals(1, ignoredElementsArray.length());
-        Assert.assertEquals(expectedSelector1, ignoredElementsArray.getJSONObject(0).getString("selector"));
-        JSONObject ignoredRegion = ignoredElementsArray.getJSONObject(0);
-        JSONObject coOrdinates = ignoredRegion.getJSONObject("co_ordinates");
+        Assert.assertEquals(1, elementsArray.length());
+        Assert.assertEquals(expectedSelector1, elementsArray.getJSONObject(0).getString("selector"));
+        JSONObject region = elementsArray.getJSONObject(0);
+        JSONObject coOrdinates = region.getJSONObject("co_ordinates");
         Assert.assertEquals(location.getY(), coOrdinates.getInt("top"));
         Assert.assertEquals((location.getY() + size.getHeight()), coOrdinates.getInt("bottom"));
         Assert.assertEquals(location.getX(), coOrdinates.getInt("left"));
@@ -223,11 +223,11 @@ public class GenericProviderTest {
     }
 
     @Test
-    public void testAddCustomIgnoreRegions() {
-        JSONArray ignoredElementsArray = new JSONArray();
-        List<IgnoreRegion> customLocations = new ArrayList<>();
+    public void testGetRegionsByLocation() {
+        JSONArray elementsArray = new JSONArray();
+        List<Region> customLocations = new ArrayList<>();
 
-        IgnoreRegion customRegion = new IgnoreRegion(0, 0, 0, 0);
+        Region customRegion = new Region(0, 0, 0, 0);
         customRegion.setTop(50);
         customRegion.setBottom(100);
         customRegion.setLeft(200);
@@ -237,12 +237,12 @@ public class GenericProviderTest {
         AndroidMetadata metadata = new AndroidMetadata(androidDriver, "dummy", null, null, null, null);
         GenericProvider genericProvider = new GenericProvider(androidDriver);
         genericProvider.setMetadata(metadata);
-        genericProvider.addCustomIgnoreRegions(ignoredElementsArray, customLocations);
+        genericProvider.getRegionsByLocation(elementsArray, customLocations);
 
-        Assert.assertEquals(1, ignoredElementsArray.length());
-        JSONObject ignoredRegion = ignoredElementsArray.getJSONObject(0);
-        JSONObject coordinates = ignoredRegion.getJSONObject("co_ordinates");
-        Assert.assertEquals("custom ignore region 0", ignoredRegion.getString("selector"));
+        Assert.assertEquals(1, elementsArray.length());
+        JSONObject region = elementsArray.getJSONObject(0);
+        JSONObject coordinates = region.getJSONObject("co_ordinates");
+        Assert.assertEquals("custom region 0", region.getString("selector"));
         Assert.assertEquals(50, coordinates.getInt("top"));
         Assert.assertEquals(100, coordinates.getInt("bottom"));
         Assert.assertEquals(200, coordinates.getInt("left"));

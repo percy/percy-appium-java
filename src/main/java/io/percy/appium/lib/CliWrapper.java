@@ -83,7 +83,7 @@ public class CliWrapper {
      *             unique.
      */
     public String postScreenshot(String name, JSONObject tag, List<Tile> tiles, String externalDebugUrl,
-            JSONObject ignoredElementsData) {
+            JSONObject ignoredElementsData, JSONObject consideredElementsData) {
         // Build a JSON object to POST back to the cli node process
         JSONObject data = new JSONObject();
         data.put("name", name);
@@ -91,6 +91,7 @@ public class CliWrapper {
         data.put("tiles", Tile.getTilesAsJson(tiles));
         data.put("externalDebugUrl", externalDebugUrl);
         data.put("ignoredElementsData", ignoredElementsData);
+        data.put("consideredElementsData", consideredElementsData);
         data.put("clientInfo", env.getClientInfo());
         data.put("environmentInfo", env.getEnvironmentInfo());
 
