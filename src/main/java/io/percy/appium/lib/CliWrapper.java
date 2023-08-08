@@ -61,9 +61,10 @@ public class CliWrapper {
                 AppPercy.log("Unsupported Percy CLI version, " + version);
                 return false;
             } else {
-                if (minorVersion < 25) {
+                if (minorVersion < 26) {
                     AppPercy.log("Percy CLI version, " + version
-                        + " is not the minimum version required, some features might not work as expected.", "warn");
+                        + " is not minimum version required, Percy on Automate is available from 1.27.0-beta.0.", "warn");
+                    return false;
                 }
             }
 
