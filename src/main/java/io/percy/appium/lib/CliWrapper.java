@@ -47,7 +47,7 @@ public class CliWrapper {
             JSONObject buildJsonObject = (JSONObject) myObject.get("build");
             Environment.setPercyBuildID((String) buildJsonObject.get("id"));
             Environment.setPercyBuildUrl((String) buildJsonObject.get("url"));
-            Environment.setSessionType((String) myObject.get("type"));
+            Environment.setSessionType((String) myObject.optString("type", null));
 
             if (statusCode != 200) {
                 throw new RuntimeException("Failed with HTTP error code : " + statusCode);
@@ -61,9 +61,12 @@ public class CliWrapper {
                 AppPercy.log("Unsupported Percy CLI version, " + version);
                 return false;
             } else {
-                if (minorVersion < 25) {
+                if (minorVersion < 27) {
                     AppPercy.log("Percy CLI version, " + version
-                        + " is not the minimum version required, some features might not work as expected.", "warn");
+                        + " is not minimum version required "
+                        + "Percy on Automate is available from 1.27.0-beta.0.",
+                    "warn");
+                    return false;
                 }
             }
 
