@@ -4,6 +4,7 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.percy.appium.lib.CliWrapper;
 import io.percy.appium.lib.PercyOptions;
+import io.percy.appium.metadata.DriverMetadata;
 
 import java.util.Map;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 
 public class PercyOnAutomate extends IPercy {
     private final AppiumDriver driver;
+    private  final DriverMetadata driverMetadata;
     private CliWrapper cliWrapper;
     private final PercyOptions percyOptions;
     /**
@@ -25,6 +27,7 @@ public class PercyOnAutomate extends IPercy {
      */
     public PercyOnAutomate(AppiumDriver driver) {
         this.driver = driver;
+        this.driverMetadata = new DriverMetadata(driver);
         this.cliWrapper = new CliWrapper(driver);
         this.percyOptions = new PercyOptions(driver);
         ignoreErrors = percyOptions.setPercyIgnoreErrors();
@@ -58,9 +61,9 @@ public class PercyOnAutomate extends IPercy {
                 return;
             }
 
-            String sessionId = driver.getSessionId().toString();
-            String remoteWebAddress = driver.getRemoteAddress().toString();
-            Map<String, Object> capabilities = driver.getCapabilities().asMap();
+            String sessionId = this.driverMetadata.getSessionId();
+            String remoteWebAddress = this.driverMetadata.getCommandExecutorUrl();
+            Map<String, Object> capabilities = this.driverMetadata.getCapabilities();
 
             String ignoreElementKey = "ignore_region_appium_elements";
             String ignoreElementAltKey = "ignoreRegionAppiumElements";
