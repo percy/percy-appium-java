@@ -56,10 +56,10 @@ public class PercyOnAutomateTest {
 
     @Test
     public void takeScreenshotWithOptions() {
-        when(androidDriver.getSessionId()).thenReturn(new SessionId("123"));
-        when(androidDriver.getCapabilities()).thenReturn(capabilities);
+        lenient().when(androidDriver.getSessionId()).thenReturn(new SessionId("123"));
+        lenient().when(androidDriver.getCapabilities()).thenReturn(capabilities);
         try {
-            when(androidDriver.getRemoteAddress()).thenReturn(new URL("https://hub.browserstack.com/wd/hub"));
+            lenient(). when(androidDriver.getRemoteAddress()).thenReturn(new URL("https://hub.browserstack.com/wd/hub"));
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }

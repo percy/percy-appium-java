@@ -5,7 +5,6 @@ import io.appium.java_client.AppiumDriver;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import io.percy.appium.lib.Cache;
 
 public class DriverMetadata {
