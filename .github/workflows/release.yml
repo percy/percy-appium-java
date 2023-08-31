@@ -1,7 +1,9 @@
 # releasing.md contains information credentials required for this action to run E2E
 
 name: Release
-on: push
+on:
+  release:
+    types: [published]
 jobs:
   publish:
     runs-on: ubuntu-latest
