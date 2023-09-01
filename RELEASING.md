@@ -1,3 +1,33 @@
+## Automation using Github Actions 
+
+* Bump version 
+  * `Environment.java` (This should ideally pickup from pom.xml dynamically)
+  * `pom.xml` - version & scm > tag
+* commit with following git message `:bookmark: tag`
+* Draft a new release and publish
+* Github actions should automatically release the jar to Maven.
+
+### Updating GPG key in Github actions
+
+* Import private GPG key present in [1pass](#import-the-private-signing-key)
+* find the imported key 
+```sh
+gpg --list-secret-keys
+```
+* update GPG key [expiry date]((#on-gpg-key-management)) if required
+* copy GPG key so it can be pasted on Github as `MAVEN_GPG_PRIVATE_KEY`
+```sh
+gpg --export-secret-keys -a <> | pbcopy
+```
+
+* update `MAVEN_GPG_PASSPHRASE` if required on Github (generally this doesn't change)
+
+
+---
+## Manual setup
+
+Only do if required.
+
 ## To make a release
 
 1. One-time setup:
