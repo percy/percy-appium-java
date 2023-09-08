@@ -23,6 +23,8 @@ public class ScreenshotOptions {
     private List<Region> customConsiderRegions = new ArrayList<Region>();
     private String scrollableXpath = null;
     private String scrollableId = null;
+    private Integer topScrollviewOffset = 0;
+    private Integer bottomScrollviewOffset = 0;
 
     public String getDeviceName() {
         return deviceName;
@@ -30,6 +32,14 @@ public class ScreenshotOptions {
 
     public Integer getStatusBarHeight() {
         return statusBarHeight;
+    }
+
+    public Integer getTopScrollviewOffset() {
+        return topScrollviewOffset;
+    }
+
+    public Integer getBottomScrollviewOffset() {
+        return bottomScrollviewOffset;
     }
 
     public Integer getNavBarHeight() {
@@ -62,6 +72,14 @@ public class ScreenshotOptions {
 
     public void setNavBarHeight(Integer navBarHeightParam) {
         navBarHeight = navBarHeightParam;
+    }
+
+    public void setBottomScrollviewOffset(Integer bottomScrollviewOffsetParam) {
+        topScrollviewOffset = bottomScrollviewOffsetParam;
+    }
+
+    public void setTopScrollviewOffset(Integer topScrollviewOffsetParam) {
+        topScrollviewOffset = topScrollviewOffsetParam;
     }
 
     public void setOrientation(String orientationParam) {

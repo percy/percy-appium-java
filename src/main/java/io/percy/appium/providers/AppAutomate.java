@@ -105,6 +105,8 @@ public class AppAutomate extends GenericProvider {
             args.put("deviceHeight", deviceHeight);
             args.put("scollableXpath", options.getScrollableXpath());
             args.put("scrollableId", options.getScrollableId());
+            args.put("topScrollviewOffset", options.getTopScrollviewOffset());
+            args.put("bottomScrollviewOffset", options.getBottomScrollviewOffset());
             args.put("FORCE_FULL_PAGE", Environment.getForceFullPage());
             arguments.put("state", "screenshot");
             arguments.put("percyBuildId", Environment.getPercyBuildID());
@@ -120,7 +122,7 @@ public class AppAutomate extends GenericProvider {
             JSONObject result = new JSONObject(resultString);
             return result.get("result").toString();
         } catch (Exception e) {
-            throw new Exception("Screenshot command failed");
+            throw new Exception(e);
         }
     }
 
