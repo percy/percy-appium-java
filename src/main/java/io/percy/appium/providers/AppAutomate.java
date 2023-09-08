@@ -122,7 +122,7 @@ public class AppAutomate extends GenericProvider {
             JSONObject result = new JSONObject(resultString);
             return result.get("result").toString();
         } catch (Exception e) {
-            throw new Exception(e);
+            throw new Exception("Screenshot command failed");
         }
     }
 
