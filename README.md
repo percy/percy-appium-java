@@ -89,9 +89,12 @@ The screenshot method arguments:
       - `statusBarHeight` - int; Height of status bar for the device
       - `navBarHeight` - int; Height of navigation bar for the device
       - `orientation`  - Orientation of the application
-      - `FullPage`: boolean; [Experimental] only supported on App Automate driver sessions [ needs @percy/cli 1.20.2+ ]
-      - `ScreenLengths`: int; [Experimental] max screen lengths for fullPage [ needs @percy/cli 1.20.2+ ]
+      - `FullPage`: (**optional**) - [Experimental] only supported on App Automate driver sessions [ needs @percy/cli 1.20.2+ ]; boolean
+      - `ScreenLengths`: (**optional**) - [Experimental] max screen lengths for fullPage [ needs @percy/cli 1.20.2+ ]; int
       - `ScrollableXpath` (**optional**) - [Experimental] scrollable element xpath for fullpage [ needs @percy/cli 1.20.2+ ]; string
+      - In case scrollview is overlapping with other app elements. Offsets can be provided to reduce the area which needs to be considered for scrolling:
+        - `topScrollviewOffset`: (**optional**) - [Experimental] offset from top of scrollview [ needs @percy/cli 1.20.2+ ]; int
+        - `bottomScrollviewOffset` (**optional**) - [Experimental] offset from bottom of scrollview [ needs @percy/cli 1.20.2+ ]; string
       - `ScrollableId` (**optional**) - [Experimental] scrollable element accessibility id for fullpage [ needs @percy/cli 1.20.2+ ]; string
       - `IgnoreRegionXpaths` (**optional**) - elements xpaths that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]; list of string
       - `IgnoreRegionAccessibilityIds` (**optional**) - elements accessibility_ids that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]; list of string
