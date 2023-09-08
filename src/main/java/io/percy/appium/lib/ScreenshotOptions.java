@@ -75,7 +75,7 @@ public class ScreenshotOptions {
     }
 
     public void setBottomScrollviewOffset(Integer bottomScrollviewOffsetParam) {
-        topScrollviewOffset = bottomScrollviewOffsetParam;
+        bottomScrollviewOffset = bottomScrollviewOffsetParam;
     }
 
     public void setTopScrollviewOffset(Integer topScrollviewOffsetParam) {
