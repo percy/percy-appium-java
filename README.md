@@ -78,47 +78,34 @@ $ percy exec -- [java test command]
 
 The screenshot method arguments:
 
-`percy.screenshot(name, fullScreen)`
+``` java
+  ScreenshotOptions options = new ScreenshotOptions();
+  // Set options here
+  percy.screenshot(name, fullScreen, options)
+```
 
 - `name` (**required**) - The screenshot name; must be unique to each screenshot
 - Additional screenshot options (overrides any project options):
   - `fullScreen ` - (**optional**) It indicates if the app is a full screen
-  - `options` - (**optional**) screenshot params:
-    Use `ScreenshotOptions` to set following params to override
-      - `deviceName` - Device name on which screenshot is taken
-      - `statusBarHeight` - int; Height of status bar for the device
-      - `navBarHeight` - int; Height of navigation bar for the device
-      - `orientation`  - Orientation of the application
-      - `FullPage`: (**optional**) - [Experimental] only supported on App Automate driver sessions [ needs @percy/cli 1.20.2+ ]; boolean
-      - In case scrollview is overlapping with other app elements. Offsets can be provided to reduce the area which needs to be considered for scrolling:
-        - `topScrollviewOffset`: (**optional**) - [Experimental] offset from top of scrollview [ needs @percy/cli 1.20.2+ ]; int
-        - `bottomScrollviewOffset` (**optional**) - [Experimental] offset from bottom of scrollview [ needs @percy/cli 1.20.2+ ]; int
-      - `ScreenLengths`: (**optional**) - [Experimental] max screen lengths for fullPage [ needs @percy/cli 1.20.2+ ]; int
-      - `ScrollableXpath` (**optional**) - [Experimental] scrollable element xpath for fullpage [ needs @percy/cli 1.20.2+ ]; string
-      - `ScrollableId` (**optional**) - [Experimental] scrollable element accessibility id for fullpage [ needs @percy/cli 1.20.2+ ]; string
-      - `IgnoreRegionXpaths` (**optional**) - elements xpaths that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]; list of string
-      - `IgnoreRegionAccessibilityIds` (**optional**) - elements accessibility_ids that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]; list of string
-      - `IgnoreRegionAppiumElements` (**optional**) - appium elements that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]; list of appium element object
-      - `CustomIgnoreRegions` (**optional**) - custom locations that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]; list of ignore_region object
-      - IgnoreRegion:-
-        - Description: This class represents a rectangular area on a screen that needs to be ignored for visual diff.
-        - constructor:-
-          ```
-          var ignoreRegion = new IgnoreRegion();
-          ignoreRegion.setTop() = top;
-          ignoreRegion.setBottom = bottom;
-          ignoreRegion.setLeft = left;
-          ignoreRegion.setRight = right;
-          ```
-        - Parameters:
+  - `options` - (**optional**) configure screenshot using below setter:
 
-          `Top` (int): Top coordinate of the ignore region.
-          `Bottom` (int): Bottom coordinate of the ignore region.
-          `Left` (int): Left coordinate of the ignore region.
-          `Right` (int): Right coordinate of the ignore region.
-        - Raises:IllegalArgumentException: If top, bottom, left, or right is less than 0 or top is greater than or equal to bottom or left is greater than or equal to right.
-        - valid: Ignore region should be within the boundaries of the screen.
-
+| Setter Method  | Description |
+| ------------- | ------------- |
+| setDeviceName(String deviceNameParam)  | Device name on which screenshot is taken  |
+| setStatusBarHeight(Integer statusBarHeightParam)  | Height of status bar for the device  |
+| setNavBarHeight(Integer navBarHeightParam)  | Height of navigation bar for the device  |
+| setOrientation(String orientationParam)  | Orientation of the application  |
+| setFullPage(Boolean fullPageParam)  | [Alpha] Only supported on App Automate driver sessions [ needs @percy/cli 1.20.2+ ]  |
+| setScreenLengths(Integer screenLengthsParam)  | [Alpha] Max screen lengths for fullPage [ needs @percy/cli 1.20.2+ ]  |
+| setTopScrollviewOffset(Integer topScrollviewOffsetParam)  | [Alpha] Offset from top of scrollview [ needs @percy/cli 1.20.2+ ]  |
+| setBottomScrollviewOffset(Integer bottomScrollviewOffsetParam)  | [Alpha] Offset from bottom of scrollview [ needs @percy/cli 1.20.2+ ]  |
+| setFullScreen(Boolean fullScreenParam)  | Indicate whether app is full screen; boolean  |
+| setScrollableXpath(String scrollableXpath)  | [Alpha] Scrollable element xpath for fullpage [ needs @percy/cli 1.20.2+ ]  |
+| setScrollableId(String scrollableId)  | [Alpha] Scrollable element accessibility id for fullpage [ needs @percy/cli 1.20.2+ ]  |
+| setIgnoreRegionXpaths(List<String> ignoreRegionXpaths)  | Elements xpaths that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]  |
+| setIgnoreRegionAccessibilityIds(List<String> ignoreRegionAccessibilityIds)  | Elements accessibility_ids that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]  |
+| setIgnoreRegionAppiumElements(List<MobileElement> ignoreRegionAppiumElements)  | Appium elements that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]  |
+| setCustomIgnoreRegions(List<Region> customIgnoreRegions)  | Custom locations that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ] <br /> - Description: IgnoreRegion class represents a rectangular area on a screen that needs to be ignored for visual diff. <br /> ```var ignoreRegion = new IgnoreRegion();```<br />```ignoreRegion.setTop() = top;``` <br />```ignoreRegion.setBottom = bottom;``` <br />```ignoreRegion.setLeft = left;``` <br />```ignoreRegion.setRight = right;```  |
 ## Running with Hybrid Apps
 
 For a hybrid app, we need to switch to native context before taking screenshot.
