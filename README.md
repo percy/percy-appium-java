@@ -116,21 +116,6 @@ The screenshot method arguments:
           ignoreRegion.setLeft = left;
           ignoreRegion.setRight = right;
           ```  |
-| setConsiderRegionXpaths(List<String> considerRegionXpaths)  | Elements xpaths that user want to consider in visual diff [ needs @percy/cli 1.23.0+ ]  |
-| setConsiderRegionAccessibilityIds(List<String> considerRegionAccessibilityIds)  | Elements accessibility_ids that user want to consider in visual diff [ needs @percy/cli 1.23.0+ ]  |
-| setConsiderRegionAppiumElements(List<MobileElement> considerRegionAppiumElements)  | Appium elements that user want to consider in visual diff [ needs @percy/cli 1.23.0+ ]  |
-| setCustomConsiderRegions(List<Region> customConsiderRegions)  | Custom locations that user want to consider in visual diff [ needs @percy/cli 1.23.0+ ]
-      - Region:-
-        - Description: This class represents a rectangular area on a screen that needs to be considered for visual diff.
-        - constructor:-
-          ```
-          var region = new Region();
-          region.setTop() = top;
-          region.setBottom = bottom;
-          region.setLeft = left;
-          region.setRight = right;
-          ```  |
-
 ## Running with Hybrid Apps
 
 For a hybrid app, we need to switch to native context before taking screenshot.
