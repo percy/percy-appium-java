@@ -105,17 +105,7 @@ The screenshot method arguments:
 | setIgnoreRegionXpaths(List<String> ignoreRegionXpaths)  | Elements xpaths that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]  |
 | setIgnoreRegionAccessibilityIds(List<String> ignoreRegionAccessibilityIds)  | Elements accessibility_ids that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]  |
 | setIgnoreRegionAppiumElements(List<MobileElement> ignoreRegionAppiumElements)  | Appium elements that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]  |
-| setCustomIgnoreRegions(List<Region> customIgnoreRegions)  | Custom locations that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]
-      - IgnoreRegion:-
-        - Description: This class represents a rectangular area on a screen that needs to be ignored for visual diff.
-        - constructor:-
-          ```
-          var ignoreRegion = new IgnoreRegion();
-          ignoreRegion.setTop() = top;
-          ignoreRegion.setBottom = bottom;
-          ignoreRegion.setLeft = left;
-          ignoreRegion.setRight = right;
-          ```  |
+| setCustomIgnoreRegions(List<Region> customIgnoreRegions)  | Custom locations that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ] <br /> - Description: IgnoreRegion class represents a rectangular area on a screen that needs to be ignored for visual diff. <br /> ```var ignoreRegion = new IgnoreRegion();```<br />```ignoreRegion.setTop() = top;``` <br />```ignoreRegion.setBottom = bottom;``` <br />```ignoreRegion.setLeft = left;``` <br />```ignoreRegion.setRight = right;```  |
 ## Running with Hybrid Apps
 
 For a hybrid app, we need to switch to native context before taking screenshot.
