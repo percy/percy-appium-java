@@ -95,13 +95,13 @@ The screenshot method arguments:
 | setStatusBarHeight(Integer statusBarHeightParam)  | Height of status bar for the device  |
 | setNavBarHeight(Integer navBarHeightParam)  | Height of navigation bar for the device  |
 | setOrientation(String orientationParam)  | Orientation of the application  |
-| setFullPage(Boolean fullPageParam)  | Only supported on App Automate driver sessions [ needs @percy/cli 1.20.2+ ]  |
-| setScreenLengths(Integer screenLengthsParam)  | Max screen lengths for fullPage [ needs @percy/cli 1.20.2+ ]  |
-| setTopScrollviewOffset(Integer topScrollviewOffsetParam)  | Offset from top of scrollview [ needs @percy/cli 1.20.2+ ]  |
-| setBottomScrollviewOffset(Integer bottomScrollviewOffsetParam)  | Offset from bottom of scrollview [ needs @percy/cli 1.20.2+ ]  |
+| setFullPage(Boolean fullPageParam)  | [Alpha] Only supported on App Automate driver sessions [ needs @percy/cli 1.20.2+ ]  |
+| setScreenLengths(Integer screenLengthsParam)  | [Alpha] Max screen lengths for fullPage [ needs @percy/cli 1.20.2+ ]  |
+| setTopScrollviewOffset(Integer topScrollviewOffsetParam)  | [Alpha] Offset from top of scrollview [ needs @percy/cli 1.20.2+ ]  |
+| setBottomScrollviewOffset(Integer bottomScrollviewOffsetParam)  | [Alpha] Offset from bottom of scrollview [ needs @percy/cli 1.20.2+ ]  |
 | setFullScreen(Boolean fullScreenParam)  | Indicate whether app is full screen; boolean  |
-| setScrollableXpath(String scrollableXpath)  | Scrollable element xpath for fullpage [ needs @percy/cli 1.20.2+ ]  |
-| setScrollableId(String scrollableId)  | Scrollable element accessibility id for fullpage [ needs @percy/cli 1.20.2+ ]  |
+| setScrollableXpath(String scrollableXpath)  | [Alpha] Scrollable element xpath for fullpage [ needs @percy/cli 1.20.2+ ]  |
+| setScrollableId(String scrollableId)  | [Alpha] Scrollable element accessibility id for fullpage [ needs @percy/cli 1.20.2+ ]  |
 | setIgnoreRegionXpaths(List<String> ignoreRegionXpaths)  | Elements xpaths that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]  |
 | setIgnoreRegionAccessibilityIds(List<String> ignoreRegionAccessibilityIds)  | Elements accessibility_ids that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]  |
 | setIgnoreRegionAppiumElements(List<MobileElement> ignoreRegionAppiumElements)  | Appium elements that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]  |
