@@ -95,7 +95,7 @@ public class CliWrapper {
         data.put("externalDebugUrl", externalDebugUrl);
         data.put("ignoredElementsData", ignoredElementsData);
         data.put("consideredElementsData", consideredElementsData);
-        data.put("clientInfo", env.getClientInfo());
+        data.put("clientInfo", env.getClientInfo(false));
         data.put("environmentInfo", env.getEnvironmentInfo());
 
         StringEntity entity = new StringEntity(data.toString(), ContentType.APPLICATION_JSON);
@@ -116,7 +116,7 @@ public class CliWrapper {
     public void postFailedEvent(String err) {
         // Build a JSON object to POST back to the cli node process
         JSONObject data = new JSONObject();
-        data.put("clientInfo", env.getClientInfo());
+        data.put("clientInfo", env.getClientInfo(true));
         data.put("errorMessage", err);
 
         StringEntity entity = new StringEntity(data.toString(), ContentType.APPLICATION_JSON);
@@ -139,7 +139,7 @@ public class CliWrapper {
         data.put("commandExecutorUrl", commandExecutorUrl);
         data.put("capabilities", capabilities);
         data.put("options", options);
-        data.put("clientInfo", env.getClientInfo());
+        data.put("clientInfo", env.getClientInfo(false));
         data.put("environmentInfo", env.getEnvironmentInfo());
 
         StringEntity entity = new StringEntity(data.toString(), ContentType.APPLICATION_JSON);
