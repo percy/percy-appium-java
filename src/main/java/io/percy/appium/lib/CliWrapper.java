@@ -63,9 +63,9 @@ public class CliWrapper {
             } else {
                 if (minorVersion < 27) {
                     AppPercy.log("Percy CLI version, " + version
-                        + " is not minimum version required "
-                        + "Percy on Automate is available from 1.27.0-beta.0.",
-                    "warn");
+                            + " is not minimum version required "
+                            + "Percy on Automate is available from 1.27.0-beta.0.",
+                            "warn");
                     return false;
                 }
             }
@@ -113,8 +113,25 @@ public class CliWrapper {
         return null;
     }
 
+    public void postFailedEvent(String err) {
+        // Build a JSON object to POST back to the cli node process
+        JSONObject data = new JSONObject();
+        data.put("clientInfo", env.getClientInfo());
+        data.put("errorMessage", err);
+
+        StringEntity entity = new StringEntity(data.toString(), ContentType.APPLICATION_JSON);
+
+        try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+            HttpPost request = new HttpPost(PERCY_SERVER_ADDRESS + "/percy/events");
+            request.setEntity(entity);
+            httpClient.execute(request);
+        } catch (Exception ex) {
+            AppPercy.log(ex.toString(), "debug");
+        }
+    }
+
     public String postScreenshotPOA(String name, String sessionId, String commandExecutorUrl,
-                                Map<String, Object> capabilities, Map<String, Object> options) {
+            Map<String, Object> capabilities, Map<String, Object> options) {
         // Build a JSON object to POST back to the cli node process
         JSONObject data = new JSONObject();
         data.put("snapshotName", name);
