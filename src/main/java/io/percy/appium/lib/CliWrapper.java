@@ -117,7 +117,8 @@ public class CliWrapper {
         // Build a JSON object to POST back to the cli node process
         JSONObject data = new JSONObject();
         data.put("clientInfo", env.getClientInfo(true));
-        data.put("errorMessage", err);
+        data.put("message", err);
+        data.put("errroKind", "sdk");
 
         StringEntity entity = new StringEntity(data.toString(), ContentType.APPLICATION_JSON);
 
