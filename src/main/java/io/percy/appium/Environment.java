@@ -14,7 +14,10 @@ public class Environment {
         this.driver = driver;
     }
 
-    public String getClientInfo() {
+    public String getClientInfo(Boolean flag) {
+        if (flag) {
+            return SDK_NAME + "-java" + "/" + SDK_VERSION;
+        }
         return SDK_NAME + "/" + SDK_VERSION;
     }
 

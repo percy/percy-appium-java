@@ -22,7 +22,12 @@ public class EnvironmentTest {
 
     @Test
     public void testGetClientInfo() {
-        Assert.assertEquals(environment.getClientInfo(), "percy-appium-app/" + Environment.SDK_VERSION);
+        Assert.assertEquals(environment.getClientInfo(false), "percy-appium-app/" + Environment.SDK_VERSION);
+    }
+
+    @Test
+    public void testGetClientInfoWithFlagTrue() {
+        Assert.assertEquals(environment.getClientInfo(true), "percy-appium-app-java/" + Environment.SDK_VERSION);
     }
 
     @Test
