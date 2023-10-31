@@ -24,10 +24,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.mockito.Mock;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 
@@ -42,7 +44,7 @@ public class GenericProviderTest {
     Capabilities capabilities;
 
     @Mock
-    MobileElement mockElement;
+    WebElement mockElement;
 
     Faker faker = new Faker();
     Long top = faker.number().randomNumber(3, false);
@@ -146,7 +148,7 @@ public class GenericProviderTest {
         Point location = new Point(10, 20);
         Dimension size = new Dimension(100, 200);
 
-        when(androidDriver.findElementByXPath("//div[@class='example']")).thenReturn(mockElement);
+        when(androidDriver.findElement(By.xpath("//div[@class='example']"))).thenReturn(mockElement);
         when(mockElement.getLocation()).thenReturn(location);
         when(mockElement.getSize()).thenReturn(size);
 
@@ -156,7 +158,7 @@ public class GenericProviderTest {
 
         genericProvider.getRegionsByXpath(elementsArray, xpaths);
 
-        verify(androidDriver).findElementByXPath("//div[@class='example']");
+        verify(androidDriver).findElement(By.xpath("//div[@class='example']"));
         JSONObject region = elementsArray.getJSONObject(0);
         Assert.assertEquals("xpath: //div[@class='example']", region.get("selector"));
         JSONObject coOrdinates = region.getJSONObject("co_ordinates");
@@ -175,7 +177,7 @@ public class GenericProviderTest {
         Point location = new Point(10, 20);
         Dimension size = new Dimension(100, 200);
 
-        when(androidDriver.findElementByAccessibilityId("some id")).thenReturn(mockElement);
+        when(androidDriver.findElement(By.id("some id"))).thenReturn(mockElement);
         when(mockElement.getLocation()).thenReturn(location);
         when(mockElement.getSize()).thenReturn(size);
 
@@ -185,7 +187,7 @@ public class GenericProviderTest {
 
         genericProvider.getRegionsByIds(elementsArray, ids);
 
-        verify(androidDriver).findElementByAccessibilityId("some id");
+        verify(androidDriver).findElement(By.id("some id"));
         JSONObject region = elementsArray.getJSONObject(0);
         Assert.assertEquals("id: some id", region.get("selector"));
         JSONObject coOrdinates = region.getJSONObject("co_ordinates");
@@ -200,7 +202,7 @@ public class GenericProviderTest {
         JSONArray elementsArray = new JSONArray();
         Point location = new Point(10, 20);
         Dimension size = new Dimension(100, 200);
-        List<MobileElement> elements = new ArrayList<>();
+        List<WebElement> elements = new ArrayList<>();
         when(mockElement.getLocation()).thenReturn(location);
         when(mockElement.getSize()).thenReturn(size);
         when(mockElement.getAttribute("class")).thenReturn("Button");

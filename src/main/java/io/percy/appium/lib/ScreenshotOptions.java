@@ -2,8 +2,9 @@ package io.percy.appium.lib;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import io.appium.java_client.MobileElement;
+import org.openqa.selenium.WebElement;
 
 public class ScreenshotOptions {
     private String deviceName = null;
@@ -15,11 +16,11 @@ public class ScreenshotOptions {
     private Integer screenLengths = 4;
     private List<String> ignoreRegionXpaths = new ArrayList<String>();
     private List<String> ignoreRegionAccessibilityIds = new ArrayList<String>();
-    private List<MobileElement> ignoreRegionAppiumElements = new ArrayList<MobileElement>();
+    private List<WebElement> ignoreRegionAppiumElements = new ArrayList<WebElement>();
     private List<Region> customIgnoreRegions = new ArrayList<Region>();
     private List<String> considerRegionXpaths = new ArrayList<String>();
     private List<String> considerRegionAccessibilityIds = new ArrayList<String>();
-    private List<MobileElement> considerRegionAppiumElements = new ArrayList<MobileElement>();
+    private List<WebElement> considerRegionAppiumElements = new ArrayList<WebElement>();
     private List<Region> customConsiderRegions = new ArrayList<Region>();
     private String scrollableXpath = null;
     private String scrollableId = null;
@@ -114,12 +115,12 @@ public class ScreenshotOptions {
         this.ignoreRegionAccessibilityIds = ignoreRegionAccessibilityIds;
     }
 
-    public List<MobileElement> getIgnoreRegionAppiumElements() {
+    public List<WebElement> getIgnoreRegionAppiumElements() {
         return ignoreRegionAppiumElements;
     }
 
-    public void setIgnoreRegionAppiumElements(List<MobileElement> ignoreRegionAppiumElements) {
-        this.ignoreRegionAppiumElements = ignoreRegionAppiumElements;
+    public void setIgnoreRegionAppiumElements(List<Object> ignoreRegionAppiumElements) {
+        this.ignoreRegionAppiumElements = castMobileElementsToWebElements(ignoreRegionAppiumElements);
     }
 
     public List<Region> getCustomIgnoreRegions() {
@@ -146,12 +147,12 @@ public class ScreenshotOptions {
         this.considerRegionAccessibilityIds = considerRegionAccessibilityIds;
     }
 
-    public List<MobileElement> getConsiderRegionAppiumElements() {
+    public List<WebElement> getConsiderRegionAppiumElements() {
         return considerRegionAppiumElements;
     }
 
-    public void setConsiderRegionAppiumElements(List<MobileElement> considerRegionAppiumElements) {
-        this.considerRegionAppiumElements = considerRegionAppiumElements;
+    public void setConsiderRegionAppiumElements(List<Object> considerRegionAppiumElements) {
+        this.considerRegionAppiumElements = castMobileElementsToWebElements(considerRegionAppiumElements);
     }
 
     public List<Region> getCustomConsiderRegions() {
@@ -176,5 +177,14 @@ public class ScreenshotOptions {
 
     public void setScrollableId(String scrollableId) {
         this.scrollableId = scrollableId;
+    }
+
+    public List<WebElement> castMobileElementsToWebElements(List<Object> mobileElements) {
+        List<WebElement> webElements = mobileElements.stream()
+                .filter(obj -> WebElement.class.isAssignableFrom(obj.getClass())) // Check if the object is a WebElement
+                .map(obj -> (WebElement) obj) // Cast the object to WebElement
+                .collect(Collectors.toList());
+
+        return webElements;
     }
 }

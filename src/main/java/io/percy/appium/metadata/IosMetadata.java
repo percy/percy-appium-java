@@ -2,9 +2,6 @@ package io.percy.appium.metadata;
 
 import java.util.Map;
 
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.http.HttpMethod;
-
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.percy.appium.lib.Cache;
@@ -68,19 +65,9 @@ public class IosMetadata extends Metadata {
 
     private Map getViewportRect() {
         if (Cache.CACHE_MAP.get("viewportRect_" + sessionId) == null) {
-            try {
-                Cache.CACHE_MAP.put("viewportRect_" + sessionId, getSession().get("viewportRect"));
-            } catch (java.lang.NoSuchMethodError e) {
-                Cache.CACHE_MAP.put("viewportRect_" + sessionId, driver.getSessionDetails().get("viewportRect"));
-            }
+            Cache.CACHE_MAP.put("viewportRect_" + sessionId, getSession().get("viewportRect"));
         }
         return (Map) Cache.CACHE_MAP.get("viewportRect_" + sessionId);
-    }
-
-    private Map getSession() {
-        driver.addCommand(HttpMethod.GET, "/session/" + driver.getSessionId(), "getSession");
-        Response session = driver.execute("getSession");
-        return (Map) session.getValue();
     }
 
     public Integer navBarHeight() {
@@ -92,7 +79,7 @@ public class IosMetadata extends Metadata {
     }
 
     public Integer scaleFactor() {
-        return Integer.valueOf(driver.getSessionDetails().get("pixelRatio").toString());
+        return Integer.valueOf(getSession().get("pixelRatio").toString());
     }
 
 }

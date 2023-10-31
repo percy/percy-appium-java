@@ -1,6 +1,12 @@
 package io.percy.appium.metadata;
 
+import java.util.Map;
+
+import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.http.HttpMethod;
+
 import io.appium.java_client.AppiumDriver;
+import io.percy.appium.lib.Cache;
 
 public abstract class Metadata {
     private static AppiumDriver driver;
@@ -9,6 +15,7 @@ public abstract class Metadata {
     private Integer statusBar;
     private Integer navBar;
     private String deviceName;
+    private String sessionId;
 
     public Metadata(AppiumDriver driver, String deviceName, Integer statusBar, Integer navBar, String orientation,
             String platformVersion) {
@@ -18,6 +25,7 @@ public abstract class Metadata {
         this.statusBar = statusBar;
         this.navBar = navBar;
         this.deviceName = deviceName;
+        this.sessionId = driver.getSessionId().toString();
     }
 
     public String osName() {
@@ -72,6 +80,15 @@ public abstract class Metadata {
 
     public Integer getStatusBar() {
         return statusBar;
+    }
+
+    public Map getSession() {
+        if (Cache.CACHE_MAP.get("getSession_" + sessionId) == null) {
+            driver.addCommand(HttpMethod.GET, "/session/" + driver.getSessionId(), "getSession");
+            Response session = driver.execute("getSession");
+            Cache.CACHE_MAP.put("getSession_" + sessionId, session.getValue());
+        }
+        return (Map) Cache.CACHE_MAP.get("getSession_" + sessionId);
     }
 
     public abstract Integer deviceScreenWidth();
