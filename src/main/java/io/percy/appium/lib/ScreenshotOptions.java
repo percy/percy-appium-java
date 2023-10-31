@@ -2,6 +2,7 @@ package io.percy.appium.lib;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.openqa.selenium.WebElement;
 
@@ -118,8 +119,8 @@ public class ScreenshotOptions {
         return ignoreRegionAppiumElements;
     }
 
-    public void setIgnoreRegionAppiumElements(List<WebElement> ignoreRegionAppiumElements) {
-        this.ignoreRegionAppiumElements = ignoreRegionAppiumElements;
+    public void setIgnoreRegionAppiumElements(List<Object> ignoreRegionAppiumElements) {
+        this.ignoreRegionAppiumElements = castMobileElementsToWebElements(ignoreRegionAppiumElements);
     }
 
     public List<Region> getCustomIgnoreRegions() {
@@ -150,8 +151,8 @@ public class ScreenshotOptions {
         return considerRegionAppiumElements;
     }
 
-    public void setConsiderRegionAppiumElements(List<WebElement> considerRegionAppiumElements) {
-        this.considerRegionAppiumElements = considerRegionAppiumElements;
+    public void setConsiderRegionAppiumElements(List<Object> considerRegionAppiumElements) {
+        this.considerRegionAppiumElements = castMobileElementsToWebElements(considerRegionAppiumElements);
     }
 
     public List<Region> getCustomConsiderRegions() {
@@ -176,5 +177,14 @@ public class ScreenshotOptions {
 
     public void setScrollableId(String scrollableId) {
         this.scrollableId = scrollableId;
+    }
+
+    public List<WebElement> castMobileElementsToWebElements(List<Object> mobileElements) {
+        List<WebElement> webElements = mobileElements.stream()
+                .filter(obj -> WebElement.class.isAssignableFrom(obj.getClass())) // Check if the object is a WebElement
+                .map(obj -> (WebElement) obj) // Cast the object to WebElement
+                .collect(Collectors.toList());
+
+        return webElements;
     }
 }
