@@ -34,13 +34,14 @@ public class IosMetadataTest {
     Capabilities capabilities;
 
     HashMap<String, Long> viewportRect = new HashMap<String, Long>();
-    HashMap<String, HashMap<String, Long>> sessionValue = new HashMap<String, HashMap<String, Long>>();
+    HashMap<String, Object> sessionValue = new HashMap<>();
     Response session = new Response(new SessionId("abc"));
 
     Faker faker = new Faker();
     Long width = faker.number().randomNumber(3, false);
     Long top = faker.number().randomNumber(3, false);
     Long height = faker.number().randomNumber(3, false);
+    Long pixelRatio = faker.number().randomNumber(1, false);
 
     @Before
     public void setup() {
@@ -48,6 +49,7 @@ public class IosMetadataTest {
         viewportRect.put("top", top);
         viewportRect.put("height", height);
         sessionValue.put("viewportRect", viewportRect);
+        sessionValue.put("pixelRatio", pixelRatio);
         session.setValue(sessionValue);
         when(driver.execute("getSession")).thenReturn(session);
         when(driver.getCapabilities()).thenReturn(capabilities);
@@ -170,9 +172,9 @@ public class IosMetadataTest {
 
     @Test
     public void testScaleFactor() {
+        Cache.CACHE_MAP.clear();
         Map details = new HashMap<>();
         details.put("pixelRatio", 2);
-        when(driver.getSessionDetails()).thenReturn(details);
-        Assert.assertEquals(metadata.scaleFactor().intValue(), 2);
+        Assert.assertEquals(metadata.scaleFactor().intValue(), pixelRatio.intValue());
     }
 }

@@ -12,12 +12,13 @@ import java.util.UUID;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.WebElement;
 
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.MobileElement;
 import io.percy.appium.AppPercy;
 import io.percy.appium.lib.CliWrapper;
 import io.percy.appium.lib.Region;
@@ -153,7 +154,7 @@ public class GenericProvider {
     public JSONArray findRegions(
         List<String> xpaths,
         List<String> accessibilityIds,
-        List<MobileElement> elements,
+        List<WebElement> elements,
         List<Region> locations
     ) {
         JSONArray elementsArray = new JSONArray();
@@ -165,7 +166,7 @@ public class GenericProvider {
         return elementsArray;
     }
 
-    public JSONObject getRegionObject(String selector, MobileElement element) {
+    public JSONObject getRegionObject(String selector, WebElement element) {
         Point location = element.getLocation();
         Dimension size = element.getSize();
         double scaleFactor = metadata.scaleFactor();
@@ -185,7 +186,7 @@ public class GenericProvider {
     public void getRegionsByXpath(JSONArray elementsArray, List<String> xpaths) {
         for (String xpath : xpaths) {
             try {
-                MobileElement element = (MobileElement) driver.findElementByXPath(xpath);
+                WebElement element = (WebElement) driver.findElement(By.xpath(xpath));
                 String selector = String.format("xpath: %s", xpath);
                 JSONObject region = getRegionObject(selector, element);
                 elementsArray.put(region);
@@ -199,7 +200,7 @@ public class GenericProvider {
     public void getRegionsByIds(JSONArray elementsArray, List<String> ids) {
         for (String id : ids) {
             try {
-                MobileElement element = (MobileElement) driver.findElementByAccessibilityId(id);
+                WebElement element = (WebElement) driver.findElement(By.id(id));
                 String selector = String.format("id: %s", id);
                 JSONObject region = getRegionObject(selector, element);
                 elementsArray.put(region);
@@ -211,7 +212,7 @@ public class GenericProvider {
         }
     }
 
-    public void getRegionsByElements(JSONArray elementsArray, List<MobileElement> elements) {
+    public void getRegionsByElements(JSONArray elementsArray, List<WebElement> elements) {
         for (int index = 0; index < elements.size(); index++) {
             try {
                 String type = elements.get(index).getAttribute("class");
