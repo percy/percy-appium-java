@@ -7,6 +7,9 @@ import io.percy.appium.lib.PercyOptions;
 import io.percy.appium.metadata.DriverMetadata;
 
 import java.util.Map;
+
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -40,8 +43,8 @@ public class PercyOnAutomate extends IPercy {
      *
      */
     @Override
-    public void screenshot(String name) {
-        this.screenshot(name, (Map<String, Object>) null);
+    public JSONObject screenshot(String name) {
+        return this.screenshot(name, (Map<String, Object>) null);
     }
 
     /**
@@ -52,13 +55,13 @@ public class PercyOnAutomate extends IPercy {
      * @param options    Optional screenshot params
      */
     @Override
-    public void screenshot(String name, Map<String, Object> options) {
+    public JSONObject screenshot(String name, Map<String, Object> options) {
         try {
             if (isPercyEnabled == null) {
                 this.isPercyEnabled = this.cliWrapper.healthcheck();
             }
             if (!isPercyEnabled || !percyOptions.percyOptionEnabled()) {
-                return;
+                return null;
             }
 
             String sessionId = this.driverMetadata.getSessionId();
@@ -96,13 +99,14 @@ public class PercyOnAutomate extends IPercy {
                 }
             }
 
-            cliWrapper.postScreenshotPOA(name, sessionId, remoteWebAddress, capabilities, options);
+            return cliWrapper.postScreenshotPOA(name, sessionId, remoteWebAddress, capabilities, options);
         } catch (Exception e) {
             AppPercy.log("Error taking screenshot " + name);
             AppPercy.log(e.toString());
             if (!ignoreErrors) {
                 throw new RuntimeException("Error taking screenshot " + name, e);
             }
+            return null;
         }
     }
 

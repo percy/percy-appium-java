@@ -14,6 +14,7 @@ public class ScreenshotOptions {
     private Boolean fullPage = false;
     private Boolean fullScreen = false;
     private Integer screenLengths = 4;
+    private Boolean sync = false;
     private List<String> ignoreRegionXpaths = new ArrayList<String>();
     private List<String> ignoreRegionAccessibilityIds = new ArrayList<String>();
     private List<WebElement> ignoreRegionAppiumElements = new ArrayList<WebElement>();
@@ -63,6 +64,10 @@ public class ScreenshotOptions {
         return screenLengths;
     }
 
+    public Boolean getSync() {
+        return sync;
+    }
+
     public void setDeviceName(String deviceNameParam) {
         deviceName = deviceNameParam;
     }
@@ -97,6 +102,10 @@ public class ScreenshotOptions {
 
     public void setScreenLengths(Integer screenLengthsParam) {
         screenLengths = screenLengthsParam;
+    }
+
+    public void setSync(Boolean sync) {
+        this.sync = sync;
     }
 
     public List<String> getIgnoreRegionXpaths() {

@@ -153,7 +153,7 @@ public class AppAutomate extends GenericProvider {
         return tiles;
     }
 
-    public String screenshot(String name, ScreenshotOptions options) {
+    public JSONObject screenshot(String name, ScreenshotOptions options) {
         JSONObject result = executePercyScreenshotBegin(name);
         String percyScreenshotUrl = "";
         String error = null;
@@ -162,7 +162,9 @@ public class AppAutomate extends GenericProvider {
 
         super.setDebugUrl(getDebugUrl(result));
         try {
-            percyScreenshotUrl = super.screenshot(name, options, osVersion, device);
+            JSONObject response = super.screenshot(name, options, osVersion, device);
+            percyScreenshotUrl = response.getString("link");
+            return response;
         } catch (Exception e) {
             error = e.getMessage();
         }
