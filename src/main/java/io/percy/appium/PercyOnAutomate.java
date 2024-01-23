@@ -99,7 +99,13 @@ public class PercyOnAutomate extends IPercy {
                 }
             }
 
-            return cliWrapper.postScreenshotPOA(name, sessionId, remoteWebAddress, capabilities, options);
+            return cliWrapper.postScreenshotPOA(
+                name,
+                sessionId,
+                remoteWebAddress,
+                capabilities,
+                options
+            ).getJSONObject("body");
         } catch (Exception e) {
             AppPercy.log("Error taking screenshot " + name);
             AppPercy.log(e.toString());

@@ -63,7 +63,7 @@ public class AppAutomate extends GenericProvider {
         return null;
     }
 
-    public void executePercyScreenshotEnd(String name, String percyScreenshotUrl, String error) {
+    public void executePercyScreenshotEnd(String name, String percyScreenshotUrl, String error, Boolean sync) {
         try {
             if (markedPercySession) {
                 String status = "success";
@@ -75,6 +75,7 @@ public class AppAutomate extends GenericProvider {
                 arguments.put("percyScreenshotUrl", percyScreenshotUrl);
                 arguments.put("name", name);
                 arguments.put("status", status);
+                arguments.put("sync", sync);
                 JSONObject reqObject = new JSONObject();
                 reqObject.put("action", "percyScreenshot");
                 reqObject.put("arguments", arguments);
@@ -168,7 +169,7 @@ public class AppAutomate extends GenericProvider {
         } catch (Exception e) {
             error = e.getMessage();
         }
-        executePercyScreenshotEnd(name, percyScreenshotUrl, error);
+        executePercyScreenshotEnd(name, percyScreenshotUrl, error, options.getSync());
         return null;
     }
 

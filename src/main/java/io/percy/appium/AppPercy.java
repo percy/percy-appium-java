@@ -112,7 +112,7 @@ public class AppPercy extends IPercy {
                 options = new ScreenshotOptions();
             }
             options.setFullScreen(fullScreen);
-            return provider.screenshot(name, options);
+            return provider.screenshot(name, options).getJSONObject("body");
         } catch (Exception e) {
             cliWrapper.postFailedEvent(e.getMessage());
             log("Error taking screenshot " + name);
