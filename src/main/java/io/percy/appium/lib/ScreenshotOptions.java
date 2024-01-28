@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
+
 import org.openqa.selenium.WebElement;
 
 public class ScreenshotOptions {
@@ -14,7 +16,7 @@ public class ScreenshotOptions {
     private Boolean fullPage = false;
     private Boolean fullScreen = false;
     private Integer screenLengths = 4;
-    private Boolean sync = false;
+    private @Nullable Boolean sync = null;
     private List<String> ignoreRegionXpaths = new ArrayList<String>();
     private List<String> ignoreRegionAccessibilityIds = new ArrayList<String>();
     private List<WebElement> ignoreRegionAppiumElements = new ArrayList<WebElement>();
@@ -64,7 +66,7 @@ public class ScreenshotOptions {
         return screenLengths;
     }
 
-    public Boolean getSync() {
+    public @Nullable Boolean getSync() {
         return sync;
     }
 

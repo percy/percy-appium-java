@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -63,7 +65,8 @@ public class AppAutomate extends GenericProvider {
         return null;
     }
 
-    public void executePercyScreenshotEnd(String name, String percyScreenshotUrl, String error, Boolean sync) {
+    public void executePercyScreenshotEnd(String name, String percyScreenshotUrl,
+        String error, @Nullable Boolean sync) {
         try {
             if (markedPercySession) {
                 String status = "success";
