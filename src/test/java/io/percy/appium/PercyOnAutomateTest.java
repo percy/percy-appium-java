@@ -91,8 +91,6 @@ public class PercyOnAutomateTest {
         percy.setCliWrapper(cliMock);
         when(cliMock.healthcheck()).thenReturn(true);
         Map<String, Object> options = new HashMap<>();
-        // MobileElement mockedElement = mock(MobileElement.class);
-        // when(mockedElement.getId()).thenReturn("1234");
         
         // Mock the cliWrapper response, when sync is true
         JSONObject innerData = new JSONObject();
