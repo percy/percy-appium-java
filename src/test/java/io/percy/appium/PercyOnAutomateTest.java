@@ -44,11 +44,6 @@ public class PercyOnAutomateTest {
     public void takeScreenshot() {
         when(androidDriver.getSessionId()).thenReturn(new SessionId("123"));
         when(androidDriver.getCapabilities()).thenReturn(capabilities);
-        // try {
-        //     when(androidDriver.getRemoteAddress()).thenReturn(new URL("https://hub.browserstack.com/wd/hub"));
-        // } catch (MalformedURLException e) {
-        //     throw new RuntimeException(e);
-        // }
 
         percy = spy(new PercyOnAutomate(androidDriver));
         percy.setCliWrapper(cliMock);

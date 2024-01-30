@@ -107,7 +107,7 @@ public class PercyOnAutomate extends IPercy {
                 options
             );
 
-            if(response != null && response.has("data")) {
+            if (response != null && response.has("data")) {
                 return response.getJSONObject("data");
             }
             return null;
