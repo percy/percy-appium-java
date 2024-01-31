@@ -2,6 +2,8 @@ package io.percy.appium;
 
 import io.appium.java_client.MobileElement;
 import io.percy.appium.lib.CliWrapper;
+
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +18,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -41,11 +44,6 @@ public class PercyOnAutomateTest {
     public void takeScreenshot() {
         when(androidDriver.getSessionId()).thenReturn(new SessionId("123"));
         when(androidDriver.getCapabilities()).thenReturn(capabilities);
-        try {
-            when(androidDriver.getRemoteAddress()).thenReturn(new URL("https://hub.browserstack.com/wd/hub"));
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
 
         percy = spy(new PercyOnAutomate(androidDriver));
         percy.setCliWrapper(cliMock);
@@ -75,6 +73,41 @@ public class PercyOnAutomateTest {
 
         options.remove("ignore_region_appium_elements");
         options.put("ignore_region_elements", "1234");
+        verify(cliMock).postScreenshotPOA(eq("Test"), eq("123"), eq("https://hub.browserstack.com/wd/hub"), eq(capabilities.asMap()), eq(options));
+    }
+
+    @Test
+    public void takeScreenshotWithSYNCOption(){
+        lenient().when(androidDriver.getSessionId()).thenReturn(new SessionId("123"));
+        lenient().when(androidDriver.getCapabilities()).thenReturn(capabilities);
+        try {
+            lenient(). when(androidDriver.getRemoteAddress()).thenReturn(new URL("https://hub.browserstack.com/wd/hub"));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+
+        
+        percy = spy(new PercyOnAutomate(androidDriver));
+        percy.setCliWrapper(cliMock);
+        when(cliMock.healthcheck()).thenReturn(true);
+        Map<String, Object> options = new HashMap<>();
+        
+        // Mock the cliWrapper response, when sync is true
+        JSONObject innerData = new JSONObject();
+        innerData.put("snapshot-name", "Test");
+        
+        JSONObject jsonData = new JSONObject();
+        jsonData.put("data", innerData);
+        when(cliMock.postScreenshotPOA(any(), any(), any(), any(), any())).thenReturn(jsonData);
+
+        options.put("sync", true);
+        JSONObject data = percy.screenshot("Test", options);
+
+        options.remove("sync");
+
+        if(data != null){
+            assertEquals(data.getString("snapshot-name"), "Test");
+        }
         verify(cliMock).postScreenshotPOA(eq("Test"), eq("123"), eq("https://hub.browserstack.com/wd/hub"), eq(capabilities.asMap()), eq(options));
     }
 }

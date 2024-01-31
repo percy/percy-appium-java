@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -63,7 +65,8 @@ public class AppAutomate extends GenericProvider {
         return null;
     }
 
-    public void executePercyScreenshotEnd(String name, String percyScreenshotUrl, String error) {
+    public void executePercyScreenshotEnd(String name, String percyScreenshotUrl,
+        String error, @Nullable Boolean sync) {
         try {
             if (markedPercySession) {
                 String status = "success";
@@ -75,6 +78,7 @@ public class AppAutomate extends GenericProvider {
                 arguments.put("percyScreenshotUrl", percyScreenshotUrl);
                 arguments.put("name", name);
                 arguments.put("status", status);
+                arguments.put("sync", sync);
                 JSONObject reqObject = new JSONObject();
                 reqObject.put("action", "percyScreenshot");
                 reqObject.put("arguments", arguments);
@@ -153,7 +157,7 @@ public class AppAutomate extends GenericProvider {
         return tiles;
     }
 
-    public String screenshot(String name, ScreenshotOptions options) {
+    public JSONObject screenshot(String name, ScreenshotOptions options) {
         JSONObject result = executePercyScreenshotBegin(name);
         String percyScreenshotUrl = "";
         String error = null;
@@ -162,11 +166,16 @@ public class AppAutomate extends GenericProvider {
 
         super.setDebugUrl(getDebugUrl(result));
         try {
-            percyScreenshotUrl = super.screenshot(name, options, osVersion, device);
+            JSONObject response = super.screenshot(name, options, osVersion, device);
+            percyScreenshotUrl = response.getString("link");
+            if (response != null && response.has("data")) {
+                return response.getJSONObject("data");
+            }
+            return response;
         } catch (Exception e) {
             error = e.getMessage();
         }
-        executePercyScreenshotEnd(name, percyScreenshotUrl, error);
+        executePercyScreenshotEnd(name, percyScreenshotUrl, error, options.getSync());
         return null;
     }
 

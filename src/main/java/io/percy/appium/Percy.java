@@ -6,6 +6,8 @@ import io.percy.appium.lib.ScreenshotOptions;
 
 import java.util.Map;
 
+import org.json.JSONObject;
+
 public class Percy {
     private AppiumDriver driver;
     private IPercy percy;
@@ -23,43 +25,43 @@ public class Percy {
         }
     }
 
-    public void screenshot(String name) {
+    public JSONObject screenshot(String name) {
         try {
-            percy.screenshot(name);
+            return percy.screenshot(name);
         } catch (Exception ignore) {
-
+            return null;
         }
     }
 
-    public void screenshot(String name, Map<String, Object> options) {
+    public JSONObject screenshot(String name, Map<String, Object> options) {
         try {
-            percy.screenshot(name, options);
+            return percy.screenshot(name, options);
         } catch (Exception ignore) {
-
+            return null;
         }
     }
 
-    public void screenshot(String name, Boolean fullScreen) {
+    public JSONObject screenshot(String name, Boolean fullScreen) {
         try {
-            percy.screenshot(name, fullScreen);
+            return percy.screenshot(name, fullScreen);
         } catch (Exception ignore) {
-
+            return null;
         }
     }
 
-    public void screenshot(String name, ScreenshotOptions options) {
+    public JSONObject screenshot(String name, ScreenshotOptions options) {
         try {
-            percy.screenshot(name, options);
+            return percy.screenshot(name, options);
         } catch (Exception ignore) {
-
+            return null;
         }
     }
 
-    public void screenshot(String name, Boolean fullScreen, ScreenshotOptions options) {
+    public JSONObject screenshot(String name, Boolean fullScreen, ScreenshotOptions options) {
         try {
-            percy.screenshot(name, fullScreen, options);
+            return percy.screenshot(name, fullScreen, options);
         } catch (Exception ignore) {
-
+            return null;
         }
     }
 }
