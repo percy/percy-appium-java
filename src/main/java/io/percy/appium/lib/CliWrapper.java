@@ -99,7 +99,7 @@ public class CliWrapper {
         data.put("consideredElementsData", consideredElementsData);
         data.put("clientInfo", env.getClientInfo(false));
         data.put("environmentInfo", env.getEnvironmentInfo());
-
+        data.put("sync", sync);
         int timeout = 600000; // 600 seconds = 600,000 milliseconds
 
         // Create RequestConfig with timeout
