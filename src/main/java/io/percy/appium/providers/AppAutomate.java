@@ -168,8 +168,7 @@ public class AppAutomate extends GenericProvider {
         try {
             JSONObject response = super.screenshot(name, options, osVersion, device);
             percyScreenshotUrl = response.getString("link");
-            
-            if(response != null && response.has("data")) {
+            if (response != null && response.has("data")) {
                 return response.getJSONObject("data");
             }
             return response;
