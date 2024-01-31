@@ -7,10 +7,12 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
@@ -85,8 +87,8 @@ public class CliWrapper {
      * @param name The human-readable name of the screenshot. Should be
      *             unique.
      */
-    public String postScreenshot(String name, JSONObject tag, List<Tile> tiles, String externalDebugUrl,
-            JSONObject ignoredElementsData, JSONObject consideredElementsData) {
+    public JSONObject postScreenshot(String name, JSONObject tag, List<Tile> tiles, String externalDebugUrl,
+            JSONObject ignoredElementsData, JSONObject consideredElementsData, Boolean sync) {
         // Build a JSON object to POST back to the cli node process
         JSONObject data = new JSONObject();
         data.put("name", name);
@@ -97,15 +99,23 @@ public class CliWrapper {
         data.put("consideredElementsData", consideredElementsData);
         data.put("clientInfo", env.getClientInfo(false));
         data.put("environmentInfo", env.getEnvironmentInfo());
+        data.put("sync", sync);
+        int timeout = 600000; // 600 seconds = 600,000 milliseconds
+
+        // Create RequestConfig with timeout
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setSocketTimeout(timeout)
+                .setConnectTimeout(timeout)
+                .build();
 
         StringEntity entity = new StringEntity(data.toString(), ContentType.APPLICATION_JSON);
 
-        try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+        try (CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).build()) {
             HttpPost request = new HttpPost(PERCY_SERVER_ADDRESS + "/percy/comparison");
             request.setEntity(entity);
             HttpResponse response = httpClient.execute(request);
             JSONObject jsonResponse = new JSONObject(EntityUtils.toString(response.getEntity()));
-            return jsonResponse.getString("link");
+            return jsonResponse;
         } catch (Exception ex) {
             AppPercy.log(ex.toString(), "debug");
             AppPercy.log("Could not post screenshot " + name);
@@ -131,7 +141,7 @@ public class CliWrapper {
         }
     }
 
-    public String postScreenshotPOA(String name, String sessionId, String commandExecutorUrl,
+    public JSONObject postScreenshotPOA(String name, String sessionId, String commandExecutorUrl,
             Map<String, Object> capabilities, Map<String, Object> options) {
         // Build a JSON object to POST back to the cli node process
         JSONObject data = new JSONObject();
@@ -143,12 +153,22 @@ public class CliWrapper {
         data.put("clientInfo", env.getClientInfo(false));
         data.put("environmentInfo", env.getEnvironmentInfo());
 
+        int timeout = 600000; // 600 seconds = 600,000 milliseconds
+
+        // Create RequestConfig with timeout
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setSocketTimeout(timeout)
+                .setConnectTimeout(timeout)
+                .build();
+
         StringEntity entity = new StringEntity(data.toString(), ContentType.APPLICATION_JSON);
 
-        try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+        try (CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).build()) {
             HttpPost request = new HttpPost(PERCY_SERVER_ADDRESS + "/percy/automateScreenshot");
             request.setEntity(entity);
             HttpResponse response = httpClient.execute(request);
+            JSONObject jsonResponse = new JSONObject(EntityUtils.toString(response.getEntity()));
+            return jsonResponse;
         } catch (Exception ex) {
             AppPercy.log(ex.toString(), "debug");
             AppPercy.log("Could not post screenshot " + name);

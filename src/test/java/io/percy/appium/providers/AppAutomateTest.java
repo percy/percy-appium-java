@@ -105,7 +105,7 @@ public class AppAutomateTest {
 
     @Test
     public void testExecutePercyScreenshotEndWhenNullExceptionDoesNotThrow() {
-        appAutomate.executePercyScreenshotEnd("", "", "");
+        appAutomate.executePercyScreenshotEnd("", "", "", false);
     }
 
     @Test
@@ -255,12 +255,13 @@ public class AppAutomateTest {
         arguments.put("percyScreenshotUrl", percyScreenshotUrl);
         arguments.put("name", name);
         arguments.put("status", "success");
+        arguments.put("sync", true);
         JSONObject reqObject = new JSONObject();
         reqObject.put("action", "percyScreenshot");
         reqObject.put("arguments", arguments);
         when(androidDriver.executeScript(String.format("browserstack_executor: %s", reqObject.toString())))
                 .thenReturn(response);
-        appAutomate.executePercyScreenshotEnd(name, percyScreenshotUrl, null);
+        appAutomate.executePercyScreenshotEnd(name, percyScreenshotUrl, null, true);
     }
 
     @Test

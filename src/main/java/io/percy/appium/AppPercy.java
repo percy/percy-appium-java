@@ -3,6 +3,8 @@ package io.percy.appium;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.json.JSONObject;
+
 import io.appium.java_client.AppiumDriver;
 import io.percy.appium.lib.Cache;
 import io.percy.appium.lib.CliWrapper;
@@ -62,8 +64,8 @@ public class AppPercy extends IPercy {
      *
      */
     @Override
-    public void screenshot(String name) {
-        screenshot(name, false, null);
+    public JSONObject screenshot(String name) {
+        return screenshot(name, false, null);
     }
 
     /**
@@ -74,8 +76,8 @@ public class AppPercy extends IPercy {
      * @param fullScreen It indicates if the app is a full screen
      */
     @Override
-    public void screenshot(String name, Boolean fullScreen) {
-        screenshot(name, fullScreen, null);
+    public JSONObject screenshot(String name, Boolean fullScreen) {
+        return screenshot(name, fullScreen, null);
     }
 
     /**
@@ -86,8 +88,8 @@ public class AppPercy extends IPercy {
      * @param options Optional screenshot params
      */
     @Override
-    public void screenshot(String name, ScreenshotOptions options) {
-        screenshot(name, false, options);
+    public JSONObject screenshot(String name, ScreenshotOptions options) {
+        return screenshot(name, false, options);
     }
 
     /**
@@ -99,9 +101,9 @@ public class AppPercy extends IPercy {
      * @param options    Optional screenshot params
      */
     @Override
-    public void screenshot(String name, Boolean fullScreen, ScreenshotOptions options) {
+    public JSONObject screenshot(String name, Boolean fullScreen, ScreenshotOptions options) {
         if (!isPercyEnabled || !percyOptions.percyOptionEnabled()) {
-            return;
+            return null;
         }
         percyOptions.setPercyIgnoreErrors();
         try {
@@ -110,7 +112,7 @@ public class AppPercy extends IPercy {
                 options = new ScreenshotOptions();
             }
             options.setFullScreen(fullScreen);
-            provider.screenshot(name, options);
+            return provider.screenshot(name, options).getJSONObject("data");
         } catch (Exception e) {
             cliWrapper.postFailedEvent(e.getMessage());
             log("Error taking screenshot " + name);
@@ -119,6 +121,7 @@ public class AppPercy extends IPercy {
                 throw new RuntimeException("Error taking screenshot " + name, e);
             }
         }
+        return null;
     }
 
     protected void finalize() throws Throwable {

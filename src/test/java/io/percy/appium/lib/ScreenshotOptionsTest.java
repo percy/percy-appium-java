@@ -37,4 +37,12 @@ public class ScreenshotOptionsTest {
             assertTrue(element instanceof WebElement);
         }
     }
+
+    @Test
+    public void testSyncOption() {
+        ScreenshotOptions options = new ScreenshotOptions();
+
+        // Create a list of MobileElements
+        assertEquals(options.getSync(), null);
+    }
 }

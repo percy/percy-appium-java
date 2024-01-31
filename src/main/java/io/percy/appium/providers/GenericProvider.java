@@ -100,7 +100,7 @@ public class GenericProvider {
         return driver.getScreenshotAs(OutputType.BASE64);
     }
 
-    public String screenshot(String name, ScreenshotOptions options) throws Exception {
+    public JSONObject screenshot(String name, ScreenshotOptions options) throws Exception {
         return screenshot(name, options, null, null);
     }
 
@@ -111,7 +111,7 @@ public class GenericProvider {
         return elementsData;
     }
 
-    public String screenshot(String name, ScreenshotOptions options,
+    public JSONObject screenshot(String name, ScreenshotOptions options,
             String platformVersion, String deviceName) throws Exception {
         this.metadata = MetadataHelper.resolve(driver, deviceName, options.getStatusBarHeight(),
                 options.getNavBarHeight(), options.getOrientation(), platformVersion);
@@ -135,7 +135,8 @@ public class GenericProvider {
             tiles,
             debugUrl,
             getObjectForArray("ignoreElementsData", ignoreRegions),
-            getObjectForArray("considerElementsData", considerRegions)
+            getObjectForArray("considerElementsData", considerRegions),
+            options.getSync()
         );
     }
 
