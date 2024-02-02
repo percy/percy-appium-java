@@ -26,6 +26,7 @@ public class AppPercy extends IPercy {
 
     private PercyOptions percyOptions;
 
+    private GenericProvider provider;
     /**
      * Determine if we're debug logging
      */
@@ -55,6 +56,7 @@ public class AppPercy extends IPercy {
         this.percyOptions = new PercyOptions(driver);
         this.isPercyEnabled = cliWrapper.healthcheck();
         this.sessionId = driver.getSessionId().toString();
+        this.provider = ProviderResolver.resolveProvider(driver);
     }
 
     /**
@@ -107,7 +109,6 @@ public class AppPercy extends IPercy {
         }
         percyOptions.setPercyIgnoreErrors();
         try {
-            GenericProvider provider = ProviderResolver.resolveProvider(driver);
             if (options == null) {
                 options = new ScreenshotOptions();
             }
@@ -151,4 +152,12 @@ public class AppPercy extends IPercy {
         }
     }
 
+    // Following methods added for test cases.
+    protected void setCliWrapper(CliWrapper cli) {
+        this.cliWrapper = cli;
+    }
+
+    protected void setGenericProvider(GenericProvider gProvider){
+        this.provider = gProvider;
+    }
 }
