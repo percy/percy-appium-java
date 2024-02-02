@@ -83,6 +83,7 @@ public class AppPercyTest{
       // The CLI response is in the format { data: { snapshot-name: 'some_Test', ... and so on } }
       // We need to extract and use the response from the `data` key
       JSONObject res = percy.screenshot("Test", options);
+      System.out.println(" GOJO " + res);
       assertEquals(res.getString("snapshot-name"), "Test");
     }
 }
