@@ -104,6 +104,7 @@ public class AppPercy extends IPercy {
      */
     @Override
     public JSONObject screenshot(String name, Boolean fullScreen, ScreenshotOptions options) {
+        System.out.println("==> GOJO" + isPercyEnabled + " - " + !percyOptions.percyOptionEnabled());
         if (!isPercyEnabled || !percyOptions.percyOptionEnabled()) {
             return null;
         }
@@ -157,7 +158,11 @@ public class AppPercy extends IPercy {
         this.cliWrapper = cli;
     }
 
-    protected void setGenericProvider(GenericProvider gProvider) {
-        this.provider = gProvider;
+    protected void setPercyEnabled(){
+        this.isPercyEnabled = true;
+    }
+
+    protected void setGenericProvider(GenericProvider provider) {
+        this.provider = provider;
     }
 }
