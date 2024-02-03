@@ -158,11 +158,11 @@ public class AppPercy extends IPercy {
         this.cliWrapper = cli;
     }
 
-    protected void setPercyEnabled(){
+    protected void setPercyEnabled() {
         this.isPercyEnabled = true;
     }
 
-    protected void setGenericProvider(GenericProvider provider) {
-        this.provider = provider;
+    protected void setGenericProvider(GenericProvider genericProvider) {
+        this.provider = genericProvider;
     }
 }
