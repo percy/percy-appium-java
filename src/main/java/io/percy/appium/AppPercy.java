@@ -104,7 +104,6 @@ public class AppPercy extends IPercy {
      */
     @Override
     public JSONObject screenshot(String name, Boolean fullScreen, ScreenshotOptions options) {
-        System.out.println("==> GOJO" + isPercyEnabled + " - " + !percyOptions.percyOptionEnabled());
         if (!isPercyEnabled || !percyOptions.percyOptionEnabled()) {
             return null;
         }
