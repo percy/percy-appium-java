@@ -26,6 +26,7 @@ public class AppPercy extends IPercy {
 
     private PercyOptions percyOptions;
 
+    private GenericProvider provider;
     /**
      * Determine if we're debug logging
      */
@@ -55,6 +56,7 @@ public class AppPercy extends IPercy {
         this.percyOptions = new PercyOptions(driver);
         this.isPercyEnabled = cliWrapper.healthcheck();
         this.sessionId = driver.getSessionId().toString();
+        this.provider = ProviderResolver.resolveProvider(driver);
     }
 
     /**
@@ -107,12 +109,16 @@ public class AppPercy extends IPercy {
         }
         percyOptions.setPercyIgnoreErrors();
         try {
-            GenericProvider provider = ProviderResolver.resolveProvider(driver);
             if (options == null) {
                 options = new ScreenshotOptions();
             }
             options.setFullScreen(fullScreen);
-            return provider.screenshot(name, options).getJSONObject("data");
+            JSONObject response = provider.screenshot(name, options);
+            if (response != null && response.has("data")) {
+                return response.getJSONObject("data");
+            }
+
+            return null;
         } catch (Exception e) {
             cliWrapper.postFailedEvent(e.getMessage());
             log("Error taking screenshot " + name);
@@ -146,4 +152,16 @@ public class AppPercy extends IPercy {
         }
     }
 
+    // Following methods added for test cases.
+    protected void setCliWrapper(CliWrapper cli) {
+        this.cliWrapper = cli;
+    }
+
+    protected void setPercyEnabled() {
+        this.isPercyEnabled = true;
+    }
+
+    protected void setGenericProvider(GenericProvider genericProvider) {
+        this.provider = genericProvider;
+    }
 }
