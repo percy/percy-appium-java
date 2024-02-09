@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -74,18 +75,70 @@ public class AndroidMetadataTest {
     }
 
     @Test
+    public void testStatBarHeightWhenValueGiven() {
+        metadata = new AndroidMetadata(androidDriver, "Samsung Galaxy s22", 100, 200, "auto", null);
+        Assert.assertEquals(metadata.statBarHeight().intValue(), 100);
+    }
+
+    @Test
+    public void testStatBarHeightForAuto() {
+        metadata = new AndroidMetadata(androidDriver, "Samsung Galaxy s22", null, null, "auto", null);
+        JSONObject arguments = new JSONObject();
+        arguments.put("action", "adbShell");
+        JSONObject command = new JSONObject();
+        command.put("command", "dumpsys window displays");
+        arguments.put("arguments", command);
+
+        String response = "InsetsSource type=ITYPE_STATUS_BAR frame=[0,0][2400,74] visible=true\n" +
+                "InsetsSource type=ITYPE_NAVIGATION_BAR frame=[0,2358][1080,2400] visible=true";
+
+        when(androidDriver.executeScript(String.format("browserstack_executor: %s", arguments.toString())))
+                .thenReturn(response);
+
+        Integer expectedStatBarHeight = 74;
+        Integer actualStatBarHeight = metadata.statBarHeight();
+        Assert.assertEquals(expectedStatBarHeight, actualStatBarHeight);
+    }
+
+    @Test
     public void testNavBarHeight() {
         Assert.assertEquals(metadata.navBarHeight().intValue(), 2160 - (height + top));
     }
 
     @Test
-    public void testDeviceName(){
+    public void testNavBarHeightWhenValueGiven() {
+        metadata = new AndroidMetadata(androidDriver, "Samsung Galaxy s22", 100, 200, "auto", null);
+        Assert.assertEquals(metadata.navBarHeight().intValue(), 200);
+    }
+
+    @Test
+    public void testNavBarHeightForAuto() {
+        metadata = new AndroidMetadata(androidDriver, "Samsung Galaxy s22", null, null, "auto", null);
+        JSONObject arguments = new JSONObject();
+        arguments.put("action", "adbShell");
+        JSONObject command = new JSONObject();
+        command.put("command", "dumpsys window displays");
+        arguments.put("arguments", command);
+
+        String response = "InsetsSource type=ITYPE_STATUS_BAR frame=[0,0][2400,74] visible=true\n" +
+                "InsetsSource type=ITYPE_NAVIGATION_BAR frame=[0,2358][1080,2400] visible=true";
+
+        when(androidDriver.executeScript(String.format("browserstack_executor: %s", arguments.toString())))
+                .thenReturn(response);
+
+        Integer expectedStatBarHeight = 42;
+        Integer actualStatBarHeight = metadata.navBarHeight();
+        Assert.assertEquals(expectedStatBarHeight, actualStatBarHeight);
+    }
+
+    @Test
+    public void testDeviceName() {
         when(capabilities.getCapability("device")).thenReturn("Samsung Galaxy s22");
         Assert.assertEquals(metadata.deviceName(), "Samsung Galaxy s22");
     }
 
     @Test
-    public void testDeviceNameFromDesired(){
+    public void testDeviceNameFromDesired() {
         Map desired = new HashMap<>();
         desired.put("deviceName", "Samsung Galaxy s22");
         when(capabilities.getCapability("desired")).thenReturn(desired);
@@ -93,13 +146,13 @@ public class AndroidMetadataTest {
     }
 
     @Test
-    public void testOsName(){
+    public void testOsName() {
         when(capabilities.getCapability("platformName")).thenReturn("Android");
         Assert.assertEquals(metadata.osName(), "Android");
     }
 
     @Test
-    public void testPlatformVersion(){
+    public void testPlatformVersion() {
         when(capabilities.getCapability("platformVersion")).thenReturn("12");
         Assert.assertEquals(metadata.platformVersion(), "12");
     }
@@ -142,7 +195,7 @@ public class AndroidMetadataTest {
     }
 
     @Test
-    public void testOrientatioWithNullParamAndCaps(){
+    public void testOrientatioWithNullParamAndCaps() {
         when(androidDriver.getCapabilities().getCapability("orientation")).thenReturn(ScreenOrientation.LANDSCAPE);
         Assert.assertEquals(metadata.orientation(), "landscape");
     }
