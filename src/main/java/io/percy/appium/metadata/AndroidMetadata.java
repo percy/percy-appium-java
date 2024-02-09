@@ -2,18 +2,23 @@ package io.percy.appium.metadata;
 
 import java.util.Map;
 
+import org.json.JSONObject;
+
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.percy.appium.lib.Cache;
+import io.percy.appium.lib.Utils;
 
 public class AndroidMetadata extends Metadata {
     private AndroidDriver driver;
     private String sessionId;
+    private String orientation;
 
     public AndroidMetadata(AppiumDriver driver, String deviceName, Integer statusBar, Integer navBar,
             String orientation, String platformVersion) {
         super(driver, deviceName, statusBar, navBar, orientation, platformVersion);
         this.driver = (AndroidDriver) driver;
+        this.orientation = orientation;
         this.sessionId = driver.getSessionId().toString();
     }
 
@@ -41,7 +46,11 @@ public class AndroidMetadata extends Metadata {
     }
 
     public Integer statBarHeight() {
+
         Integer statBar = getStatusBar();
+        if (statBar == null && orientation != null && orientation.toLowerCase().equals("auto")) {
+            statBar = Utils.extractStatusBarHeight(getDisplaySysDump());
+        }
         if (statBar != null) {
             return statBar;
         }
@@ -50,6 +59,9 @@ public class AndroidMetadata extends Metadata {
 
     public Integer navBarHeight() {
         Integer navBar = getNavBar();
+        if (navBar == null && orientation != null && orientation.toLowerCase().equals("auto")) {
+            navBar = Utils.extractNavigationBarHeight(getDisplaySysDump());
+        }
         if (navBar != null) {
             return navBar;
         }
@@ -67,6 +79,21 @@ public class AndroidMetadata extends Metadata {
 
     public Integer scaleFactor() {
         return 1;
+    }
+
+    public String getDisplaySysDump() {
+        if (Cache.CACHE_MAP.get("getDisplaySysDump_" + sessionId) == null) {
+
+            JSONObject arguments = new JSONObject();
+            arguments.put("action", "adbShell");
+            JSONObject command = new JSONObject();
+            command.put("command", "dumpsys window displays");
+            arguments.put("arguments", command);
+            String resultString = driver
+                    .executeScript(String.format("browserstack_executor: %s", arguments.toString())).toString();
+            Cache.CACHE_MAP.put("getDisplaySysDump_" + sessionId, resultString);
+        }
+        return (String) Cache.CACHE_MAP.get("getDisplaySysDump_" + sessionId);
     }
 
 }

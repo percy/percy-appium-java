@@ -115,29 +115,28 @@ public class GenericProvider {
             String platformVersion, String deviceName) throws Exception {
         this.metadata = MetadataHelper.resolve(driver, deviceName, options.getStatusBarHeight(),
                 options.getNavBarHeight(), options.getOrientation(), platformVersion);
-        JSONObject tag = getTag();
         List<Tile> tiles = captureTiles(options);
+        // Get Tag After captureTile. This is done if orientation is auto.
+        // Orientation get overwrited in metadata.orientation() function.
+        JSONObject tag = getTag();
         JSONArray ignoreRegions = findRegions(
-            options.getIgnoreRegionXpaths(),
-            options.getIgnoreRegionAccessibilityIds(),
-            options.getIgnoreRegionAppiumElements(),
-            options.getCustomIgnoreRegions()
-        );
+                options.getIgnoreRegionXpaths(),
+                options.getIgnoreRegionAccessibilityIds(),
+                options.getIgnoreRegionAppiumElements(),
+                options.getCustomIgnoreRegions());
         JSONArray considerRegions = findRegions(
-            options.getConsiderRegionXpaths(),
-            options.getConsiderRegionAccessibilityIds(),
-            options.getConsiderRegionAppiumElements(),
-            options.getCustomConsiderRegions()
-        );
+                options.getConsiderRegionXpaths(),
+                options.getConsiderRegionAccessibilityIds(),
+                options.getConsiderRegionAppiumElements(),
+                options.getCustomConsiderRegions());
         return cliWrapper.postScreenshot(
-            name,
-            tag,
-            tiles,
-            debugUrl,
-            getObjectForArray("ignoreElementsData", ignoreRegions),
-            getObjectForArray("considerElementsData", considerRegions),
-            options.getSync()
-        );
+                name,
+                tag,
+                tiles,
+                debugUrl,
+                getObjectForArray("ignoreElementsData", ignoreRegions),
+                getObjectForArray("considerElementsData", considerRegions),
+                options.getSync());
     }
 
     public void setMetadata(Metadata metadata) {
@@ -153,11 +152,10 @@ public class GenericProvider {
     }
 
     public JSONArray findRegions(
-        List<String> xpaths,
-        List<String> accessibilityIds,
-        List<WebElement> elements,
-        List<Region> locations
-    ) {
+            List<String> xpaths,
+            List<String> accessibilityIds,
+            List<WebElement> elements,
+            List<Region> locations) {
         JSONArray elementsArray = new JSONArray();
         getRegionsByXpath(elementsArray, xpaths);
         getRegionsByIds(elementsArray, accessibilityIds);
