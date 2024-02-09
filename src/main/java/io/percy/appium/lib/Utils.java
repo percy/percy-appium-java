@@ -12,10 +12,10 @@ public class Utils {
       if (matcher.find()) {
         return Integer.parseInt(matcher.group(1));
       }
-      return null; // Return -1 if no match found
+      return null; // Return null if no match found
     } catch (Exception ex) {
       AppPercy.log(ex.toString(), "debug");
-      return null;
+      return null; // Return null if any error
     }
   }
 
@@ -27,14 +27,12 @@ public class Utils {
       if (matcher.find()) {
         int bottomCoordinate = Integer.parseInt(matcher.group(1));
         int topCoordinate = Integer.parseInt(matcher.group(2));
-        // int topCoordinate = extractTopCoordinate(input); // Extracting top coordinate
-        // from input
-        return topCoordinate - bottomCoordinate; // Calc
+        return topCoordinate - bottomCoordinate;
       }
-      return null; // Return -1 if no match found
+      return null; // Return null if no match found
     } catch (Exception ex) {
       AppPercy.log(ex.toString(), "debug");
-      return null;
+      return null; // Return null if any error
     }
   }
 }
