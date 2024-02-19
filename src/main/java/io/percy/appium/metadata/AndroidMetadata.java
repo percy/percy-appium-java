@@ -90,6 +90,6 @@ public class AndroidMetadata extends Metadata {
         String resultString = driver
                 .executeScript(String.format("browserstack_executor: %s", arguments.toString())).toString();
         return resultString;
-    }    
+    }
 
 }
