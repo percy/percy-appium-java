@@ -96,4 +96,28 @@ public class AndroidMetadata extends Metadata {
         return (String) Cache.CACHE_MAP.get("getDisplaySysDump_" + sessionId);
     }
 
+
+    public String orientation() {
+      if (orientation != null) {
+          if (orientation.toLowerCase().equals("portrait") || orientation.toLowerCase().equals("landscape")) {
+              return orientation.toLowerCase();
+          } else if (orientation.toLowerCase().equals("auto")) {
+              try {
+                  return driver.getOrientation().toString().toLowerCase();
+              } catch (java.lang.NoSuchMethodError e) {
+                  return "portrait";
+              }
+          } else {
+              return "portrait";
+          }
+      } else {
+          Object orientationCapability = driver.getCapabilities().getCapability("orientation");
+          if (orientationCapability != null) {
+              return orientationCapability.toString().toLowerCase();
+          } else {
+              return "portrait";
+          }
+      }
+  }
+
 }
