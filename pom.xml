@@ -43,12 +43,12 @@
     <dependency>
         <groupId>io.appium</groupId>
         <artifactId>java-client</artifactId>
-        <version>7.6.0</version>
+        <version>8.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20230618</version>
+      <version>20231013</version>
     </dependency>
     <dependency>
         <groupId>junit</groupId>
