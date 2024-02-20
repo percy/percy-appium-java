@@ -163,17 +163,16 @@ public class AppAutomate extends GenericProvider {
         String error = null;
         String device = deviceName(options.getDeviceName(), result);
         String osVersion = osVersion(result);
-
+        JSONObject response = null;
         super.setDebugUrl(getDebugUrl(result));
         try {
-            JSONObject response = super.screenshot(name, options, osVersion, device);
+            response = super.screenshot(name, options, osVersion, device);
             percyScreenshotUrl = response.getString("link");
-            return response;
         } catch (Exception e) {
             error = e.getMessage();
         }
         executePercyScreenshotEnd(name, percyScreenshotUrl, error, options.getSync());
-        return null;
+        return response;
     }
 
     public String osVersion(JSONObject result) {

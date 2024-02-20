@@ -82,18 +82,14 @@ public class AndroidMetadata extends Metadata {
     }
 
     public String getDisplaySysDump() {
-        if (Cache.CACHE_MAP.get("getDisplaySysDump_" + sessionId) == null) {
-
-            JSONObject arguments = new JSONObject();
-            arguments.put("action", "adbShell");
-            JSONObject command = new JSONObject();
-            command.put("command", "dumpsys window displays");
-            arguments.put("arguments", command);
-            String resultString = driver
-                    .executeScript(String.format("browserstack_executor: %s", arguments.toString())).toString();
-            Cache.CACHE_MAP.put("getDisplaySysDump_" + sessionId, resultString);
-        }
-        return (String) Cache.CACHE_MAP.get("getDisplaySysDump_" + sessionId);
+        JSONObject arguments = new JSONObject();
+        arguments.put("action", "adbShell");
+        JSONObject command = new JSONObject();
+        command.put("command", "dumpsys window displays");
+        arguments.put("arguments", command);
+        String resultString = driver
+                .executeScript(String.format("browserstack_executor: %s", arguments.toString())).toString();
+        return resultString;
     }
 
 

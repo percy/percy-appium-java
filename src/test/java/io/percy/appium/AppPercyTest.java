@@ -50,7 +50,7 @@ public class AppPercyTest{
     @Test
     public void takeScreenshotWithoutPercyEnabled() throws Exception {
       when(androidDriver.getSessionId()).thenReturn(new SessionId("123"));
-      
+
       try {
         lenient(). when(androidDriver.getRemoteAddress()).thenReturn(new URL("https://hub.browserstack.com/wd/hub"));
       } catch (MalformedURLException e) {
