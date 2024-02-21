@@ -61,6 +61,7 @@ public class AppAutomate extends GenericProvider {
             }
         } catch (Exception e) {
             AppPercy.log("BrowserStack executer failed");
+            AppPercy.log(e.toString(), "debug");
         }
         return null;
     }
@@ -89,6 +90,7 @@ public class AppAutomate extends GenericProvider {
             }
         } catch (Exception e) {
             AppPercy.log("BrowserStack executer failed");
+            AppPercy.log(e.toString(), "debug");
         }
     }
 
@@ -126,6 +128,7 @@ public class AppAutomate extends GenericProvider {
             JSONObject result = new JSONObject(resultString);
             return result.get("result").toString();
         } catch (Exception e) {
+            AppPercy.log(e.toString(), "debug");
             throw new Exception("Screenshot command failed");
         }
     }

@@ -11,7 +11,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
 
 import org.openqa.selenium.remote.*;
 
@@ -28,7 +27,7 @@ import static org.mockito.Mockito.*;
 @RunWith(org.mockito.junit.MockitoJUnitRunner.class)
 public class AppPercyTest{
     @Mock
-    AndroidDriver<AndroidElement> androidDriver;
+    AndroidDriver androidDriver;
     private static AppPercy percy;
     private static GenericProvider genericProvider;
     private DesiredCapabilities capabilities;

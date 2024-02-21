@@ -1,6 +1,5 @@
 package io.percy.appium;
 
-import io.appium.java_client.MobileElement;
 import io.percy.appium.lib.CliWrapper;
 
 import org.json.JSONObject;
@@ -66,7 +65,7 @@ public class PercyOnAutomateTest {
         percy.setCliWrapper(cliMock);
         when(cliMock.healthcheck()).thenReturn(true);
         Map<String, Object> options = new HashMap<>();
-        MobileElement mockedElement = mock(MobileElement.class);
+        RemoteWebElement mockedElement = mock(RemoteWebElement.class);
         when(mockedElement.getId()).thenReturn("1234");
         options.put("ignore_region_appium_elements", Arrays.asList(mockedElement));
         percy.screenshot("Test", options);
