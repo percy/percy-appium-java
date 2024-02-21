@@ -9,8 +9,7 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebElement;
-
-import io.appium.java_client.MobileElement;
+import org.openqa.selenium.remote.RemoteWebElement;
 
 @RunWith(org.mockito.junit.MockitoJUnitRunner.class)
 public class ScreenshotOptionsTest {
@@ -20,11 +19,11 @@ public class ScreenshotOptionsTest {
 
         // Create a list of MobileElements
         List<Object> mobileElements = new ArrayList<>();
-        mobileElements.add(new MobileElement() {});
+        mobileElements.add(new RemoteWebElement() {});
         mobileElements.add(new Object());
         mobileElements.add(new Object());
-        mobileElements.add(new MobileElement() {});
-        mobileElements.add(new MobileElement() {});
+        mobileElements.add(new RemoteWebElement() {});
+        mobileElements.add(new RemoteWebElement() {});
 
         // Call the function to cast them to WebElements
         List<WebElement> webElements = casting.castMobileElementsToWebElements(mobileElements);

@@ -1,6 +1,5 @@
 package io.percy.appium.providers;
 
-import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import io.percy.appium.lib.Cache;
 import io.percy.appium.lib.Region;

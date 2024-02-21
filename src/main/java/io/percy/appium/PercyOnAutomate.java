@@ -1,10 +1,10 @@
 package io.percy.appium;
 
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.MobileElement;
 import io.percy.appium.lib.CliWrapper;
 import io.percy.appium.lib.PercyOptions;
 import io.percy.appium.metadata.DriverMetadata;
+import org.openqa.selenium.remote.RemoteWebElement;
 
 import java.util.Map;
 
@@ -86,14 +86,14 @@ public class PercyOnAutomate extends IPercy {
 
                 if (options.containsKey(ignoreElementKey)) {
                     List<String> ignoreElementIds =
-                            getElementIdFromElement((List<MobileElement>) options.get(ignoreElementKey));
+                            getElementIdFromElement((List<RemoteWebElement>) options.get(ignoreElementKey));
                     options.remove(ignoreElementKey);
                     options.put("ignore_region_elements", ignoreElementIds);
                 }
 
                 if (options.containsKey(considerElementKey)) {
                     List<String> considerElementIds =
-                            getElementIdFromElement((List<MobileElement>) options.get(considerElementKey));
+                            getElementIdFromElement((List<RemoteWebElement>) options.get(considerElementKey));
                     options.remove(considerElementKey);
                     options.put("consider_region_elements", considerElementIds);
                 }
@@ -121,9 +121,9 @@ public class PercyOnAutomate extends IPercy {
         }
     }
 
-    private List<String> getElementIdFromElement(List<MobileElement> elements) {
+    private List<String> getElementIdFromElement(List<RemoteWebElement> elements) {
         List<String> ignoredElementsArray = new ArrayList<>();
-        for (MobileElement element : elements) {
+        for (RemoteWebElement element : elements) {
             String elementId = element.getId();
             ignoredElementsArray.add(elementId);
         }
