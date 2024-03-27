@@ -17,6 +17,8 @@ public class ScreenshotOptions {
     private Boolean fullScreen = false;
     private Integer screenLengths = 4;
     private @Nullable Boolean sync = null;
+    private String testCase = null;
+    private String thTestCaseExecutionId = null;
     private List<String> ignoreRegionXpaths = new ArrayList<String>();
     private List<String> ignoreRegionAccessibilityIds = new ArrayList<String>();
     private List<WebElement> ignoreRegionAppiumElements = new ArrayList<WebElement>();
@@ -52,6 +54,14 @@ public class ScreenshotOptions {
 
     public String getOrientation() {
         return orientation;
+    }
+
+    public String getTestCase() {
+        return testCase;
+    }
+
+    public String getThTestCaseExecutionId() {
+        return thTestCaseExecutionId;
     }
 
     public Boolean getFullPage() {
@@ -108,6 +118,14 @@ public class ScreenshotOptions {
 
     public void setSync(Boolean sync) {
         this.sync = sync;
+    }
+
+    public void setTestCase(String testCase) {
+        this.testCase = testCase;
+    }
+
+    public void setThTestCaseExecutionId(String thTestCaseExecutionId) {
+        this.thTestCaseExecutionId = thTestCaseExecutionId;
     }
 
     public List<String> getIgnoreRegionXpaths() {

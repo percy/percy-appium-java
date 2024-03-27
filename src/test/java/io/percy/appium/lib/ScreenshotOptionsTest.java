@@ -41,7 +41,20 @@ public class ScreenshotOptionsTest {
     public void testSyncOption() {
         ScreenshotOptions options = new ScreenshotOptions();
 
-        // Create a list of MobileElements
         assertEquals(options.getSync(), null);
+    }
+
+    @Test
+    public void testTestCase() {
+        ScreenshotOptions options = new ScreenshotOptions();
+
+        assertEquals(options.getTestCase(), null);
+    }
+
+    @Test
+    public void testThTestCaseExecutionId() {
+        ScreenshotOptions options = new ScreenshotOptions();
+
+        assertEquals(options.getThTestCaseExecutionId(), null);
     }
 }
