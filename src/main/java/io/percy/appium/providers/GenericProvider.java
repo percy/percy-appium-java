@@ -136,7 +136,9 @@ public class GenericProvider {
                 debugUrl,
                 getObjectForArray("ignoreElementsData", ignoreRegions),
                 getObjectForArray("considerElementsData", considerRegions),
-                options.getSync());
+                options.getSync(),
+                options.getTestCase(),
+                options.getThTestCaseExecutionId());
     }
 
     public void setMetadata(Metadata metadata) {
