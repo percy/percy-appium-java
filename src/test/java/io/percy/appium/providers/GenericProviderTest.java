@@ -233,7 +233,12 @@ public class GenericProviderTest {
         customRegion.setBottom(100);
         customRegion.setLeft(200);
         customRegion.setRight(250);
+        // Dimensions are 1080x2160
+        Region invaliCustomRegion1 = new Region(2299, 2230, 200, 250);
+        Region invaliCustomRegion2 = new Region(50, 100, 1070, 1100);
         customLocations.add(customRegion);
+        customLocations.add(invaliCustomRegion1);
+        customLocations.add(invaliCustomRegion2);
 
         AndroidMetadata metadata = new AndroidMetadata(androidDriver, "dummy", null, null, null, null);
         GenericProvider genericProvider = new GenericProvider(androidDriver);

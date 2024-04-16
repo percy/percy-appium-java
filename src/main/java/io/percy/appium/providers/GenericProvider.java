@@ -234,7 +234,7 @@ public class GenericProvider {
         for (int index = 0; index < customLocations.size(); index++) {
             try {
                 Region customLocation = customLocations.get(index);
-                if (customLocation.isValid(width, height)) {
+                if (customLocation.isValid(height, width)) {
                     String selector = "custom region " + index;
                     JSONObject region = new JSONObject();
                     JSONObject coordinates = new JSONObject();
