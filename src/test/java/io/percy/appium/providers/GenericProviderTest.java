@@ -50,8 +50,6 @@ public class GenericProviderTest {
     Long height = faker.number().randomNumber(3, false);
 
     HashMap<String, Long> viewportRect = new HashMap<String, Long>();
-    HashMap<String, HashMap<String, Long>> sessionValue = new HashMap<String, HashMap<String, Long>>();
-    Response session = new Response(new SessionId("abc"));
 
     @Before
     public void setup() {
@@ -59,6 +57,7 @@ public class GenericProviderTest {
         when(androidDriver.getCapabilities()).thenReturn(capabilities);
         when(androidDriver.getSessionId()).thenReturn(new SessionId("abc"));
         when(capabilities.getCapability("deviceScreenSize")).thenReturn("1080x2160");
+        when(capabilities.getCapability("viewportRect")).thenReturn(viewportRect);
     }
 
     @Test
@@ -85,11 +84,8 @@ public class GenericProviderTest {
         options.setFullPage(false);
         viewportRect.put("top", top);
         viewportRect.put("height", height);
-        sessionValue.put("viewportRect", viewportRect);
-        session.setValue(sessionValue);
         when(androidDriver.getScreenshotAs(OutputType.BASE64))
                 .thenReturn("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAADwCAYAAAA+VemSAAAgAEl...==");
-        when(androidDriver.execute("getSession")).thenReturn(session);
 
         GenericProvider genericProvider = new GenericProvider(androidDriver);
         genericProvider.setMetadata(new AndroidMetadata(androidDriver, null, null, null, null, null));

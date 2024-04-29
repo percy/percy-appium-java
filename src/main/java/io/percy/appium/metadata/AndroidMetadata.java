@@ -67,7 +67,7 @@ public class AndroidMetadata extends Metadata {
             Integer fullDeviceScreenHeight = deviceScreenHeight();
             Integer deviceScreenHeight = ((Long) getViewportRect().get("height")).intValue();
             navBar = fullDeviceScreenHeight - (deviceScreenHeight + statBarHeight());
-          }  
+          }
         }
 
         return navBar;

@@ -15,8 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockedStatic;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 
 import com.github.javafaker.Faker;
@@ -43,8 +41,6 @@ public class AppAutomateTest {
 
     HashMap<String, String> bstackCaps = new HashMap<String, String>();
     HashMap<String, Long> viewportRect = new HashMap<String, Long>();
-    HashMap<String, HashMap<String, Long>> sessionValue = new HashMap<String, HashMap<String, Long>>();
-    Response session = new Response(new SessionId("abc"));
 
     Faker faker = new Faker();
     Long top = faker.number().randomNumber(3, false);
@@ -55,16 +51,14 @@ public class AppAutomateTest {
     @Before
     public void setup() {
         Cache.CACHE_MAP.clear();
+        viewportRect.put("top", top);
+        viewportRect.put("height", height);
         appAutomate = new AppAutomate(androidDriver);
         when(androidDriver.getCapabilities()).thenReturn(capabilities);
         when(capabilities.getCapability("deviceScreenSize")).thenReturn("1080x2160");
         when(androidDriver.getSessionId()).thenReturn(new SessionId("abc"));
-        viewportRect.put("top", top);
-        viewportRect.put("height", height);
-        sessionValue.put("viewportRect", viewportRect);
-        session.setValue(sessionValue);
-        when(androidDriver.execute("getSession")).thenReturn(session);
-    }
+        when(capabilities.getCapability("viewportRect")).thenReturn(viewportRect);
+      }
 
     @Test
     public void testGetDebugUrl() {

@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 
@@ -24,21 +24,18 @@ public class CacheTest {
     @Mock
     AndroidDriver driver;
 
-    @Mock
-    Capabilities capabilities;
+    private DesiredCapabilities capabilities;
 
     HashMap<String, Long> viewportRect = new HashMap<String, Long>();
-    HashMap<String, HashMap<String, Long>> sessionValue = new HashMap<String, HashMap<String, Long>>();
-    Response session = new Response(new SessionId("abc"));
 
     @Test
     public void testStatBarHeight() {
         Cache.CACHE_MAP.clear();
         viewportRect.put("top", 100L);
-        sessionValue.put("viewportRect", viewportRect);
-        session.setValue(sessionValue);
+        capabilities = new DesiredCapabilities();
+        capabilities.setCapability("viewportRect", viewportRect);
+        when(driver.getCapabilities()).thenReturn(capabilities);
         when(driver.getSessionId()).thenReturn(new SessionId("abc"));
-        when(driver.execute("getSession")).thenReturn(session);
         metadata = new AndroidMetadata(driver, null, null, null, null, null);
         Assert.assertEquals(metadata.statBarHeight().intValue(), 100);
     }
