@@ -49,7 +49,11 @@ public class AndroidMetadata extends Metadata {
         Integer statBar = getStatusBar();
         if (statBar == null) {
             try {
-              statBar = Utils.extractStatusBarHeight(getDisplaySysDump());
+              if (orientation != null && orientation.toLowerCase().equals("auto")) {
+                statBar = Utils.extractStatusBarHeight(getDisplaySysDump());
+              } else {
+                statBar = Utils.extractStatusBarHeight(getDisplaySysDumpCache());
+              }
             } catch (Exception e) {
               statBar = ((Long) getViewportRect().get("top")).intValue();
             }
@@ -62,7 +66,11 @@ public class AndroidMetadata extends Metadata {
         Integer navBar = getNavBar();
         if (navBar == null) {
           try {
-            navBar = Utils.extractNavigationBarHeight(getDisplaySysDump());
+            if (orientation != null && orientation.toLowerCase().equals("auto")) {
+              navBar = Utils.extractNavigationBarHeight(getDisplaySysDump());
+            } else {
+              navBar = Utils.extractNavigationBarHeight(getDisplaySysDumpCache());
+            }
           } catch (Exception e) {
             Integer fullDeviceScreenHeight = deviceScreenHeight();
             Integer deviceScreenHeight = ((Long) getViewportRect().get("height")).intValue();
@@ -79,6 +87,13 @@ public class AndroidMetadata extends Metadata {
         }
         return (Map) Cache.CACHE_MAP.get("viewportRect_" + sessionId);
     }
+
+    private String getDisplaySysDumpCache() {
+      if (Cache.CACHE_MAP.get("getDisplaySysDump_" + sessionId) == null) {
+          Cache.CACHE_MAP.put("getDisplaySysDump_" + sessionId, getDisplaySysDump());
+      }
+      return (String) Cache.CACHE_MAP.get("getDisplaySysDump_" + sessionId);
+  }
 
     public Integer scaleFactor() {
         return 1;

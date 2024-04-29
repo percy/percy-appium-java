@@ -76,7 +76,7 @@ public class AndroidMetadataTest {
     }
 
     @Test
-    public void testStatBarHeightForAASession() {
+    public void testStatBarHeightForAuto() {
         metadata = new AndroidMetadata(androidDriver, "Samsung Galaxy s22", null, null, "auto", null);
         JSONObject arguments = new JSONObject();
         arguments.put("action", "adbShell");
@@ -107,7 +107,7 @@ public class AndroidMetadataTest {
     }
 
     @Test
-    public void testNavBarHeightForAASession() {
+    public void testNavBarHeightForAuto() {
         metadata = new AndroidMetadata(androidDriver, "Samsung Galaxy s22", null, null, "auto", null);
         JSONObject arguments = new JSONObject();
         arguments.put("action", "adbShell");
