@@ -46,33 +46,36 @@ public class AndroidMetadata extends Metadata {
     }
 
     public Integer statBarHeight() {
-
         Integer statBar = getStatusBar();
-        if (statBar == null && orientation != null && orientation.toLowerCase().equals("auto")) {
-            statBar = Utils.extractStatusBarHeight(getDisplaySysDump());
+        if (statBar == null) {
+            try {
+              statBar = Utils.extractStatusBarHeight(getDisplaySysDump());
+            } catch (Exception e) {
+              statBar = ((Long) getViewportRect().get("top")).intValue();
+            }
         }
-        if (statBar != null) {
-            return statBar;
-        }
-        return ((Long) getViewportRect().get("top")).intValue();
+
+        return statBar;
     }
 
     public Integer navBarHeight() {
         Integer navBar = getNavBar();
-        if (navBar == null && orientation != null && orientation.toLowerCase().equals("auto")) {
+        if (navBar == null) {
+          try {
             navBar = Utils.extractNavigationBarHeight(getDisplaySysDump());
+          } catch (Exception e) {
+            Integer fullDeviceScreenHeight = deviceScreenHeight();
+            Integer deviceScreenHeight = ((Long) getViewportRect().get("height")).intValue();
+            navBar = fullDeviceScreenHeight - (deviceScreenHeight + statBarHeight());
+          }  
         }
-        if (navBar != null) {
-            return navBar;
-        }
-        Integer fullDeviceScreenHeight = deviceScreenHeight();
-        Integer deviceScreenHeight = ((Long) getViewportRect().get("height")).intValue();
-        return fullDeviceScreenHeight - (deviceScreenHeight + statBarHeight());
+
+        return navBar;
     }
 
     private Map getViewportRect() {
         if (Cache.CACHE_MAP.get("viewportRect_" + sessionId) == null) {
-            Cache.CACHE_MAP.put("viewportRect_" + sessionId, getSession().get("viewportRect"));
+            Cache.CACHE_MAP.put("viewportRect_" + sessionId, driver.getCapabilities().getCapability("viewportRect"));
         }
         return (Map) Cache.CACHE_MAP.get("viewportRect_" + sessionId);
     }
