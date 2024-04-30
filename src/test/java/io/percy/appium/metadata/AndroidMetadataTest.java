@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ScreenOrientation;
-import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 
 import com.github.javafaker.Faker;
@@ -38,19 +37,15 @@ public class AndroidMetadataTest {
     Long height = faker.number().randomNumber(3, false);
 
     HashMap<String, Long> viewportRect = new HashMap<String, Long>();
-    HashMap<String, HashMap<String, Long>> sessionValue = new HashMap<String, HashMap<String, Long>>();
-    Response session = new Response(new SessionId("abc"));
 
     @Before
     public void setup() {
         viewportRect.put("top", top);
         viewportRect.put("height", height);
-        sessionValue.put("viewportRect", viewportRect);
-        session.setValue(sessionValue);
         when(androidDriver.getSessionId()).thenReturn(new SessionId("abc"));
         when(androidDriver.getCapabilities()).thenReturn(capabilities);
-        when(androidDriver.execute("getSession")).thenReturn(session);
         when(capabilities.getCapability("deviceScreenSize")).thenReturn("1080x2160");
+        when(capabilities.getCapability("viewportRect")).thenReturn(viewportRect);
         metadata = new AndroidMetadata(androidDriver, null, null, null, null, null);
     }
 

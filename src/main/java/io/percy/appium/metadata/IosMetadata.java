@@ -2,6 +2,8 @@ package io.percy.appium.metadata;
 
 import java.util.Map;
 
+import org.openqa.selenium.Dimension;
+
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.percy.appium.lib.Cache;
@@ -67,7 +69,7 @@ public class IosMetadata extends Metadata {
 
     private Map getViewportRect() {
         if (Cache.CACHE_MAP.get("viewportRect_" + sessionId) == null) {
-            Cache.CACHE_MAP.put("viewportRect_" + sessionId, getSession().get("viewportRect"));
+            Cache.CACHE_MAP.put("viewportRect_" + sessionId, driver.executeScript("mobile: viewportRect"));
         }
         return (Map) Cache.CACHE_MAP.get("viewportRect_" + sessionId);
     }
@@ -81,7 +83,10 @@ public class IosMetadata extends Metadata {
     }
 
     public Integer scaleFactor() {
-        return Integer.valueOf(getSession().get("pixelRatio").toString());
+        Dimension windowSize = driver.manage().window().getSize();
+        int screenWidth = windowSize.getWidth();
+        int actualWidth = deviceScreenWidth();
+        return actualWidth / screenWidth;
     }
 
 
