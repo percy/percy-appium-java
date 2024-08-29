@@ -114,6 +114,8 @@ public class AppAutomate extends GenericProvider {
             args.put("topScrollviewOffset", options.getTopScrollviewOffset());
             args.put("bottomScrollviewOffset", options.getBottomScrollviewOffset());
             args.put("FORCE_FULL_PAGE", Environment.getForceFullPage());
+            args.put("androidScrollAreaPercentage", options.getAndroidScrollAreaPercentage());
+            args.put("scrollSpeed", options.getScrollSpeed());
             arguments.put("state", "screenshot");
             arguments.put("percyBuildId", Environment.getPercyBuildID());
             arguments.put("screenshotType", screenshotType);
@@ -196,7 +198,7 @@ public class AppAutomate extends GenericProvider {
             AppPercy.log("Unable to fetch Appium version, "
                     + "Appium version should be >= 1.19 for Fullpage Screenshot", "warn");
         } else if ((appiumVersionJsonProtocol != null && !appiumVersionCheck(appiumVersionJsonProtocol.toString()))
-                || (bstackOptions != null && !appiumVersionCheck(bstackOptions.get("appiumVersion").toString()))) {
+                || (bstackOptions != null && bstackOptions.get("appiumVersion") != null && !appiumVersionCheck(bstackOptions.get("appiumVersion").toString()))) {
             AppPercy.log("Appium version should be >= 1.19 for Fullpage Screenshot, "
                     + "Falling back to single page screenshot.", "warn");
             return false;

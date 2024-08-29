@@ -52,6 +52,32 @@ public class ScreenshotOptionsTest {
     }
 
     @Test
+    public void testScrollSpeed() {
+        // when valid is set
+        ScreenshotOptions options = new ScreenshotOptions();
+        options.setScrollSpeed(200);
+        assertEquals(options.getScrollSpeed(), new Integer(200));
+
+        // when invalid is set
+        ScreenshotOptions invalidOptions = new ScreenshotOptions();
+        invalidOptions.setScrollSpeed(5001);
+        assertEquals(invalidOptions.getScrollSpeed(), null);
+    }
+
+    @Test
+    public void testAndroidScrollAreaPercentage() {
+        // when valid is set
+        ScreenshotOptions options = new ScreenshotOptions();
+        options.setAndroidScrollAreaPercentage(50);
+        assertEquals(options.getAndroidScrollAreaPercentage(), new Integer(50));
+
+        // when invalid is set
+        ScreenshotOptions invalidOptions = new ScreenshotOptions();
+        invalidOptions.setAndroidScrollAreaPercentage(101);
+        assertEquals(invalidOptions.getAndroidScrollAreaPercentage(), null);
+    }
+
+    @Test
     public void testThTestCaseExecutionId() {
         ScreenshotOptions options = new ScreenshotOptions();
 
