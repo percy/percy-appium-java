@@ -114,6 +114,8 @@ public class AppAutomateTest {
         args.put("topScrollviewOffset", 0);
         args.put("bottomScrollviewOffset", 0);
         args.put("FORCE_FULL_PAGE", false);
+        args.put("androidScrollAreaPercentage", options.getAndroidScrollAreaPercentage());
+        args.put("scrollSpeed", options.getScrollSpeed());
 
         arguments.put("state", "screenshot");
         arguments.put("percyBuildId", Environment.getPercyBuildID());
@@ -342,6 +344,12 @@ public class AppAutomateTest {
         bstackCaps.put("appiumVersion", "1.17.0");
         when(capabilities.getCapability("bstack:options")).thenReturn(bstackCaps);
         Assert.assertEquals(appAutomate.verifyCorrectAppiumVersion(), false);
+    }
+
+    @Test
+    public void verifyCorrectAppiumVersionWhenOptionsIsEmptyW3C() {
+        when(capabilities.getCapability("bstack:options")).thenReturn(bstackCaps);
+        Assert.assertEquals(appAutomate.verifyCorrectAppiumVersion(), true);
     }
 
 }

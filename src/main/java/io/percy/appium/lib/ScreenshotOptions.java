@@ -31,6 +31,8 @@ public class ScreenshotOptions {
     private String scrollableId = null;
     private Integer topScrollviewOffset = 0;
     private Integer bottomScrollviewOffset = 0;
+    private Integer scrollSpeed = null;
+    private Integer androidScrollAreaPercentage = null;
 
     public String getDeviceName() {
         return deviceName;
@@ -128,6 +130,18 @@ public class ScreenshotOptions {
         this.thTestCaseExecutionId = thTestCaseExecutionId;
     }
 
+    public void setScrollSpeed(Integer scrollSpeed) {
+        if (scrollSpeed > 0 && scrollSpeed <= 2000) {
+            this.scrollSpeed = scrollSpeed;
+        }
+    }
+
+    public void setAndroidScrollAreaPercentage(Integer androidScrollAreaPercentage) {
+        if (androidScrollAreaPercentage > 0 && androidScrollAreaPercentage <= 80) {
+            this.androidScrollAreaPercentage = androidScrollAreaPercentage;
+        }
+    }
+
     public List<String> getIgnoreRegionXpaths() {
         return ignoreRegionXpaths;
     }
@@ -202,6 +216,14 @@ public class ScreenshotOptions {
 
     public String getScrollableId() {
         return scrollableId;
+    }
+
+    public Integer getScrollSpeed() {
+        return this.scrollSpeed;
+    }
+
+    public Integer getAndroidScrollAreaPercentage() {
+        return this.androidScrollAreaPercentage;
     }
 
     public void setScrollableId(String scrollableId) {
