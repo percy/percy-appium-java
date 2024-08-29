@@ -198,7 +198,12 @@ public class AppAutomate extends GenericProvider {
             AppPercy.log("Unable to fetch Appium version, "
                     + "Appium version should be >= 1.19 for Fullpage Screenshot", "warn");
         } else if ((appiumVersionJsonProtocol != null && !appiumVersionCheck(appiumVersionJsonProtocol.toString()))
-                || (bstackOptions != null && bstackOptions.get("appiumVersion") != null && !appiumVersionCheck(bstackOptions.get("appiumVersion").toString()))) {
+                || (
+                    bstackOptions != null
+                    && bstackOptions.get("appiumVersion") != null
+                    && !appiumVersionCheck(bstackOptions.get("appiumVersion").toString())
+                    )
+                ) {
             AppPercy.log("Appium version should be >= 1.19 for Fullpage Screenshot, "
                     + "Falling back to single page screenshot.", "warn");
             return false;
