@@ -106,12 +106,8 @@ The screenshot method arguments:
 | setIgnoreRegionAccessibilityIds(List<String> ignoreRegionAccessibilityIds)  | Elements accessibility_ids that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]  |
 | setIgnoreRegionAppiumElements(List<MobileElement> ignoreRegionAppiumElements)  | Appium elements that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ]  |
 | setCustomIgnoreRegions(List<Region> customIgnoreRegions)  | Custom locations that user want to ignore in visual diff [ needs @percy/cli 1.23.0+ ] <br /> - Description: IgnoreRegion class represents a rectangular area on a screen that needs to be ignored for visual diff. <br /> ```var ignoreRegion = new IgnoreRegion();```<br />```ignoreRegion.setTop() = top;``` <br />```ignoreRegion.setBottom = bottom;``` <br />```ignoreRegion.setLeft = left;``` <br />```ignoreRegion.setRight = right;```  |
-|
-setAndroidScrollAreaPercentage | This is percentage area of the screen that we are scrolling. It will be in between 0 and 80;
-|
-|
-setScrollSpeed | This is the pixel per second that we are going to scroll. It will be between 0 and 2000
-|
+| setAndroidScrollAreaPercentage | This is percentage area of the screen that we are scrolling. It will be in between 0 and 80; |
+| setScrollSpeed | This is the pixel per second that we are going to scroll. It will be between 0 and 2000 |
 ## Running with Hybrid Apps
 
 For a hybrid app, we need to switch to native context before taking screenshot.
