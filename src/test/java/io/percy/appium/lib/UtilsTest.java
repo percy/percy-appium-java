@@ -17,9 +17,31 @@ public class UtilsTest {
   }
 
   @Test
+  public void testExtractStatusBarHeighWhenNewPatternIsPresent() {
+    String input = "InsetsSource type=statusBars frame=[0,0][2400,74] visible=true\n" +
+        "InsetsSource type=navigationBars frame=[0,2358][1080,2400] visible=true";
+
+    int expectedStatBarHeight = 74;
+    int actualStatBarHeight = Utils.extractStatusBarHeight(input);
+
+    assertEquals(expectedStatBarHeight, actualStatBarHeight);
+  }
+
+  @Test
   public void testExtractNavigationBarHeightWhenPatternIsPresent() {
     String input = "InsetsSource type=ITYPE_STATUS_BAR frame=[0,0][2400,74] visible=true\n" +
         "InsetsSource type=ITYPE_NAVIGATION_BAR frame=[0,2358][1080,2400] visible=true";
+
+    int expectedNavBarHeight = 42;
+    int actualNavBarHeight = Utils.extractNavigationBarHeight(input);
+
+    assertEquals(expectedNavBarHeight, actualNavBarHeight);
+  }
+
+  @Test
+  public void testExtractNavigationBarHeightWhenNewPatternIsPresent() {
+    String input = "InsetsSource type=statusBars frame=[0,0][2400,74] visible=true\n" +
+        "InsetsSource type=navigationBars frame=[0,2358][1080,2400] visible=true";
 
     int expectedNavBarHeight = 42;
     int actualNavBarHeight = Utils.extractNavigationBarHeight(input);
