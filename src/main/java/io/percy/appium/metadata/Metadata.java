@@ -1,19 +1,21 @@
 package io.percy.appium.metadata;
 
+import org.openqa.selenium.ScreenOrientation;
+
 import io.appium.java_client.AppiumDriver;
 
 public abstract class Metadata {
-    private static AppiumDriver driver;
-    private String orientation;
-    private String platformVersion;
-    private Integer statusBar;
-    private Integer navBar;
-    private String deviceName;
-    private String sessionId;
+    private AppiumDriver driver;
+    protected String orientation;
+    protected String platformVersion;
+    protected Integer statusBar;
+    protected Integer navBar;
+    protected String deviceName;
+    protected String sessionId;
 
     public Metadata(AppiumDriver driver, String deviceName, Integer statusBar, Integer navBar, String orientation,
             String platformVersion) {
-        Metadata.driver = driver;
+        this.driver = driver;
         this.platformVersion = platformVersion;
         this.orientation = orientation;
         this.statusBar = statusBar;
@@ -53,9 +55,30 @@ public abstract class Metadata {
         return statusBar;
     }
 
-    public abstract Integer deviceScreenWidth();
+    public String orientation() {
+        if (orientation != null) {
+            if (orientation.toLowerCase().equals("portrait") || orientation.toLowerCase().equals("landscape")) {
+                return orientation.toLowerCase();
+            } else if (orientation.toLowerCase().equals("auto")) {
+                try {
+                    return this.driverGetOrientation().toString().toLowerCase();
+                } catch (java.lang.NoSuchMethodError e) {
+                    return "portrait";
+                }
+            } else {
+                return "portrait";
+            }
+        } else {
+            Object orientationCapability = driver.getCapabilities().getCapability("orientation");
+            if (orientationCapability != null) {
+                return orientationCapability.toString().toLowerCase();
+            } else {
+                return "portrait";
+            }
+        }
+    }
 
-    public abstract String orientation();
+    public abstract Integer deviceScreenWidth();
 
     public abstract String deviceName();
 
@@ -66,5 +89,7 @@ public abstract class Metadata {
     public abstract Integer navBarHeight();
 
     public abstract Integer scaleFactor();
+
+    protected abstract ScreenOrientation driverGetOrientation();
 
 }

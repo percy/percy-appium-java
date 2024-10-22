@@ -3,6 +3,7 @@ package io.percy.appium.metadata;
 import java.util.Map;
 
 import org.json.JSONObject;
+import org.openqa.selenium.ScreenOrientation;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
@@ -11,15 +12,11 @@ import io.percy.appium.lib.Utils;
 
 public class AndroidMetadata extends Metadata {
     private AndroidDriver driver;
-    private String sessionId;
-    private String orientation;
 
     public AndroidMetadata(AppiumDriver driver, String deviceName, Integer statusBar, Integer navBar,
             String orientation, String platformVersion) {
         super(driver, deviceName, statusBar, navBar, orientation, platformVersion);
         this.driver = (AndroidDriver) driver;
-        this.orientation = orientation;
-        this.sessionId = driver.getSessionId().toString();
     }
 
     public String deviceName() {
@@ -99,7 +96,7 @@ public class AndroidMetadata extends Metadata {
         return 1;
     }
 
-    public String getDisplaySysDump() {
+    private String getDisplaySysDump() {
         JSONObject arguments = new JSONObject();
         arguments.put("action", "adbShell");
         JSONObject command = new JSONObject();
@@ -110,28 +107,7 @@ public class AndroidMetadata extends Metadata {
         return resultString;
     }
 
-
-    public String orientation() {
-      if (orientation != null) {
-          if (orientation.toLowerCase().equals("portrait") || orientation.toLowerCase().equals("landscape")) {
-              return orientation.toLowerCase();
-          } else if (orientation.toLowerCase().equals("auto")) {
-              try {
-                  return driver.getOrientation().toString().toLowerCase();
-              } catch (java.lang.NoSuchMethodError e) {
-                  return "portrait";
-              }
-          } else {
-              return "portrait";
-          }
-      } else {
-          Object orientationCapability = driver.getCapabilities().getCapability("orientation");
-          if (orientationCapability != null) {
-              return orientationCapability.toString().toLowerCase();
-          } else {
-              return "portrait";
-          }
-      }
-  }
-
+    protected ScreenOrientation driverGetOrientation() {
+        return this.driver.getOrientation();
+    }
 }
