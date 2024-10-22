@@ -3,17 +3,17 @@ package io.percy.appium.metadata;
 import io.appium.java_client.AppiumDriver;
 
 public abstract class Metadata {
-    private static AppiumDriver driver;
-    private String orientation;
-    private String platformVersion;
-    private Integer statusBar;
-    private Integer navBar;
-    private String deviceName;
-    private String sessionId;
+    private AppiumDriver driver;
+    protected String orientation;
+    protected String platformVersion;
+    protected Integer statusBar;
+    protected Integer navBar;
+    protected String deviceName;
+    protected String sessionId;
 
     public Metadata(AppiumDriver driver, String deviceName, Integer statusBar, Integer navBar, String orientation,
             String platformVersion) {
-        Metadata.driver = driver;
+        this.driver = driver;
         this.platformVersion = platformVersion;
         this.orientation = orientation;
         this.statusBar = statusBar;

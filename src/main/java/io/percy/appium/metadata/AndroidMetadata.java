@@ -11,15 +11,11 @@ import io.percy.appium.lib.Utils;
 
 public class AndroidMetadata extends Metadata {
     private AndroidDriver driver;
-    private String sessionId;
-    private String orientation;
 
     public AndroidMetadata(AppiumDriver driver, String deviceName, Integer statusBar, Integer navBar,
             String orientation, String platformVersion) {
         super(driver, deviceName, statusBar, navBar, orientation, platformVersion);
         this.driver = (AndroidDriver) driver;
-        this.orientation = orientation;
-        this.sessionId = driver.getSessionId().toString();
     }
 
     public String deviceName() {
