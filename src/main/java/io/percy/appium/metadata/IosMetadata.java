@@ -3,6 +3,7 @@ package io.percy.appium.metadata;
 import java.util.Map;
 
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ScreenOrientation;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.ios.IOSDriver;
@@ -10,15 +11,11 @@ import io.percy.appium.lib.Cache;
 
 public class IosMetadata extends Metadata {
     private IOSDriver driver;
-    private String sessionId;
-    private String orientation;
 
     public IosMetadata(AppiumDriver driver, String deviceName, Integer statusBar, Integer navBar, String orientation,
             String platformVersion) {
         super(driver, deviceName, statusBar, navBar, orientation, platformVersion);
         this.driver = (IOSDriver) driver;
-        this.orientation = orientation;
-        this.sessionId = driver.getSessionId().toString();
     }
 
     public String deviceName() {
@@ -89,28 +86,7 @@ public class IosMetadata extends Metadata {
         return actualWidth / screenWidth;
     }
 
-
-    public String orientation() {
-      if (orientation != null) {
-          if (orientation.toLowerCase().equals("portrait") || orientation.toLowerCase().equals("landscape")) {
-              return orientation.toLowerCase();
-          } else if (orientation.toLowerCase().equals("auto")) {
-              try {
-                  return driver.getOrientation().toString().toLowerCase();
-              } catch (java.lang.NoSuchMethodError e) {
-                  return "portrait";
-              }
-          } else {
-              return "portrait";
-          }
-      } else {
-          Object orientationCapability = driver.getCapabilities().getCapability("orientation");
-          if (orientationCapability != null) {
-              return orientationCapability.toString().toLowerCase();
-          } else {
-              return "portrait";
-          }
-      }
-  }
-
+    protected ScreenOrientation driverGetOrientation() {
+        return this.driver.getOrientation();
+    }
 }

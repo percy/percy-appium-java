@@ -3,6 +3,7 @@ package io.percy.appium.metadata;
 import java.util.Map;
 
 import org.json.JSONObject;
+import org.openqa.selenium.ScreenOrientation;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
@@ -95,7 +96,7 @@ public class AndroidMetadata extends Metadata {
         return 1;
     }
 
-    public String getDisplaySysDump() {
+    private String getDisplaySysDump() {
         JSONObject arguments = new JSONObject();
         arguments.put("action", "adbShell");
         JSONObject command = new JSONObject();
@@ -106,28 +107,7 @@ public class AndroidMetadata extends Metadata {
         return resultString;
     }
 
-
-    public String orientation() {
-      if (orientation != null) {
-          if (orientation.toLowerCase().equals("portrait") || orientation.toLowerCase().equals("landscape")) {
-              return orientation.toLowerCase();
-          } else if (orientation.toLowerCase().equals("auto")) {
-              try {
-                  return driver.getOrientation().toString().toLowerCase();
-              } catch (java.lang.NoSuchMethodError e) {
-                  return "portrait";
-              }
-          } else {
-              return "portrait";
-          }
-      } else {
-          Object orientationCapability = driver.getCapabilities().getCapability("orientation");
-          if (orientationCapability != null) {
-              return orientationCapability.toString().toLowerCase();
-          } else {
-              return "portrait";
-          }
-      }
-  }
-
+    protected ScreenOrientation driverGetOrientation() {
+        return this.driver.getOrientation();
+    }
 }
