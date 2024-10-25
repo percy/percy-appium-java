@@ -83,4 +83,13 @@ public class ScreenshotOptionsTest {
 
         assertEquals(options.getThTestCaseExecutionId(), null);
     }
+
+    @Test
+    public void testLabelsExecutionId() {
+        ScreenshotOptions options = new ScreenshotOptions();
+
+        assertEquals(options.getLabels(), null);
+        options.setLabels("app;testing");
+        assertEquals(options.getLabels(), "app;testing");
+    }
 }
