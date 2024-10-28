@@ -138,6 +138,7 @@ public class GenericProvider {
                 getObjectForArray("considerElementsData", considerRegions),
                 options.getSync(),
                 options.getTestCase(),
+                options.getLabels(),
                 options.getThTestCaseExecutionId());
     }
 

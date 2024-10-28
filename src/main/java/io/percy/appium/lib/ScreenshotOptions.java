@@ -18,6 +18,7 @@ public class ScreenshotOptions {
     private Integer screenLengths = 4;
     private @Nullable Boolean sync = null;
     private String testCase = null;
+    private String labels = null;
     private String thTestCaseExecutionId = null;
     private List<String> ignoreRegionXpaths = new ArrayList<String>();
     private List<String> ignoreRegionAccessibilityIds = new ArrayList<String>();
@@ -60,6 +61,10 @@ public class ScreenshotOptions {
 
     public String getTestCase() {
         return testCase;
+    }
+
+    public String getLabels() {
+        return labels;
     }
 
     public String getThTestCaseExecutionId() {
@@ -124,6 +129,10 @@ public class ScreenshotOptions {
 
     public void setTestCase(String testCase) {
         this.testCase = testCase;
+    }
+
+    public void setLabels(String labels) {
+        this.labels = labels;
     }
 
     public void setThTestCaseExecutionId(String thTestCaseExecutionId) {
