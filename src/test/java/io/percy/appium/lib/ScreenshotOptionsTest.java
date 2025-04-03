@@ -103,6 +103,7 @@ public class ScreenshotOptionsTest {
         params.put("algorithm", "intelliignore");
         assertEquals(options.getRegions(), null);
         options.setRegions(Arrays.asList(params));
-        assertEquals(options.getRegions(), "app;testing");
+        List<Map<String, Object>> expectedRegions = Arrays.asList(params);
+        assertEquals(options.getRegions(), expectedRegions);
     }
 }
