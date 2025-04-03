@@ -2,6 +2,7 @@ package io.percy.appium.lib;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -19,6 +20,7 @@ public class ScreenshotOptions {
     private @Nullable Boolean sync = null;
     private String testCase = null;
     private String labels = null;
+    private List<Map<String, Object>> regions = null;
     private String thTestCaseExecutionId = null;
     private List<String> ignoreRegionXpaths = new ArrayList<String>();
     private List<String> ignoreRegionAccessibilityIds = new ArrayList<String>();
@@ -65,6 +67,10 @@ public class ScreenshotOptions {
 
     public String getLabels() {
         return labels;
+    }
+
+    public List<Map<String, Object>> getRegions() {
+        return regions;
     }
 
     public String getThTestCaseExecutionId() {
@@ -133,6 +139,10 @@ public class ScreenshotOptions {
 
     public void setLabels(String labels) {
         this.labels = labels;
+    }
+
+    public void setRegions(List<Map<String, Object>> regions) {
+        this.regions = regions;
     }
 
     public void setThTestCaseExecutionId(String thTestCaseExecutionId) {

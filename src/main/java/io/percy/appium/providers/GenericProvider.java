@@ -139,6 +139,7 @@ public class GenericProvider {
                 options.getSync(),
                 options.getTestCase(),
                 options.getLabels(),
+                options.getRegions(),
                 options.getThTestCaseExecutionId());
     }
 

@@ -89,7 +89,7 @@ public class CliWrapper {
      */
     public JSONObject postScreenshot(String name, JSONObject tag, List<Tile> tiles, String externalDebugUrl,
             JSONObject ignoredElementsData, JSONObject consideredElementsData, Boolean sync, String testCase,
-            String labels, String thTestCaseExecutionId) {
+            String labels, List<Map<String, Object>> regions, String thTestCaseExecutionId) {
         // Build a JSON object to POST back to the cli node process
         JSONObject data = new JSONObject();
         data.put("name", name);
@@ -103,6 +103,7 @@ public class CliWrapper {
         data.put("sync", sync);
         data.put("testCase", testCase);
         data.put("labels", labels);
+        data.put("regions", regions);
         data.put("thTestCaseExecutionId", thTestCaseExecutionId);
         int timeout = 600000; // 600 seconds = 600,000 milliseconds
 
