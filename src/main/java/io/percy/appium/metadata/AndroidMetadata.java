@@ -25,21 +25,80 @@ public class AndroidMetadata extends Metadata {
             return deviceName;
         }
         Object device = driver.getCapabilities().getCapability("device");
+
+        // Try desired capabilities (legacy format)
         if (device == null) {
             Map desiredCaps = (Map) driver.getCapabilities().getCapability("desired");
-            device = desiredCaps.get("deviceName");
+            if (desiredCaps != null) {
+                device = desiredCaps.get("deviceName");
+            }
+        }
+
+        // For espresso driver
+        if (device == null) {
+            device = driver.getCapabilities().getCapability("appium:deviceName");
         }
         return device.toString();
     }
 
     public Integer deviceScreenWidth() {
-        return Integer.parseInt(driver.getCapabilities().getCapability("deviceScreenSize")
-                .toString().split("x")[0]);
+        // Try deviceScreenSize from capabilities
+        Object screenSize = driver.getCapabilities().getCapability("deviceScreenSize");
+        if (screenSize != null) {
+            return Integer.parseInt(screenSize.toString().split("x")[0]);
+        }
+
+        // Fall back to viewportRect if deviceScreenSize is not available
+        Map viewportRect = getViewportRect();
+        if (viewportRect != null && viewportRect.get("width") != null) {
+            return ((Long) viewportRect.get("width")).intValue();
+        }
+
+        // Try to get from device info cache first (Espresso driver)
+        String realDisplaySize = getRealDisplaySize();
+        if (realDisplaySize != null) {
+            return Integer.parseInt(realDisplaySize.split("x")[0]);
+        }
+        return 0; // Default fallback
     }
 
     public Integer deviceScreenHeight() {
-        return Integer.parseInt(driver.getCapabilities().getCapability("deviceScreenSize")
-                .toString().split("x")[1]);
+        // Try to get from device info cache first (Espresso driver)
+        String realDisplaySize = getRealDisplaySize();
+        if (realDisplaySize != null) {
+            return Integer.parseInt(realDisplaySize.split("x")[1]);
+        }
+
+        // Try deviceScreenSize from capabilities
+        Object screenSize = driver.getCapabilities().getCapability("deviceScreenSize");
+        if (screenSize != null) {
+            return Integer.parseInt(screenSize.toString().split("x")[1]);
+        }
+
+        // Fall back to viewportRect if deviceScreenSize is not available
+        Map viewportRect = getViewportRect();
+        if (viewportRect != null && viewportRect.get("height") != null) {
+            return ((Long) viewportRect.get("height")).intValue();
+        }
+        return 0; // Default fallback
+    }
+
+    // Method to get real display size using mobile: deviceInfo for Espresso driver
+    private String getRealDisplaySize() {
+        if (Cache.CACHE_MAP.get("realDisplaySize_" + sessionId) == null) {
+            try {
+                // Try to get device info using Appium's device info endpoint
+                Map<String, Object> deviceInfo = (Map<String, Object>) driver.executeScript("mobile: deviceInfo");
+                if (deviceInfo != null && deviceInfo.containsKey("realDisplaySize")) {
+                    String displaySize = deviceInfo.get("realDisplaySize").toString();
+                    Cache.CACHE_MAP.put("realDisplaySize_" + sessionId, displaySize);
+                    return displaySize;
+                }
+            } catch (Exception e) {
+                // If mobile: deviceInfo fails, return null to try other methods
+            }
+        }
+        return (String) Cache.CACHE_MAP.get("realDisplaySize_" + sessionId);
     }
 
     public Integer statBarHeight() {

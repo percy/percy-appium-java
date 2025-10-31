@@ -201,4 +201,149 @@ public class AndroidMetadataTest {
         when(androidDriver.getOrientation()).thenReturn(ScreenOrientation.LANDSCAPE);
         Assert.assertEquals(metadata.orientation(), "landscape");
     }
+
+    @Test
+    public void testDeviceNameFromEspressoDriver() {
+        when(capabilities.getCapability("device")).thenReturn(null);
+        when(capabilities.getCapability("desired")).thenReturn(null);
+        when(capabilities.getCapability("appium:deviceName")).thenReturn("Pixel 6");
+        Assert.assertEquals(metadata.deviceName(), "Pixel 6");
+    }
+
+    @Test
+    public void testDeviceScreenWidthWithViewportRect() {
+        when(capabilities.getCapability("deviceScreenSize")).thenReturn(null);
+        viewportRect.put("width", 720L);
+        Assert.assertEquals(metadata.deviceScreenWidth().intValue(), 720);
+    }
+
+    @Test
+    public void testDeviceScreenWidthWithRealDisplaySize() {
+        when(capabilities.getCapability("deviceScreenSize")).thenReturn(null);
+        viewportRect.clear(); // Remove width from viewportRect
+        
+        Map<String, Object> deviceInfo = new HashMap<>();
+        deviceInfo.put("realDisplaySize", "1440x2960");
+        when(androidDriver.executeScript("mobile: deviceInfo")).thenReturn(deviceInfo);
+        
+        Assert.assertEquals(metadata.deviceScreenWidth().intValue(), 1440);
+    }
+
+    @Test
+    public void testDeviceScreenWidthFallbackToZero() {
+        when(capabilities.getCapability("deviceScreenSize")).thenReturn(null);
+        viewportRect.clear(); // Remove width from viewportRect
+        when(androidDriver.executeScript("mobile: deviceInfo")).thenReturn(null);
+        
+        Assert.assertEquals(metadata.deviceScreenWidth().intValue(), 0);
+    }
+
+    @Test
+    public void testDeviceScreenHeightWithRealDisplaySize() {
+        Map<String, Object> deviceInfo = new HashMap<>();
+        deviceInfo.put("realDisplaySize", "1440x2960");
+        when(androidDriver.executeScript("mobile: deviceInfo")).thenReturn(deviceInfo);
+        
+        Assert.assertEquals(metadata.deviceScreenHeight().intValue(), 2960);
+    }
+
+    @Test
+    public void testDeviceScreenHeightWithViewportRect() {
+        when(androidDriver.executeScript("mobile: deviceInfo")).thenReturn(null);
+        when(capabilities.getCapability("deviceScreenSize")).thenReturn(null);
+        viewportRect.put("height", 1920L);
+        
+        Assert.assertEquals(metadata.deviceScreenHeight().intValue(), 1920);
+    }
+
+    @Test
+    public void testDeviceScreenHeightFallbackToZero() {
+        when(androidDriver.executeScript("mobile: deviceInfo")).thenReturn(null);
+        when(capabilities.getCapability("deviceScreenSize")).thenReturn(null);
+        viewportRect.clear(); // Remove height from viewportRect
+        
+        Assert.assertEquals(metadata.deviceScreenHeight().intValue(), 0);
+    }
+
+    @Test
+    public void testGetRealDisplaySizeCaching() {
+        Map<String, Object> deviceInfo = new HashMap<>();
+        deviceInfo.put("realDisplaySize", "1440x2960");
+        when(androidDriver.executeScript("mobile: deviceInfo")).thenReturn(deviceInfo);
+        
+        // First call should execute the script
+        metadata.deviceScreenWidth();
+        
+        // Second call should use cached value
+        metadata.deviceScreenHeight();
+        
+        // Verify executeScript was called only once for deviceInfo
+        org.mockito.Mockito.verify(androidDriver, org.mockito.Mockito.times(1))
+            .executeScript("mobile: deviceInfo");
+    }
+
+    @Test
+    public void testGetRealDisplaySizeWithException() {
+        // Clear deviceScreenSize to force fallback to realDisplaySize path
+        when(capabilities.getCapability("deviceScreenSize")).thenReturn(null);
+        viewportRect.clear();
+        when(androidDriver.executeScript("mobile: deviceInfo"))
+            .thenThrow(new RuntimeException("Device info not supported"));
+        
+        // Should fall back to 0 when all methods fail
+        Assert.assertEquals(metadata.deviceScreenWidth().intValue(), 0);
+    }
+
+    @Test
+    public void testGetRealDisplaySizeWithEmptyDeviceInfo() {
+        // Clear deviceScreenSize to force fallback to realDisplaySize path
+        when(capabilities.getCapability("deviceScreenSize")).thenReturn(null);
+        viewportRect.clear();
+        Map<String, Object> deviceInfo = new HashMap<>();
+        // deviceInfo doesn't contain realDisplaySize key
+        when(androidDriver.executeScript("mobile: deviceInfo")).thenReturn(deviceInfo);
+        
+        // Should fall back to 0
+        Assert.assertEquals(metadata.deviceScreenWidth().intValue(), 0);
+    }
+
+    @Test
+    public void testGetRealDisplaySizeWithNullDeviceInfo() {
+        // Clear deviceScreenSize to force fallback to realDisplaySize path
+        when(capabilities.getCapability("deviceScreenSize")).thenReturn(null);
+        viewportRect.clear();
+        when(androidDriver.executeScript("mobile: deviceInfo")).thenReturn(null);
+        
+        // Should fall back to 0
+        Assert.assertEquals(metadata.deviceScreenWidth().intValue(), 0);
+    }
+
+    @Test
+    public void testDeviceScreenWidthRealDisplaySizeWithException() {
+        when(capabilities.getCapability("deviceScreenSize")).thenReturn(null);
+        viewportRect.clear();
+        when(androidDriver.executeScript("mobile: deviceInfo"))
+            .thenThrow(new RuntimeException("Device info not supported"));
+        
+        Assert.assertEquals(metadata.deviceScreenWidth().intValue(), 0);
+    }
+
+    @Test
+    public void testDeviceScreenHeightRealDisplaySizeReturnsFirst() {
+        // Test that deviceScreenHeight prioritizes realDisplaySize over deviceScreenSize
+        Map<String, Object> deviceInfo = new HashMap<>();
+        deviceInfo.put("realDisplaySize", "1440x2960");
+        when(androidDriver.executeScript("mobile: deviceInfo")).thenReturn(deviceInfo);
+        
+        Assert.assertEquals(metadata.deviceScreenHeight().intValue(), 2960);
+    }
+
+    @Test 
+    public void testDeviceScreenWidthPriority() {
+        // Test that deviceScreenWidth checks deviceScreenSize first, then viewportRect, then realDisplaySize
+        when(capabilities.getCapability("deviceScreenSize")).thenReturn("1080x2160");
+        
+        // Should return deviceScreenSize value (1080)
+        Assert.assertEquals(metadata.deviceScreenWidth().intValue(), 1080);
+    }
 }
