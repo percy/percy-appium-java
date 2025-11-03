@@ -63,12 +63,6 @@ public class AndroidMetadata extends Metadata {
     }
 
     public Integer deviceScreenHeight() {
-        // Try to get from device info cache first (Espresso driver)
-        String realDisplaySize = getRealDisplaySize();
-        if (realDisplaySize != null) {
-            return Integer.parseInt(realDisplaySize.split("x")[1]);
-        }
-
         // Try deviceScreenSize from capabilities
         Object screenSize = driver.getCapabilities().getCapability("deviceScreenSize");
         if (screenSize != null) {
@@ -79,6 +73,12 @@ public class AndroidMetadata extends Metadata {
         Map viewportRect = getViewportRect();
         if (viewportRect != null && viewportRect.get("height") != null) {
             return ((Long) viewportRect.get("height")).intValue();
+        }
+
+        // Try to get from device info cache last (Espresso driver)
+        String realDisplaySize = getRealDisplaySize();
+        if (realDisplaySize != null) {
+            return Integer.parseInt(realDisplaySize.split("x")[1]);
         }
         return 0; // Default fallback
     }

@@ -240,6 +240,9 @@ public class AndroidMetadataTest {
 
     @Test
     public void testDeviceScreenHeightWithRealDisplaySize() {
+        // Clear deviceScreenSize and viewportRect to force realDisplaySize path
+        when(capabilities.getCapability("deviceScreenSize")).thenReturn(null);
+        viewportRect.clear();
         Map<String, Object> deviceInfo = new HashMap<>();
         deviceInfo.put("realDisplaySize", "1440x2960");
         when(androidDriver.executeScript("mobile: deviceInfo")).thenReturn(deviceInfo);
@@ -249,7 +252,6 @@ public class AndroidMetadataTest {
 
     @Test
     public void testDeviceScreenHeightWithViewportRect() {
-        when(androidDriver.executeScript("mobile: deviceInfo")).thenReturn(null);
         when(capabilities.getCapability("deviceScreenSize")).thenReturn(null);
         viewportRect.put("height", 1920L);
         
@@ -267,6 +269,9 @@ public class AndroidMetadataTest {
 
     @Test
     public void testGetRealDisplaySizeCaching() {
+        // Clear deviceScreenSize and viewportRect to force realDisplaySize path
+        when(capabilities.getCapability("deviceScreenSize")).thenReturn(null);
+        viewportRect.clear();
         Map<String, Object> deviceInfo = new HashMap<>();
         deviceInfo.put("realDisplaySize", "1440x2960");
         when(androidDriver.executeScript("mobile: deviceInfo")).thenReturn(deviceInfo);
@@ -330,7 +335,9 @@ public class AndroidMetadataTest {
 
     @Test
     public void testDeviceScreenHeightRealDisplaySizeReturnsFirst() {
-        // Test that deviceScreenHeight prioritizes realDisplaySize over deviceScreenSize
+        // Test deviceScreenHeight with deviceScreenSize disabled to check realDisplaySize
+        when(capabilities.getCapability("deviceScreenSize")).thenReturn(null);
+        viewportRect.clear();
         Map<String, Object> deviceInfo = new HashMap<>();
         deviceInfo.put("realDisplaySize", "1440x2960");
         when(androidDriver.executeScript("mobile: deviceInfo")).thenReturn(deviceInfo);
