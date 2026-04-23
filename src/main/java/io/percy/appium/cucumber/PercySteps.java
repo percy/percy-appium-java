@@ -10,7 +10,8 @@ import io.percy.appium.lib.ScreenshotOptions;
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.WebElement;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Cucumber step definitions for Percy visual testing with Appium.
