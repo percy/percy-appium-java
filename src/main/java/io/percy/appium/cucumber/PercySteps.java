@@ -4,9 +4,11 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import io.percy.appium.Percy;
+import io.percy.appium.lib.Region;
 import io.percy.appium.lib.ScreenshotOptions;
 
 import io.appium.java_client.AppiumDriver;
+import org.openqa.selenium.WebElement;
 
 import java.util.*;
 
@@ -167,6 +169,54 @@ public class PercySteps {
         screenshotOptions.setLabels(labels);
     }
 
+    @Given("I set th test case execution ID {string}")
+    public void iSetThTestCaseExecutionId(String id) {
+        ensureOptions();
+        screenshotOptions.setThTestCaseExecutionId(id);
+    }
+
+    @Given("I set sync to {string}")
+    public void iSetSync(String sync) {
+        ensureOptions();
+        screenshotOptions.setSync(Boolean.parseBoolean(sync));
+    }
+
+    @Given("I set scrollable XPath {string}")
+    public void iSetScrollableXpath(String xpath) {
+        ensureOptions();
+        screenshotOptions.setScrollableXpath(xpath);
+    }
+
+    @Given("I set scrollable ID {string}")
+    public void iSetScrollableId(String id) {
+        ensureOptions();
+        screenshotOptions.setScrollableId(id);
+    }
+
+    @Given("I set top scrollview offset {int}")
+    public void iSetTopScrollviewOffset(int offset) {
+        ensureOptions();
+        screenshotOptions.setTopScrollviewOffset(offset);
+    }
+
+    @Given("I set bottom scrollview offset {int}")
+    public void iSetBottomScrollviewOffset(int offset) {
+        ensureOptions();
+        screenshotOptions.setBottomScrollviewOffset(offset);
+    }
+
+    @Given("I set scroll speed {int}")
+    public void iSetScrollSpeed(int speed) {
+        ensureOptions();
+        screenshotOptions.setScrollSpeed(speed);
+    }
+
+    @Given("I set android scroll area percentage {int}")
+    public void iSetAndroidScrollAreaPercentage(int percentage) {
+        ensureOptions();
+        screenshotOptions.setAndroidScrollAreaPercentage(percentage);
+    }
+
     // ------------------------------------------------------------------
     // Ignore/Consider regions
     // ------------------------------------------------------------------
@@ -201,6 +251,40 @@ public class PercySteps {
         List<String> ids = new ArrayList<>(screenshotOptions.getConsiderRegionAccessibilityIds());
         ids.add(accessibilityId);
         screenshotOptions.setConsiderRegionAccessibilityIds(ids);
+    }
+
+    @Given("I add custom ignore region {int}, {int}, {int}, {int}")
+    public void iAddCustomIgnoreRegion(int top, int bottom, int left, int right) {
+        ensureOptions();
+        List<Region> regions = new ArrayList<>(screenshotOptions.getCustomIgnoreRegions());
+        regions.add(new Region(top, bottom, left, right));
+        screenshotOptions.setCustomIgnoreRegions(regions);
+    }
+
+    @Given("I add custom consider region {int}, {int}, {int}, {int}")
+    public void iAddCustomConsiderRegion(int top, int bottom, int left, int right) {
+        ensureOptions();
+        List<Region> regions = new ArrayList<>(screenshotOptions.getCustomConsiderRegions());
+        regions.add(new Region(top, bottom, left, right));
+        screenshotOptions.setCustomConsiderRegions(regions);
+    }
+
+    @Given("I add ignore region Appium element {string}")
+    public void iAddIgnoreRegionAppiumElement(String locator) {
+        ensureOptions();
+        WebElement element = driver.findElement(org.openqa.selenium.By.xpath(locator));
+        List<Object> elements = new ArrayList<>(screenshotOptions.getIgnoreRegionAppiumElements());
+        elements.add(element);
+        screenshotOptions.setIgnoreRegionAppiumElements(elements);
+    }
+
+    @Given("I add consider region Appium element {string}")
+    public void iAddConsiderRegionAppiumElement(String locator) {
+        ensureOptions();
+        WebElement element = driver.findElement(org.openqa.selenium.By.xpath(locator));
+        List<Object> elements = new ArrayList<>(screenshotOptions.getConsiderRegionAppiumElements());
+        elements.add(element);
+        screenshotOptions.setConsiderRegionAppiumElements(elements);
     }
 
     @Given("I clear Percy options")
