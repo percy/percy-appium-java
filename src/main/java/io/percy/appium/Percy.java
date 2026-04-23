@@ -25,6 +25,22 @@ public class Percy {
         }
     }
 
+    /**
+     * Override the client info reported to Percy.
+     * Used by framework wrappers (e.g., Cucumber) to identify themselves.
+     */
+    public void setClientInfo(String clientInfo, String environmentInfo) {
+        cliWrapper.getEnvironment().setClientInfo(clientInfo);
+        cliWrapper.getEnvironment().setEnvironmentInfo(environmentInfo);
+    }
+
+    /**
+     * Get the SDK version string.
+     */
+    public static String getSdkVersion() {
+        return Environment.getSdkVersion();
+    }
+
     public JSONObject screenshot(String name) {
         try {
             return percy.screenshot(name);
