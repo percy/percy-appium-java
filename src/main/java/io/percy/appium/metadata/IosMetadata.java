@@ -23,11 +23,17 @@ public class IosMetadata extends Metadata {
         if (deviceName != null) {
             return deviceName;
         }
-        return driver.getCapabilities().getCapability("deviceName").toString();
+        Object value = getCapabilityValue("deviceName");
+        if (value == null) {
+            value = getCapabilityValue("device");
+        }
+        return value != null ? value.toString() : "";
     }
 
     public String osName() {
-        String osName = driver.getCapabilities().getCapability("platformName").toString();
+        Object platformName = getCapabilityValue("platformName");
+        if (platformName == null) return "iOS";
+        String osName = platformName.toString();
         return osName.substring(0, 1).toLowerCase() + osName.substring(1).toUpperCase();
     }
 

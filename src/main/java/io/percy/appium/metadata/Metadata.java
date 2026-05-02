@@ -1,11 +1,19 @@
 package io.percy.appium.metadata;
 
+import java.util.Set;
+
 import org.openqa.selenium.ScreenOrientation;
 
 import io.appium.java_client.AppiumDriver;
 
 public abstract class Metadata {
-    private AppiumDriver driver;
+    protected AppiumDriver driver;
+
+    private static final Set<String> W3C_STANDARD_CAPS = Set.of(
+        "browserName", "browserVersion", "platformName",
+        "acceptInsecureCerts", "pageLoadStrategy", "proxy",
+        "timeouts", "unhandledPromptBehavior"
+    );
     protected String orientation;
     protected String platformVersion;
     protected Integer statusBar;
@@ -24,8 +32,19 @@ public abstract class Metadata {
         this.sessionId = driver.getSessionId().toString();
     }
 
+    protected Object getCapabilityValue(String key) {
+        if (W3C_STANDARD_CAPS.contains(key)) {
+            return driver.getCapabilities().getCapability(key);
+        }
+        Object val = driver.getCapabilities().getCapability(key);
+        if (val != null) return val;
+        return driver.getCapabilities().getCapability("appium:" + key);
+    }
+
     public String osName() {
-        String osName = driver.getCapabilities().getCapability("platformName").toString();
+        Object platformName = getCapabilityValue("platformName");
+        if (platformName == null) return "";
+        String osName = platformName.toString();
         return osName.substring(0, 1).toUpperCase() + osName.substring(1).toLowerCase();
     }
 
@@ -33,9 +52,9 @@ public abstract class Metadata {
         if (platformVersion != null) {
             return platformVersion;
         }
-        Object osVersion = driver.getCapabilities().getCapability("platformVersion");
+        Object osVersion = getCapabilityValue("platformVersion");
         if (osVersion == null) {
-            osVersion = driver.getCapabilities().getCapability("os_version");
+            osVersion = getCapabilityValue("os_version");
             if (osVersion == null) {
                 return null;
             }
@@ -69,7 +88,7 @@ public abstract class Metadata {
                 return "portrait";
             }
         } else {
-            Object orientationCapability = driver.getCapabilities().getCapability("orientation");
+            Object orientationCapability = getCapabilityValue("orientation");
             if (orientationCapability != null) {
                 return orientationCapability.toString().toLowerCase();
             } else {
