@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 
 import java.net.MalformedURLException;
@@ -26,6 +27,9 @@ public class PercyStepsTest {
     public void setUp() {
         mockDriver = mock(AndroidDriver.class);
         when(mockDriver.getSessionId()).thenReturn(new SessionId("test-session-id"));
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability("platformName", "Android");
+        when(mockDriver.getCapabilities()).thenReturn(capabilities);
         try {
             lenient().when(mockDriver.getRemoteAddress())
                 .thenReturn(new URL("https://hub.example.com/wd/hub"));
