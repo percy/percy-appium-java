@@ -9,6 +9,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.openqa.selenium.remote.SessionId;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 @RunWith(org.mockito.junit.MockitoJUnitRunner.class)
 public class PercyStepsTest {
@@ -21,6 +25,13 @@ public class PercyStepsTest {
     @Before
     public void setUp() {
         mockDriver = mock(AndroidDriver.class);
+        when(mockDriver.getSessionId()).thenReturn(new SessionId("test-session-id"));
+        try {
+            lenient().when(mockDriver.getRemoteAddress())
+                .thenReturn(new URL("https://hub.example.com/wd/hub"));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
         steps = new PercySteps();
     }
 
