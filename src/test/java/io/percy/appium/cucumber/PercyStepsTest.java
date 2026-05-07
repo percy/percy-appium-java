@@ -4,14 +4,18 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import io.appium.java_client.android.AndroidDriver;
+import io.percy.appium.Percy;
+import io.percy.appium.lib.ScreenshotOptions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -21,6 +25,7 @@ public class PercyStepsTest {
     @Mock
     AndroidDriver mockDriver;
 
+    private Percy mockPercy;
     private PercySteps steps;
 
     @Before
@@ -36,6 +41,7 @@ public class PercyStepsTest {
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
+        mockPercy = mock(Percy.class);
         steps = new PercySteps();
     }
 
@@ -43,6 +49,25 @@ public class PercyStepsTest {
     public void tearDown() {
         PercySteps.reset();
     }
+
+    private void initWithMockPercy() {
+        PercySteps.setDriver(mockDriver);
+        setPercyField(mockPercy);
+    }
+
+    private void setPercyField(Percy percy) {
+        try {
+            Field field = PercySteps.class.getDeclaredField("percy");
+            field.setAccessible(true);
+            field.set(null, percy);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Lifecycle tests
+    // ------------------------------------------------------------------
 
     @Test
     public void testSetDriverAndGetPercy() {
@@ -70,6 +95,10 @@ public class PercyStepsTest {
         steps.iHaveAPercyInstance();
         assertNotNull(PercySteps.getPercy());
     }
+
+    // ------------------------------------------------------------------
+    // Option setter tests
+    // ------------------------------------------------------------------
 
     @Test
     public void testSetDeviceName() {
@@ -162,6 +191,16 @@ public class PercyStepsTest {
     }
 
     @Test
+    public void testSetThTestCaseExecutionId() {
+        PercySteps.setDriver(mockDriver);
+        steps.iSetThTestCaseExecutionId("exec-123");
+    }
+
+    // ------------------------------------------------------------------
+    // Region tests
+    // ------------------------------------------------------------------
+
+    @Test
     public void testAddIgnoreRegionXPath() {
         PercySteps.setDriver(mockDriver);
         steps.iAddIgnoreRegionXPath("//android.widget.Button[@text='AD']");
@@ -204,6 +243,99 @@ public class PercyStepsTest {
         steps.iClearPercyOptions();
     }
 
+    // ------------------------------------------------------------------
+    // Screenshot tests
+    // ------------------------------------------------------------------
+
+    @Test
+    public void testTakeScreenshot() {
+        initWithMockPercy();
+        steps.iTakeScreenshot("Homepage");
+        verify(mockPercy).screenshot("Homepage");
+    }
+
+    @Test
+    public void testTakeScreenshotFullPage() {
+        initWithMockPercy();
+        steps.iTakeScreenshotFullPage("Full Page");
+        verify(mockPercy).screenshot(eq("Full Page"), eq(true));
+    }
+
+    @Test
+    public void testTakeScreenshotFullScreen() {
+        initWithMockPercy();
+        steps.iTakeScreenshotFullScreen("Full Screen");
+        ArgumentCaptor<ScreenshotOptions> captor = ArgumentCaptor.forClass(ScreenshotOptions.class);
+        verify(mockPercy).screenshot(eq("Full Screen"), captor.capture());
+        assertTrue(captor.getValue().getFullScreen());
+    }
+
+    @Test
+    public void testTakeScreenshotWithOptions() {
+        initWithMockPercy();
+        steps.iSetDeviceName("Pixel 6");
+        steps.iSetOrientation("portrait");
+        steps.iAddIgnoreRegionXPath("//ad");
+        steps.iTakeScreenshotWithOptions("With Options");
+        ArgumentCaptor<ScreenshotOptions> captor = ArgumentCaptor.forClass(ScreenshotOptions.class);
+        verify(mockPercy).screenshot(eq("With Options"), captor.capture());
+        ScreenshotOptions opts = captor.getValue();
+        assertEquals("Pixel 6", opts.getDeviceName());
+        assertEquals("portrait", opts.getOrientation());
+        assertEquals(1, opts.getIgnoreRegionXpaths().size());
+        assertEquals("//ad", opts.getIgnoreRegionXpaths().get(0));
+    }
+
+    @Test
+    public void testTakeScreenshotWithOptionsResetsAfterCall() {
+        initWithMockPercy();
+        steps.iSetDeviceName("Pixel 6");
+        steps.iTakeScreenshotWithOptions("First");
+
+        steps.iTakeScreenshotWithOptions("Second");
+        ArgumentCaptor<ScreenshotOptions> captor = ArgumentCaptor.forClass(ScreenshotOptions.class);
+        verify(mockPercy).screenshot(eq("Second"), captor.capture());
+        assertNull(captor.getValue().getDeviceName());
+    }
+
+    @Test
+    public void testTakeScreenshotFullScreenResetsAfterCall() {
+        initWithMockPercy();
+        steps.iSetDeviceName("iPhone 14");
+        steps.iTakeScreenshotFullScreen("FS");
+
+        steps.iTakeScreenshotWithOptions("After FS");
+        ArgumentCaptor<ScreenshotOptions> captor = ArgumentCaptor.forClass(ScreenshotOptions.class);
+        verify(mockPercy).screenshot(eq("After FS"), captor.capture());
+        assertNull(captor.getValue().getDeviceName());
+        assertFalse(captor.getValue().getFullScreen());
+    }
+
+    @Test
+    public void testTakeScreenshotWithIgnoreAndConsiderRegions() {
+        initWithMockPercy();
+        steps.iAddIgnoreRegionXPath("//ad");
+        steps.iAddIgnoreRegionAccessibilityId("banner");
+        steps.iAddConsiderRegionXPath("//main");
+        steps.iAddConsiderRegionAccessibilityId("content");
+        steps.iAddCustomIgnoreRegion(0, 100, 0, 200);
+        steps.iAddCustomConsiderRegion(10, 50, 10, 150);
+        steps.iTakeScreenshotWithOptions("Regions");
+        ArgumentCaptor<ScreenshotOptions> captor = ArgumentCaptor.forClass(ScreenshotOptions.class);
+        verify(mockPercy).screenshot(eq("Regions"), captor.capture());
+        ScreenshotOptions opts = captor.getValue();
+        assertEquals(1, opts.getIgnoreRegionXpaths().size());
+        assertEquals(1, opts.getIgnoreRegionAccessibilityIds().size());
+        assertEquals(1, opts.getConsiderRegionXpaths().size());
+        assertEquals(1, opts.getConsiderRegionAccessibilityIds().size());
+        assertEquals(1, opts.getCustomIgnoreRegions().size());
+        assertEquals(1, opts.getCustomConsiderRegions().size());
+    }
+
+    // ------------------------------------------------------------------
+    // Then step tests
+    // ------------------------------------------------------------------
+
     @Test(expected = IllegalStateException.class)
     public void testPercyShouldBeEnabledThrowsWithoutInit() {
         steps.percyShouldBeEnabled();
@@ -213,11 +345,5 @@ public class PercyStepsTest {
     public void testPercyShouldBeEnabledSucceeds() {
         PercySteps.setDriver(mockDriver);
         steps.percyShouldBeEnabled();
-    }
-
-    @Test
-    public void testSetThTestCaseExecutionId() {
-        PercySteps.setDriver(mockDriver);
-        steps.iSetThTestCaseExecutionId("exec-123");
     }
 }
