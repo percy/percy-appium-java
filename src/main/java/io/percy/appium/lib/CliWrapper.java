@@ -32,6 +32,10 @@ public class CliWrapper {
         this.env = new Environment(driver);
     }
 
+    public Environment getEnvironment() {
+        return this.env;
+    }
+
     /**
      * Checks to make sure the local Percy server is running. If not, disable Percy.
      */
