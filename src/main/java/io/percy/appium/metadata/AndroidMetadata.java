@@ -24,11 +24,11 @@ public class AndroidMetadata extends Metadata {
         if (deviceName != null) {
             return deviceName;
         }
-        Object device = driver.getCapabilities().getCapability("device");
+        Object device = getCapabilityValue("device");
 
         // Try desired capabilities (legacy format)
         if (device == null) {
-            Map desiredCaps = (Map) driver.getCapabilities().getCapability("desired");
+            Map desiredCaps = (Map) getCapabilityValue("desired");
             if (desiredCaps != null) {
                 device = desiredCaps.get("deviceName");
             }
@@ -36,14 +36,14 @@ public class AndroidMetadata extends Metadata {
 
         // For espresso driver
         if (device == null) {
-            device = driver.getCapabilities().getCapability("appium:deviceName");
+            device = getCapabilityValue("deviceName");
         }
-        return device.toString();
+        return device != null ? device.toString() : "";
     }
 
     public Integer deviceScreenWidth() {
         // Try deviceScreenSize from capabilities
-        Object screenSize = driver.getCapabilities().getCapability("deviceScreenSize");
+        Object screenSize = getCapabilityValue("deviceScreenSize");
         if (screenSize != null) {
             return Integer.parseInt(screenSize.toString().split("x")[0]);
         }
@@ -64,7 +64,7 @@ public class AndroidMetadata extends Metadata {
 
     public Integer deviceScreenHeight() {
         // Try deviceScreenSize from capabilities
-        Object screenSize = driver.getCapabilities().getCapability("deviceScreenSize");
+        Object screenSize = getCapabilityValue("deviceScreenSize");
         if (screenSize != null) {
             return Integer.parseInt(screenSize.toString().split("x")[1]);
         }
@@ -139,7 +139,7 @@ public class AndroidMetadata extends Metadata {
 
     private Map getViewportRect() {
         if (Cache.CACHE_MAP.get("viewportRect_" + sessionId) == null) {
-            Cache.CACHE_MAP.put("viewportRect_" + sessionId, driver.getCapabilities().getCapability("viewportRect"));
+            Cache.CACHE_MAP.put("viewportRect_" + sessionId, getCapabilityValue("viewportRect"));
         }
         return (Map) Cache.CACHE_MAP.get("viewportRect_" + sessionId);
     }
