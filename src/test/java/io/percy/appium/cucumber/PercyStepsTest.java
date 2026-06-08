@@ -31,10 +31,10 @@ public class PercyStepsTest {
     @Before
     public void setUp() {
         mockDriver = mock(AndroidDriver.class);
-        when(mockDriver.getSessionId()).thenReturn(new SessionId("test-session-id"));
+        lenient().when(mockDriver.getSessionId()).thenReturn(new SessionId("test-session-id"));
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability("platformName", "Android");
-        when(mockDriver.getCapabilities()).thenReturn(capabilities);
+        lenient().when(mockDriver.getCapabilities()).thenReturn(capabilities);
         try {
             lenient().when(mockDriver.getRemoteAddress())
                 .thenReturn(new URL("https://hub.example.com/wd/hub"));
