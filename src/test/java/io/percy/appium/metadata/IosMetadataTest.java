@@ -42,9 +42,12 @@ public class IosMetadataTest {
     HashMap<String, Long> viewportRect = new HashMap<String, Long>();
 
     Faker faker = new Faker();
-    Long width = faker.number().randomNumber(3, false);
-    Long top = faker.number().randomNumber(3, false);
-    Long height = faker.number().randomNumber(3, false);
+    // Use numberBetween to guarantee non-zero 3-digit values. randomNumber(3, false)
+    // can return 0 (~0.1% of runs), and width is used as the window/screen width in
+    // scaleFactor(), where a 0 screenWidth causes an ArithmeticException (/ by zero).
+    Long width = (long) faker.number().numberBetween(100, 1000);
+    Long top = (long) faker.number().numberBetween(100, 1000);
+    Long height = (long) faker.number().numberBetween(100, 1000);
 
     @Before
     public void setup() {
