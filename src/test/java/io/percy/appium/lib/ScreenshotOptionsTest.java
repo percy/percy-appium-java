@@ -92,4 +92,66 @@ public class ScreenshotOptionsTest {
         options.setLabels("app;testing");
         assertEquals(options.getLabels(), "app;testing");
     }
+
+    @Test
+    public void testStatusBarHeight() {
+        ScreenshotOptions options = new ScreenshotOptions();
+
+        assertEquals(options.getStatusBarHeight(), null);
+        options.setStatusBarHeight(74);
+        assertEquals(options.getStatusBarHeight(), new Integer(74));
+    }
+
+    @Test
+    public void testNavBarHeight() {
+        ScreenshotOptions options = new ScreenshotOptions();
+
+        assertEquals(options.getNavBarHeight(), null);
+        options.setNavBarHeight(42);
+        assertEquals(options.getNavBarHeight(), new Integer(42));
+    }
+
+    @Test
+    public void testIgnoreRegionAppiumElements() {
+        ScreenshotOptions options = new ScreenshotOptions();
+
+        // getter returns the default empty list initially
+        assertEquals(options.getIgnoreRegionAppiumElements().size(), 0);
+
+        List<Object> elements = new ArrayList<>();
+        elements.add(new RemoteWebElement() {});
+        elements.add(new Object());
+        elements.add(new RemoteWebElement() {});
+
+        options.setIgnoreRegionAppiumElements(elements);
+
+        // setter casts to WebElements, filtering out non-WebElement objects
+        List<WebElement> webElements = options.getIgnoreRegionAppiumElements();
+        assertEquals(webElements.size(), 2);
+        for (WebElement element : webElements) {
+            assertTrue(element instanceof WebElement);
+        }
+    }
+
+    @Test
+    public void testConsiderRegionAppiumElements() {
+        ScreenshotOptions options = new ScreenshotOptions();
+
+        // getter returns the default empty list initially
+        assertEquals(options.getConsiderRegionAppiumElements().size(), 0);
+
+        List<Object> elements = new ArrayList<>();
+        elements.add(new RemoteWebElement() {});
+        elements.add(new Object());
+        elements.add(new RemoteWebElement() {});
+
+        options.setConsiderRegionAppiumElements(elements);
+
+        // setter casts to WebElements, filtering out non-WebElement objects
+        List<WebElement> webElements = options.getConsiderRegionAppiumElements();
+        assertEquals(webElements.size(), 2);
+        for (WebElement element : webElements) {
+            assertTrue(element instanceof WebElement);
+        }
+    }
 }

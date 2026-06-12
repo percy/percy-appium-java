@@ -68,4 +68,26 @@ public class UtilsTest {
 
     assertEquals(null, actualNavBarHeight);
   }
+
+  @Test
+  public void testExtractStatusBarHeightWhenExceptionThrown() {
+    // Passing null causes Matcher to throw, exercising the catch block
+    Integer actualStatBarHeight = Utils.extractStatusBarHeight(null);
+
+    assertEquals(null, actualStatBarHeight);
+  }
+
+  @Test
+  public void testExtractNavigationBarHeightWhenExceptionThrown() {
+    // Passing null causes Matcher to throw, exercising the catch block
+    Integer actualNavBarHeight = Utils.extractNavigationBarHeight(null);
+
+    assertEquals(null, actualNavBarHeight);
+  }
+
+  @Test
+  public void testUtilsInstantiation() {
+    // Covers the implicit default constructor
+    assertEquals(new Utils() instanceof Utils, true);
+  }
 }

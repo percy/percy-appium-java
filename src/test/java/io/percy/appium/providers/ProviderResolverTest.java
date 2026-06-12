@@ -38,4 +38,9 @@ public class ProviderResolverTest {
         Assert.assertEquals(ProviderResolver.resolveProvider(androidDriver).getClass(), GenericProvider.class);
     }
 
+    @Test
+    public void testInstantiation() {
+        Assert.assertNotNull(new ProviderResolver());
+    }
+
 }

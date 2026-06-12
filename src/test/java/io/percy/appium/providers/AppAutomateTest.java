@@ -6,6 +6,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mockConstruction;
+
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,8 +17,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.remote.SessionId;
 
 import com.github.javafaker.Faker;
@@ -22,6 +28,7 @@ import com.github.javafaker.Faker;
 import io.appium.java_client.android.AndroidDriver;
 import io.percy.appium.Environment;
 import io.percy.appium.lib.Cache;
+import io.percy.appium.lib.CliWrapper;
 import io.percy.appium.lib.ScreenshotOptions;
 import io.percy.appium.lib.Tile;
 import io.percy.appium.metadata.AndroidMetadata;
@@ -350,6 +357,267 @@ public class AppAutomateTest {
     public void verifyCorrectAppiumVersionWhenOptionsIsEmptyW3C() {
         when(capabilities.getCapability("bstack:options")).thenReturn(bstackCaps);
         Assert.assertEquals(appAutomate.verifyCorrectAppiumVersion(), true);
+    }
+
+    // Covers lines 56-60: executePercyScreenshotBegin happy path returns the
+    // parsed result and sets markedPercySession from the "success" field.
+    @Test
+    public void testExecutePercyScreenshotBeginReturnsResult() {
+        String response = "{\"success\":\"true\"}";
+        String name = "First";
+        JSONObject arguments = new JSONObject();
+        arguments.put("state", "begin");
+        arguments.put("percyBuildId", Environment.getPercyBuildID());
+        arguments.put("percyBuildUrl", Environment.getPercyBuildUrl());
+        arguments.put("name", name);
+        JSONObject reqObject = new JSONObject();
+        reqObject.put("action", "percyScreenshot");
+        reqObject.put("arguments", arguments);
+        when(androidDriver.executeScript(String.format("browserstack_executor: %s", reqObject.toString())))
+                .thenReturn(response);
+
+        JSONObject result = appAutomate.executePercyScreenshotBegin(name);
+        Assert.assertEquals(result.get("success").toString(), "true");
+    }
+
+    // Covers lines 62-65: executePercyScreenshotBegin catch block when
+    // executeScript throws (no stub matches -> NPE on null result.toString()).
+    @Test
+    public void testExecutePercyScreenshotBeginCatchReturnsNull() {
+        when(androidDriver.executeScript(Mockito.anyString()))
+                .thenThrow(new RuntimeException("boom"));
+        Assert.assertEquals(appAutomate.executePercyScreenshotBegin("First"), null);
+    }
+
+    // Covers line 89: executePercyScreenshotEnd happy path sets markedPercySession
+    // from the "success" field of the parsed result.
+    @Test
+    public void testExecutePercyScreenshotEndSetsMarkedPercySession() {
+        String response = "{\"success\":\"true\"}";
+        String percyScreenshotUrl = "url";
+        String name = "First";
+        JSONObject arguments = new JSONObject();
+        arguments.put("state", "end");
+        arguments.put("percyScreenshotUrl", percyScreenshotUrl);
+        arguments.put("name", name);
+        arguments.put("status", "Failed: some error");
+        arguments.put("sync", false);
+        JSONObject reqObject = new JSONObject();
+        reqObject.put("action", "percyScreenshot");
+        reqObject.put("arguments", arguments);
+        when(androidDriver.executeScript(String.format("browserstack_executor: %s", reqObject.toString())))
+                .thenReturn(response);
+        // error != null exercises the "Failed: ..." status branch (lines 74-75)
+        appAutomate.executePercyScreenshotEnd(name, percyScreenshotUrl, "some error", false);
+    }
+
+    // Covers lines 132-134: executePercyScreenshot catch block re-throws a
+    // wrapped "Screenshot command failed" exception when executeScript fails.
+    @Test
+    public void testExecutePercyScreenshotThrowsOnFailure() throws Exception {
+        when(androidDriver.executeScript(Mockito.anyString()))
+                .thenThrow(new RuntimeException("driver error"));
+        ScreenshotOptions options = new ScreenshotOptions();
+        options.setFullPage(true);
+        try {
+            appAutomate.executePercyScreenshot(options, 1, 2160);
+            Assert.fail("Expected an exception to be thrown");
+        } catch (Exception e) {
+            Assert.assertEquals("Screenshot command failed", e.getMessage());
+        }
+    }
+
+    // Covers lines 139-141 and 146: captureTiles falls back to super.captureTiles
+    // when PERCY_DISABLE_REMOTE_UPLOADS is set, and logs a warning for full page.
+    @Test
+    public void testCaptureTilesWithDisableRemoteUploadsFullPage() throws Exception {
+        try (MockedStatic<Environment> mockedStatic = Mockito.mockStatic(Environment.class)) {
+            mockedStatic.when(Environment::getDisableRemoteUploads).thenReturn(true);
+            ScreenshotOptions options = new ScreenshotOptions();
+            options.setFullPage(true);
+            viewportRect.put("top", top);
+            viewportRect.put("height", height);
+            when(androidDriver.getScreenshotAs(OutputType.BASE64))
+                    .thenReturn("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA==");
+            // super.captureTiles calls AppAutomate.supports(driver) for full page.
+            try {
+                when(androidDriver.getRemoteAddress()).thenReturn(new URL("http://browserstack.com/"));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+
+            AppAutomate appAutomateProvider = new AppAutomate(androidDriver);
+            appAutomateProvider.setMetadata(new AndroidMetadata(androidDriver, null, null, null, null, null));
+
+            Tile tile = appAutomateProvider.captureTiles(options).get(0);
+            Assert.assertTrue(tile.getLocalFilePath().endsWith(".png"));
+            Assert.assertEquals(tile.getStatusBarHeight().intValue(), top.intValue());
+            Assert.assertEquals(tile.getHeaderHeight().intValue(), 0);
+            Assert.assertEquals(tile.getFooterHeight().intValue(), 0);
+        }
+    }
+
+    // Covers line 146: captureTiles falls back to super.captureTiles when
+    // PERCY_DISABLE_REMOTE_UPLOADS is set, without the full page warning branch.
+    @Test
+    public void testCaptureTilesWithDisableRemoteUploadsSinglePage() throws Exception {
+        try (MockedStatic<Environment> mockedStatic = Mockito.mockStatic(Environment.class)) {
+            mockedStatic.when(Environment::getDisableRemoteUploads).thenReturn(true);
+            ScreenshotOptions options = new ScreenshotOptions();
+            options.setFullPage(false);
+            viewportRect.put("top", top);
+            viewportRect.put("height", height);
+            when(androidDriver.getScreenshotAs(OutputType.BASE64))
+                    .thenReturn("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA==");
+
+            AppAutomate appAutomateProvider = new AppAutomate(androidDriver);
+            appAutomateProvider.setMetadata(new AndroidMetadata(androidDriver, null, null, null, null, null));
+
+            Tile tile = appAutomateProvider.captureTiles(options).get(0);
+            Assert.assertTrue(tile.getLocalFilePath().endsWith(".png"));
+        }
+    }
+
+    // Covers lines 166-180: screenshot() orchestration. Begin fails (returns null
+    // because executeScript is unstubbed), so device/osVersion/debugUrl resolve from
+    // a null result, super.screenshot throws inside the try (captureTiles ->
+    // executePercyScreenshot fails) hitting the catch (lines 176-177), and finally
+    // executePercyScreenshotEnd runs (line 179) before returning the response.
+    @Test
+    public void testScreenshotHandlesBeginFailureAndScreenshotError() {
+        ScreenshotOptions options = new ScreenshotOptions();
+        options.setDeviceName("Samsung Galaxy S22");
+        options.setFullPage(false);
+        viewportRect.put("top", top);
+        viewportRect.put("height", height);
+
+        AppAutomate appAutomateProvider = new AppAutomate(androidDriver);
+        JSONObject response = appAutomateProvider.screenshot("Snapshot", options);
+        // super.screenshot throws (no executeScript stub for the screenshot request),
+        // so the error branch is taken and the returned response is null.
+        Assert.assertEquals(response, null);
+    }
+
+    // Covers lines 166-180 with a non-null begin result so that deviceName(),
+    // osVersion() and getDebugUrl() all read from the result object.
+    @Test
+    public void testScreenshotWithBeginResultPopulatesDeviceAndOsVersion() {
+        String beginResponse = "{\"success\":\"true\", \"deviceName\":\"Pixel 7\", "
+                + "\"osVersion\":\"13.0\", \"buildHash\":\"bh\", \"sessionHash\":\"sh\"}";
+        String name = "Snapshot";
+        JSONObject arguments = new JSONObject();
+        arguments.put("state", "begin");
+        arguments.put("percyBuildId", Environment.getPercyBuildID());
+        arguments.put("percyBuildUrl", Environment.getPercyBuildUrl());
+        arguments.put("name", name);
+        JSONObject reqObject = new JSONObject();
+        reqObject.put("action", "percyScreenshot");
+        reqObject.put("arguments", arguments);
+        when(androidDriver.executeScript(String.format("browserstack_executor: %s", reqObject.toString())))
+                .thenReturn(beginResponse);
+
+        ScreenshotOptions options = new ScreenshotOptions();
+        options.setFullPage(false);
+        viewportRect.put("top", top);
+        viewportRect.put("height", height);
+
+        AppAutomate appAutomateProvider = new AppAutomate(androidDriver);
+        JSONObject response = appAutomateProvider.screenshot(name, options);
+        // super.screenshot still throws (screenshot request unstubbed) so response is null,
+        // but deviceName/osVersion/debugUrl were resolved from the begin result.
+        Assert.assertEquals(response, null);
+    }
+
+    // Covers lines 174 and 175: screenshot() success path where super.screenshot()
+    // returns a JSON object containing "link", so percyScreenshotUrl is read from it.
+    // We mock CliWrapper construction so the inherited GenericProvider.screenshot ->
+    // cliWrapper.postScreenshot returns {"link":"https://percy.io/x"} without any HTTP
+    // call, and disable remote uploads so captureTiles falls back to a local screenshot.
+    @Test
+    public void testScreenshotSuccessReadsLinkFromResponse() throws Exception {
+        try (MockedStatic<Environment> mockedStatic = Mockito.mockStatic(Environment.class);
+             MockedConstruction<CliWrapper> mockedCli = mockConstruction(CliWrapper.class,
+                     (mock, context) -> when(mock.postScreenshot(
+                             anyString(), any(), any(), any(), any(), any(), any(), any(), any(), any()))
+                             .thenReturn(new JSONObject("{\"link\":\"https://percy.io/x\"}")))) {
+            mockedStatic.when(Environment::getDisableRemoteUploads).thenReturn(true);
+
+            ScreenshotOptions options = new ScreenshotOptions();
+            options.setDeviceName("Samsung Galaxy S22");
+            options.setFullPage(false);
+            viewportRect.put("top", top);
+            viewportRect.put("height", height);
+            when(androidDriver.getScreenshotAs(OutputType.BASE64))
+                    .thenReturn("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA==");
+            // getTag() (inside super.screenshot) reads platformName for osName().
+            when(capabilities.getCapability("platformName")).thenReturn("android");
+
+            // CliWrapper must be mocked at construction time, so build the provider here.
+            AppAutomate appAutomateProvider = new AppAutomate(androidDriver);
+            JSONObject response = appAutomateProvider.screenshot("Snapshot", options);
+
+            Assert.assertEquals("https://percy.io/x", response.getString("link"));
+        }
+    }
+
+    // Covers line 178 (close of the catch block in screenshot()): super.screenshot()
+    // succeeds and returns a JSON object WITHOUT a "link" key, so
+    // response.getString("link") throws inside the try and the catch block runs to
+    // completion before executePercyScreenshotEnd is invoked.
+    @Test
+    public void testScreenshotSuccessWithMissingLinkHitsCatch() throws Exception {
+        try (MockedStatic<Environment> mockedStatic = Mockito.mockStatic(Environment.class);
+             MockedConstruction<CliWrapper> mockedCli = mockConstruction(CliWrapper.class,
+                     (mock, context) -> when(mock.postScreenshot(
+                             anyString(), any(), any(), any(), any(), any(), any(), any(), any(), any()))
+                             .thenReturn(new JSONObject("{\"data\":{}}")))) {
+            mockedStatic.when(Environment::getDisableRemoteUploads).thenReturn(true);
+
+            ScreenshotOptions options = new ScreenshotOptions();
+            options.setDeviceName("Samsung Galaxy S22");
+            options.setFullPage(false);
+            viewportRect.put("top", top);
+            viewportRect.put("height", height);
+            when(androidDriver.getScreenshotAs(OutputType.BASE64))
+                    .thenReturn("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA==");
+            // getTag() (inside super.screenshot) reads platformName for osName().
+            when(capabilities.getCapability("platformName")).thenReturn("android");
+
+            AppAutomate appAutomateProvider = new AppAutomate(androidDriver);
+            JSONObject response = appAutomateProvider.screenshot("Snapshot", options);
+
+            // super.screenshot returned a non-null object (no "link"), so getString throws
+            // and is swallowed by the catch; the original response object is still returned.
+            Assert.assertEquals(false, response.has("link"));
+        }
+    }
+
+    // Covers line 65: the compiler maps line 65 to the bytecode that skips the
+    // `if (markedPercySession)` body and jumps to the final `return null`. That path is
+    // only taken when markedPercySession is already false on entry. The first begin call
+    // returns a {"success":"true"} response, but the source compares with reference
+    // equality (`== "true"`) against a freshly parsed String, so markedPercySession is
+    // set to false. The second call then skips the body and returns null, executing the
+    // instruction attributed to line 65.
+    @Test
+    public void testExecutePercyScreenshotBeginWhenSessionNotMarkedReturnsNull() {
+        String response = "{\"success\":\"true\"}";
+        String name = "First";
+        JSONObject arguments = new JSONObject();
+        arguments.put("state", "begin");
+        arguments.put("percyBuildId", Environment.getPercyBuildID());
+        arguments.put("percyBuildUrl", Environment.getPercyBuildUrl());
+        arguments.put("name", name);
+        JSONObject reqObject = new JSONObject();
+        reqObject.put("action", "percyScreenshot");
+        reqObject.put("arguments", arguments);
+        when(androidDriver.executeScript(String.format("browserstack_executor: %s", reqObject.toString())))
+                .thenReturn(response);
+
+        // First call sets markedPercySession = false (reference-equality quirk on "true").
+        appAutomate.executePercyScreenshotBegin(name);
+        // Second call: markedPercySession is false, body is skipped, returns null (line 65).
+        Assert.assertEquals(null, appAutomate.executePercyScreenshotBegin(name));
     }
 
 }

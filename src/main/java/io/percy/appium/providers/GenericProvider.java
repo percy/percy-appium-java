@@ -208,7 +208,7 @@ public class GenericProvider {
                 elementsArray.put(region);
 
             } catch (Exception e) {
-                AppPercy.log(String.format("Appium Element with id: %d not found. Ignoring this id.", id));
+                AppPercy.log(String.format("Appium Element with id: %s not found. Ignoring this id.", id));
                 AppPercy.log(e.toString(), "debug");
             }
         }

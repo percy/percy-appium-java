@@ -345,12 +345,87 @@ public class AndroidMetadataTest {
         Assert.assertEquals(metadata.deviceScreenHeight().intValue(), 2960);
     }
 
-    @Test 
+    @Test
     public void testDeviceScreenWidthPriority() {
         // Test that deviceScreenWidth checks deviceScreenSize first, then viewportRect, then realDisplaySize
         when(capabilities.getCapability("deviceScreenSize")).thenReturn("1080x2160");
-        
+
         // Should return deviceScreenSize value (1080)
         Assert.assertEquals(metadata.deviceScreenWidth().intValue(), 1080);
+    }
+
+    @Test
+    public void testStatBarHeightNonAutoUsesSysDumpCache() {
+        // Non-"auto" orientation with null statusBar falls through to getDisplaySysDumpCache()
+        metadata = new AndroidMetadata(androidDriver, "Samsung Galaxy s22", null, null, "portrait", null);
+        JSONObject arguments = new JSONObject();
+        arguments.put("action", "adbShell");
+        JSONObject command = new JSONObject();
+        command.put("command", "dumpsys window displays");
+        arguments.put("arguments", command);
+
+        String response = "InsetsSource type=ITYPE_STATUS_BAR frame=[0,0][2400,74] visible=true\n" +
+                "InsetsSource type=ITYPE_NAVIGATION_BAR frame=[0,2358][1080,2400] visible=true";
+
+        when(androidDriver.executeScript(String.format("browserstack_executor: %s", arguments.toString())))
+                .thenReturn(response);
+
+        Integer expectedStatBarHeight = 74;
+        Assert.assertEquals(expectedStatBarHeight, metadata.statBarHeight());
+
+        // Second call should hit the cached sys dump rather than re-executing the script
+        Assert.assertEquals(expectedStatBarHeight, metadata.statBarHeight());
+        org.mockito.Mockito.verify(androidDriver, org.mockito.Mockito.times(1))
+                .executeScript(String.format("browserstack_executor: %s", arguments.toString()));
+    }
+
+    @Test
+    public void testNavBarHeightNonAutoUsesSysDumpCache() {
+        // Non-"auto" orientation with null navBar falls through to getDisplaySysDumpCache()
+        metadata = new AndroidMetadata(androidDriver, "Samsung Galaxy s22", null, null, "portrait", null);
+        JSONObject arguments = new JSONObject();
+        arguments.put("action", "adbShell");
+        JSONObject command = new JSONObject();
+        command.put("command", "dumpsys window displays");
+        arguments.put("arguments", command);
+
+        String response = "InsetsSource type=ITYPE_STATUS_BAR frame=[0,0][2400,74] visible=true\n" +
+                "InsetsSource type=ITYPE_NAVIGATION_BAR frame=[0,2358][1080,2400] visible=true";
+
+        when(androidDriver.executeScript(String.format("browserstack_executor: %s", arguments.toString())))
+                .thenReturn(response);
+
+        Integer expectedNavBarHeight = 42;
+        Assert.assertEquals(expectedNavBarHeight, metadata.navBarHeight());
+    }
+
+    @Test
+    public void testPlatformVersionWhenExplicitlyProvided() {
+        // Covers Metadata.platformVersion() early return when value is supplied
+        metadata = new AndroidMetadata(androidDriver, null, null, null, null, "13");
+        Assert.assertEquals(metadata.platformVersion(), "13");
+    }
+
+    @Test
+    public void testPlatformVersionFromOsVersionCapability() {
+        when(capabilities.getCapability("platformVersion")).thenReturn(null);
+        when(capabilities.getCapability("os_version")).thenReturn("14");
+        Assert.assertEquals(metadata.platformVersion(), "14");
+    }
+
+    @Test
+    public void testPlatformVersionReturnsNullWhenUnavailable() {
+        // Covers Metadata.platformVersion() returning null when no version is found
+        when(capabilities.getCapability("platformVersion")).thenReturn(null);
+        when(capabilities.getCapability("os_version")).thenReturn(null);
+        Assert.assertEquals(metadata.platformVersion(), null);
+    }
+
+    @Test
+    public void testOrientationAutoFallsBackToPortraitOnNoSuchMethodError() {
+        // Covers Metadata.orientation() catch (NoSuchMethodError) -> "portrait"
+        metadata = new AndroidMetadata(androidDriver, null, null, null, "auto", null);
+        when(androidDriver.getOrientation()).thenThrow(new NoSuchMethodError("getOrientation"));
+        Assert.assertEquals(metadata.orientation(), "portrait");
     }
 }
