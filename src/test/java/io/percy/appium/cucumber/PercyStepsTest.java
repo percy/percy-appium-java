@@ -419,6 +419,27 @@ public class PercyStepsTest {
         assertEquals("Pixel 7", opts.getDeviceName());
     }
 
+    // ------------------------------------------------------------------
+    // resolveCucumberVersion: value, null-fallback, and exception-fallback
+    // ------------------------------------------------------------------
+
+    @Test
+    public void testResolveCucumberVersionReturnsSuppliedValue() {
+        assertEquals("7.18.0", PercySteps.resolveCucumberVersion(() -> "7.18.0"));
+    }
+
+    @Test
+    public void testResolveCucumberVersionFallsBackWhenNull() {
+        assertEquals("unknown", PercySteps.resolveCucumberVersion(() -> null));
+    }
+
+    @Test
+    public void testResolveCucumberVersionFallsBackWhenSupplierThrows() {
+        assertEquals("unknown", PercySteps.resolveCucumberVersion(() -> {
+            throw new RuntimeException("boom");
+        }));
+    }
+
     private ScreenshotOptions currentOptions() {
         try {
             Field field = PercySteps.class.getDeclaredField("screenshotOptions");

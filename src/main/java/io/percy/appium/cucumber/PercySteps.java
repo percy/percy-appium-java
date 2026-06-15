@@ -98,9 +98,25 @@ public class PercySteps {
     }
 
     private static String getCucumberVersion() {
-        try {
+        return resolveCucumberVersion(() -> {
             Package pkg = io.cucumber.java.en.Given.class.getPackage();
-            String version = pkg != null ? pkg.getImplementationVersion() : null;
+            return pkg != null ? pkg.getImplementationVersion() : null;
+        });
+    }
+
+    /**
+     * Resolve the Cucumber version from the given supplier, falling back to
+     * {@code "unknown"} when the supplier yields {@code null} or throws.
+     *
+     * <p>Package-private to allow tests to exercise the null and failure
+     * fallbacks without depending on the runtime manifest.</p>
+     *
+     * @param versionSupplier supplies the raw implementation version (may be null)
+     * @return the resolved version, or {@code "unknown"} on null/failure
+     */
+    static String resolveCucumberVersion(java.util.function.Supplier<String> versionSupplier) {
+        try {
+            String version = versionSupplier.get();
             return version != null ? version : "unknown";
         } catch (Exception e) {
             return "unknown";

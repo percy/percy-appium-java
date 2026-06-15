@@ -236,14 +236,13 @@
                 <rule>
                   <element>BUNDLE</element>
                   <limits>
-                    <!-- Cross-platform floor: tests cover 99.8% on macOS but a few
-                         filesystem/JVM-env-dependent lines differ on the Linux CI
-                         runners (~98%). 0.95 is a robust gate that catches real
-                         regressions while tolerating that platform variance. -->
+                    <!-- Full line coverage: every line in src/main/java is exercised
+                         by a real test. The gate is set to 1.00 so any regression that
+                         leaves a line uncovered fails the build. -->
                     <limit>
                       <counter>LINE</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.95</minimum>
+                      <minimum>1.00</minimum>
                     </limit>
                   </limits>
                 </rule>
