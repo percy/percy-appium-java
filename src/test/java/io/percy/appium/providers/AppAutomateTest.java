@@ -378,6 +378,12 @@ public class AppAutomateTest {
 
         JSONObject result = appAutomate.executePercyScreenshotBegin(name);
         Assert.assertEquals(result.get("success").toString(), "true");
+
+        // With the .equals fix, a {"success":"true"} response keeps markedPercySession=true,
+        // so a second begin call still executes the body and returns a (non-null) result.
+        JSONObject secondResult = appAutomate.executePercyScreenshotBegin(name);
+        Assert.assertNotNull(secondResult);
+        Assert.assertEquals("true", secondResult.get("success").toString());
     }
 
     // Covers lines 62-65: executePercyScreenshotBegin catch block when
@@ -592,16 +598,12 @@ public class AppAutomateTest {
         }
     }
 
-    // Covers line 65: the compiler maps line 65 to the bytecode that skips the
-    // `if (markedPercySession)` body and jumps to the final `return null`. That path is
-    // only taken when markedPercySession is already false on entry. The first begin call
-    // returns a {"success":"true"} response, but the source compares with reference
-    // equality (`== "true"`) against a freshly parsed String, so markedPercySession is
-    // set to false. The second call then skips the body and returns null, executing the
-    // instruction attributed to line 65.
+    // Covers line 65: when the begin response reports failure ("success" != "true"),
+    // markedPercySession is correctly set to false, so the next begin call skips the
+    // `if (markedPercySession)` body and returns null (line 65).
     @Test
     public void testExecutePercyScreenshotBeginWhenSessionNotMarkedReturnsNull() {
-        String response = "{\"success\":\"true\"}";
+        String response = "{\"success\":\"false\"}";
         String name = "First";
         JSONObject arguments = new JSONObject();
         arguments.put("state", "begin");
@@ -614,8 +616,9 @@ public class AppAutomateTest {
         when(androidDriver.executeScript(String.format("browserstack_executor: %s", reqObject.toString())))
                 .thenReturn(response);
 
-        // First call sets markedPercySession = false (reference-equality quirk on "true").
-        appAutomate.executePercyScreenshotBegin(name);
+        // First call: success="false" -> markedPercySession becomes false, returns the result.
+        JSONObject first = appAutomate.executePercyScreenshotBegin(name);
+        Assert.assertEquals("false", first.get("success").toString());
         // Second call: markedPercySession is false, body is skipped, returns null (line 65).
         Assert.assertEquals(null, appAutomate.executePercyScreenshotBegin(name));
     }

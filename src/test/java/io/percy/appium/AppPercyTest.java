@@ -187,6 +187,10 @@ public class AppPercyTest{
 
     @Test
     public void takeScreenshotRethrowsWhenIgnoreErrorsFalse() throws Exception {
+      // Drive the real wiring: percy.ignoreErrors="false" capability makes
+      // PercyOptions.setPercyIgnoreErrors() return false, which screenshot()
+      // assigns to the static ignoreErrors, so the catch block rethrows (covers line 127).
+      capabilities.setCapability("percy.ignoreErrors", "false");
       when(androidDriver.getSessionId()).thenReturn(new SessionId("123"));
       when(androidDriver.getCapabilities()).thenReturn(capabilities);
       lenient().when(androidDriver.getRemoteAddress()).thenReturn(new URL("https://hub.browserstack.com/wd/hub"));
@@ -197,15 +201,38 @@ public class AppPercyTest{
       percy.setCliWrapper(mock(CliWrapper.class));
       when(genericProvider.screenshot(any(), any())).thenThrow(new RuntimeException("provider failure"));
 
-      // Force ignoreErrors=false so the catch block rethrows (covers line 127). Restore after.
+      // ignoreErrors is a static mutated by screenshot(); restore it to the default (true)
+      // afterwards so other tests are unaffected by ordering.
       Field ignoreErrorsField = AppPercy.class.getDeclaredField("ignoreErrors");
       ignoreErrorsField.setAccessible(true);
-      Object original = ignoreErrorsField.get(null);
-      ignoreErrorsField.set(null, Boolean.FALSE);
       try {
-        assertThrows(RuntimeException.class, () -> percy.screenshot("Test"));
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> percy.screenshot("Test"));
+        assertEquals("Error taking screenshot Test", thrown.getMessage());
       } finally {
-        ignoreErrorsField.set(null, original);
+        ignoreErrorsField.set(null, Boolean.TRUE);
+      }
+    }
+
+    @Test
+    public void takeScreenshotSwallowsErrorWhenIgnoreErrorsTrueByDefault() throws Exception {
+      // Default capabilities do not set percy.ignoreErrors -> setPercyIgnoreErrors() returns true,
+      // so the static ignoreErrors stays true and the provider error is swallowed (returns null).
+      when(androidDriver.getSessionId()).thenReturn(new SessionId("123"));
+      when(androidDriver.getCapabilities()).thenReturn(capabilities);
+      lenient().when(androidDriver.getRemoteAddress()).thenReturn(new URL("https://hub.browserstack.com/wd/hub"));
+
+      percy = spy(new AppPercy(androidDriver));
+      percy.setGenericProvider(genericProvider);
+      percy.setPercyEnabled();
+      percy.setCliWrapper(mock(CliWrapper.class));
+      when(genericProvider.screenshot(any(), any())).thenThrow(new RuntimeException("provider failure"));
+
+      Field ignoreErrorsField = AppPercy.class.getDeclaredField("ignoreErrors");
+      ignoreErrorsField.setAccessible(true);
+      try {
+        assertNull(percy.screenshot("Test"));
+      } finally {
+        ignoreErrorsField.set(null, Boolean.TRUE);
       }
     }
 

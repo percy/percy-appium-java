@@ -198,7 +198,8 @@ public class PercyOnAutomateTest {
     public void takeScreenshotRethrowsWhenIgnoreErrorsFalse() throws MalformedURLException {
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setCapability("browserName", "Chrome");
-        // String literal "false" is interned; PercyOptions uses reference equality -> ignoreErrors becomes false
+        // percy.ignoreErrors="false" -> setPercyIgnoreErrors() returns false (via .equals),
+        // so the PercyOnAutomate constructor sets ignoreErrors=false and the error rethrows.
         caps.setCapability("percy.ignoreErrors", "false");
 
         lenient().when(androidDriver.getSessionId()).thenReturn(new SessionId("123"));
