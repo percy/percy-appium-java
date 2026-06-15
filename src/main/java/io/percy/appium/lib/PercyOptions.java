@@ -21,7 +21,8 @@ public class PercyOptions {
             AppPercy.log("Percy options not provided in capabilitiies, considering enabled", "debug");
             return true;
         } else if ((percyEnabledJsonProtocol != null && "false".equals(percyEnabledJsonProtocol.toString()))
-                || (percyOptionsW3CProtocol != null && "false".equals(percyOptionsW3CProtocol.get("enabled").toString()))) {
+                || (percyOptionsW3CProtocol != null
+                        && "false".equals(percyOptionsW3CProtocol.get("enabled").toString()))) {
             AppPercy.log("App Percy is disabled in capabilities");
             return false;
         }
