@@ -37,6 +37,10 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <checkstyle.config.location>src/test/java/io/percy/appium/checkstyles.xml</checkstyle.config.location>
+    <!-- Unit runs (make test / mvn test) MUST NOT execute the live App Automate test.
+         It is JUnit5-@Tag("integration"); excludedGroups keeps the PR #357 unit job green. -->
+    <surefire.excludedGroups>integration</surefire.excludedGroups>
+    <surefire.groups></surefire.groups>
   </properties>
 
   <dependencies>
@@ -54,6 +58,20 @@
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>4.13.2</version>
+        <scope>test</scope>
+    </dependency>
+    <!-- JUnit 5 (Jupiter) powers the @Tag("integration") live App Automate test.
+         The JUnit4 unit suite keeps running via the surefire JUnit Platform vintage engine. -->
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>5.10.2</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.junit.vintage</groupId>
+        <artifactId>junit-vintage-engine</artifactId>
+        <version>5.10.2</version>
         <scope>test</scope>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.mockito/mockito-inline -->
@@ -166,13 +184,19 @@
         </executions>
       </plugin>
       <plugin>
-        <!-- JUnit 5 requires Surefire version 2.22.0 or higher -->
+        <!-- Surefire 3.x runs the JUnit Platform: JUnit4 unit tests via the vintage
+             engine, the JUnit5 @Tag("integration") live test via the jupiter engine. -->
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.2</version>
+        <version>3.2.5</version>
         <configuration>
           <!-- Workaround for issue encountered in CI. -->
           <!-- https://stackoverflow.com/questions/53010200/maven-surefire-could-not-find-forkedbooter-class-->
           <useSystemClassLoader>false</useSystemClassLoader>
+          <!-- Default unit run excludes the "integration" JUnit5 tag so `make test`
+               / `mvn test` stay green & device-free. Run the live test with
+               `mvn test -Dgroups=integration` (overrides surefire.groups/excludedGroups). -->
+          <excludedGroups>${surefire.excludedGroups}</excludedGroups>
+          <groups>${surefire.groups}</groups>
         </configuration>
       </plugin>
       <plugin>
@@ -264,4 +288,27 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <profiles>
+    <!-- Live BrowserStack App Automate run. Activated either explicitly with
+         `-Pintegration-test` or implicitly by the documented `-Dgroups=integration`.
+         It runs ONLY the @Tag("integration") test and skips the JaCoCo coverage
+         gate (the live test alone would not satisfy the 95% line floor) and GPG signing,
+         so the percy app:exec mvn integration command stays green. -->
+    <profile>
+      <id>integration-test</id>
+      <activation>
+        <property>
+          <name>groups</name>
+          <value>integration</value>
+        </property>
+      </activation>
+      <properties>
+        <surefire.groups>integration</surefire.groups>
+        <surefire.excludedGroups></surefire.excludedGroups>
+        <jacoco.skip>true</jacoco.skip>
+        <gpg.skip>true</gpg.skip>
+      </properties>
+    </profile>
+  </profiles>
 </project>
