@@ -95,9 +95,10 @@ public class AppAutomateIntegrationTest {
         bstackOptions.put("projectName", "Percy Appium Java");
         bstackOptions.put("buildName", "percy-appium-java app-automate integration");
         bstackOptions.put("sessionName", "Percy on Automate - Wikipedia sample");
-        // Enables Percy-on-Automate session tagging on the BrowserStack side.
-        bstackOptions.put("percy", true);
-        bstackOptions.put("percyOptions", percyOptions());
+        // Note: Percy-on-Automate does NOT take `percy`/`percyOptions` keys inside
+        // `bstack:options` (BrowserStack's W3C schema rejects unknown keys there).
+        // The SDK enables Percy by default when no percy caps are present, and the
+        // `percy app:exec` wrapper drives the build — so no extra caps are needed.
 
         UiAutomator2Options options = new UiAutomator2Options();
         options.setApp(appUrl);
@@ -108,11 +109,6 @@ public class AppAutomateIntegrationTest {
         driver = new AndroidDriver(new URL(HUB_URL), options);
     }
 
-    private static Map<String, Object> percyOptions() {
-        Map<String, Object> percyOptions = new HashMap<>();
-        percyOptions.put("percyAutoEnabled", true);
-        return percyOptions;
-    }
 
     /**
      * Uploads the public BrowserStack Wikipedia sample APK to App Automate at runtime and returns
