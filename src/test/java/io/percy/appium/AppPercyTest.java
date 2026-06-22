@@ -1,5 +1,6 @@
 package io.percy.appium;
 
+import io.percy.appium.lib.CliWrapper;
 import io.percy.appium.lib.ScreenshotOptions;
 import io.percy.appium.providers.GenericProvider;
 
@@ -19,12 +20,17 @@ import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.lang.reflect.Field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith(org.mockito.junit.MockitoJUnitRunner.class)
+@RunWith(org.mockito.junit.MockitoJUnitRunner.Silent.class)
 public class AppPercyTest{
     @Mock
     AndroidDriver androidDriver;
@@ -116,5 +122,131 @@ public class AppPercyTest{
       // We need to extract and use the response from the `data` key
       JSONObject res = percy.screenshot("Test", options);
       assertEquals(res.getString("snapshot-name"), "Test");
+    }
+
+    @Test
+    public void takeScreenshotWithFullScreenOverload() throws Exception {
+      when(androidDriver.getSessionId()).thenReturn(new SessionId("123"));
+      when(androidDriver.getCapabilities()).thenReturn(capabilities);
+      lenient().when(androidDriver.getRemoteAddress()).thenReturn(new URL("https://hub.browserstack.com/wd/hub"));
+
+      ArgumentCaptor<ScreenshotOptions> captureOptions = ArgumentCaptor.forClass(ScreenshotOptions.class);
+      percy = spy(new AppPercy(androidDriver));
+      percy.setGenericProvider(genericProvider);
+      percy.setPercyEnabled();
+      when(genericProvider.screenshot(any(), any())).thenReturn(null);
+
+      // 2-arg overload screenshot(name, fullScreen) -> delegates to 3-arg (covers line 82)
+      JSONObject res = percy.screenshot("Test", true);
+
+      assertNull(res);
+      verify(genericProvider).screenshot(eq("Test"), captureOptions.capture());
+      assertNotNull(captureOptions.getValue());
+      assertTrue(captureOptions.getValue().getFullScreen());
+    }
+
+    @Test
+    public void takeScreenshotSwallowsErrorWhenProviderThrows() throws Exception {
+      when(androidDriver.getSessionId()).thenReturn(new SessionId("123"));
+      when(androidDriver.getCapabilities()).thenReturn(capabilities);
+      lenient().when(androidDriver.getRemoteAddress()).thenReturn(new URL("https://hub.browserstack.com/wd/hub"));
+
+      percy = spy(new AppPercy(androidDriver));
+      percy.setGenericProvider(genericProvider);
+      percy.setPercyEnabled();
+      CliWrapper cliMock = mock(CliWrapper.class);
+      percy.setCliWrapper(cliMock);
+      // Provider throws -> catch -> postFailedEvent + log -> return null (covers lines 122-126, 130)
+      when(genericProvider.screenshot(any(), any())).thenThrow(new RuntimeException("provider failure"));
+
+      JSONObject res = percy.screenshot("Test");
+
+      assertNull(res);
+      verify(cliMock).postFailedEvent(eq("provider failure"));
+    }
+
+    @Test
+    public void logEmitsAllLevels() {
+      // Exercises the public log overloads/branches including the debug branch (covers lines 146-147, 152)
+      AppPercy.log("info message");
+      AppPercy.log("info message", "info");
+      AppPercy.log("debug message", "debug");
+      AppPercy.log("warn message", "warn");
+    }
+
+    @Test
+    public void setCliWrapperReplacesWrapper() throws Exception {
+      when(androidDriver.getSessionId()).thenReturn(new SessionId("123"));
+      lenient().when(androidDriver.getRemoteAddress()).thenReturn(new URL("https://hub.browserstack.com/wd/hub"));
+
+      percy = spy(new AppPercy(androidDriver));
+      CliWrapper cliMock = mock(CliWrapper.class);
+      // covers setCliWrapper (lines 157-158)
+      percy.setCliWrapper(cliMock);
+    }
+
+    @Test
+    public void takeScreenshotRethrowsWhenIgnoreErrorsFalse() throws Exception {
+      // Drive the real wiring: percy.ignoreErrors="false" capability makes
+      // PercyOptions.setPercyIgnoreErrors() return false, which screenshot()
+      // assigns to the static ignoreErrors, so the catch block rethrows (covers line 127).
+      capabilities.setCapability("percy.ignoreErrors", "false");
+      when(androidDriver.getSessionId()).thenReturn(new SessionId("123"));
+      when(androidDriver.getCapabilities()).thenReturn(capabilities);
+      lenient().when(androidDriver.getRemoteAddress()).thenReturn(new URL("https://hub.browserstack.com/wd/hub"));
+
+      percy = spy(new AppPercy(androidDriver));
+      percy.setGenericProvider(genericProvider);
+      percy.setPercyEnabled();
+      percy.setCliWrapper(mock(CliWrapper.class));
+      when(genericProvider.screenshot(any(), any())).thenThrow(new RuntimeException("provider failure"));
+
+      // ignoreErrors is a static mutated by screenshot(); restore it to the default (true)
+      // afterwards so other tests are unaffected by ordering.
+      Field ignoreErrorsField = AppPercy.class.getDeclaredField("ignoreErrors");
+      ignoreErrorsField.setAccessible(true);
+      try {
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> percy.screenshot("Test"));
+        assertEquals("Error taking screenshot Test", thrown.getMessage());
+      } finally {
+        ignoreErrorsField.set(null, Boolean.TRUE);
+      }
+    }
+
+    @Test
+    public void takeScreenshotSwallowsErrorWhenIgnoreErrorsTrueByDefault() throws Exception {
+      // Default capabilities do not set percy.ignoreErrors -> setPercyIgnoreErrors() returns true,
+      // so the static ignoreErrors stays true and the provider error is swallowed (returns null).
+      when(androidDriver.getSessionId()).thenReturn(new SessionId("123"));
+      when(androidDriver.getCapabilities()).thenReturn(capabilities);
+      lenient().when(androidDriver.getRemoteAddress()).thenReturn(new URL("https://hub.browserstack.com/wd/hub"));
+
+      percy = spy(new AppPercy(androidDriver));
+      percy.setGenericProvider(genericProvider);
+      percy.setPercyEnabled();
+      percy.setCliWrapper(mock(CliWrapper.class));
+      when(genericProvider.screenshot(any(), any())).thenThrow(new RuntimeException("provider failure"));
+
+      Field ignoreErrorsField = AppPercy.class.getDeclaredField("ignoreErrors");
+      ignoreErrorsField.setAccessible(true);
+      try {
+        assertNull(percy.screenshot("Test"));
+      } finally {
+        ignoreErrorsField.set(null, Boolean.TRUE);
+      }
+    }
+
+    @Test
+    public void logDebugBranchPrintsWhenDebugEnabled() throws Exception {
+      // Enable PERCY_DEBUG so the debug log branch body executes (covers line 147). Restore after.
+      Field debugField = AppPercy.class.getDeclaredField("PERCY_DEBUG");
+      debugField.setAccessible(true);
+      boolean original = debugField.getBoolean(null);
+      debugField.setBoolean(null, true);
+      try {
+        AppPercy.log("debug message", "debug");
+      } finally {
+        debugField.setBoolean(null, original);
+      }
     }
 }

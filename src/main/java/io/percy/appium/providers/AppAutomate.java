@@ -56,7 +56,7 @@ public class AppAutomate extends GenericProvider {
                 String resultString = driver
                         .executeScript(String.format("browserstack_executor: %s", reqObject.toString())).toString();
                 JSONObject result = new JSONObject(resultString);
-                markedPercySession = result.get("success").toString() == "true";
+                markedPercySession = "true".equals(result.get("success").toString());
                 return result;
             }
         } catch (Exception e) {
@@ -86,7 +86,7 @@ public class AppAutomate extends GenericProvider {
                 String resultString = driver
                         .executeScript(String.format("browserstack_executor: %s", reqObject.toString())).toString();
                 JSONObject result = new JSONObject(resultString);
-                markedPercySession = result.get("success").toString() == "true";
+                markedPercySession = "true".equals(result.get("success").toString());
             }
         } catch (Exception e) {
             AppPercy.log("BrowserStack executer failed");

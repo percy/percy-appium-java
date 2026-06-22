@@ -56,10 +56,14 @@ public class PercyStepsTest {
     }
 
     private void setPercyField(Percy percy) {
+        setStaticField("percy", percy);
+    }
+
+    private void setStaticField(String name, Object value) {
         try {
-            Field field = PercySteps.class.getDeclaredField("percy");
+            Field field = PercySteps.class.getDeclaredField(name);
             field.setAccessible(true);
-            field.set(null, percy);
+            field.set(null, value);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -345,5 +349,104 @@ public class PercyStepsTest {
     public void testPercyShouldBeEnabledSucceeds() {
         PercySteps.setDriver(mockDriver);
         steps.percyShouldBeEnabled();
+    }
+
+    // ------------------------------------------------------------------
+    // iHaveAPercyInstance: re-init branch (driver set, percy null) -> line 121
+    // ------------------------------------------------------------------
+
+    @Test
+    public void testIHaveAPercyInstanceReinitializesPercyWhenNull() {
+        // Driver present but percy cleared: forces percy = new Percy(driver).
+        setStaticField("driver", mockDriver);
+        setStaticField("percy", null);
+
+        steps.iHaveAPercyInstance();
+
+        assertNotNull(PercySteps.getPercy());
+    }
+
+    // ------------------------------------------------------------------
+    // Appium element regions -> lines 275-280 and 284-289
+    // ------------------------------------------------------------------
+
+    @Test
+    public void testAddIgnoreRegionAppiumElement() {
+        PercySteps.setDriver(mockDriver);
+        org.openqa.selenium.WebElement mockElement = mock(org.openqa.selenium.WebElement.class);
+        when(mockDriver.findElement(org.openqa.selenium.By.xpath("//ignore-el")))
+            .thenReturn(mockElement);
+
+        steps.iAddIgnoreRegionAppiumElement("//ignore-el");
+
+        verify(mockDriver).findElement(org.openqa.selenium.By.xpath("//ignore-el"));
+
+        ScreenshotOptions opts = currentOptions();
+        assertEquals(1, opts.getIgnoreRegionAppiumElements().size());
+        assertSame(mockElement, opts.getIgnoreRegionAppiumElements().get(0));
+    }
+
+    @Test
+    public void testAddConsiderRegionAppiumElement() {
+        PercySteps.setDriver(mockDriver);
+        org.openqa.selenium.WebElement mockElement = mock(org.openqa.selenium.WebElement.class);
+        when(mockDriver.findElement(org.openqa.selenium.By.xpath("//consider-el")))
+            .thenReturn(mockElement);
+
+        steps.iAddConsiderRegionAppiumElement("//consider-el");
+
+        verify(mockDriver).findElement(org.openqa.selenium.By.xpath("//consider-el"));
+
+        ScreenshotOptions opts = currentOptions();
+        assertEquals(1, opts.getConsiderRegionAppiumElements().size());
+        assertSame(mockElement, opts.getConsiderRegionAppiumElements().get(0));
+    }
+
+    // ------------------------------------------------------------------
+    // ensureOptions: re-creates options when null -> line 342
+    // ------------------------------------------------------------------
+
+    @Test
+    public void testEnsureOptionsRecreatesWhenNull() {
+        PercySteps.setDriver(mockDriver);
+        // Clear the stored options so ensureOptions() must allocate a fresh instance.
+        setStaticField("screenshotOptions", null);
+
+        steps.iSetDeviceName("Pixel 7");
+
+        ScreenshotOptions opts = currentOptions();
+        assertNotNull(opts);
+        assertEquals("Pixel 7", opts.getDeviceName());
+    }
+
+    // ------------------------------------------------------------------
+    // resolveCucumberVersion: value, null-fallback, and exception-fallback
+    // ------------------------------------------------------------------
+
+    @Test
+    public void testResolveCucumberVersionReturnsSuppliedValue() {
+        assertEquals("7.18.0", PercySteps.resolveCucumberVersion(() -> "7.18.0"));
+    }
+
+    @Test
+    public void testResolveCucumberVersionFallsBackWhenNull() {
+        assertEquals("unknown", PercySteps.resolveCucumberVersion(() -> null));
+    }
+
+    @Test
+    public void testResolveCucumberVersionFallsBackWhenSupplierThrows() {
+        assertEquals("unknown", PercySteps.resolveCucumberVersion(() -> {
+            throw new RuntimeException("boom");
+        }));
+    }
+
+    private ScreenshotOptions currentOptions() {
+        try {
+            Field field = PercySteps.class.getDeclaredField("screenshotOptions");
+            field.setAccessible(true);
+            return (ScreenshotOptions) field.get(null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

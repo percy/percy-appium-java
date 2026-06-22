@@ -60,4 +60,10 @@ public class CacheTest {
         metadata = new AndroidMetadata(driver, null, null, null, null, null);
         metadata.statBarHeight();
     }
+
+    @Test
+    public void testCacheInstantiation() {
+        Assert.assertNotNull(new Cache());
+        Assert.assertNotNull(Cache.CACHE_MAP);
+    }
 }

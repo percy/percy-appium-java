@@ -55,4 +55,17 @@ public class EnvironmentTest {
         Assert.assertEquals(Environment.getSessionType(), type);
     }
 
+    @Test
+    public void testGetClientInfoReturnsOverrideWhenSet() {
+        environment.setClientInfo("custom-client/9.9");
+        Assert.assertEquals("custom-client/9.9", environment.getClientInfo(false));
+        Assert.assertEquals("custom-client/9.9", environment.getClientInfo(true));
+    }
+
+    @Test
+    public void testGetEnvironmentInfoReturnsOverrideWhenSet() {
+        environment.setEnvironmentInfo("custom-env/1.0");
+        Assert.assertEquals("custom-env/1.0", environment.getEnvironmentInfo());
+    }
+
 }

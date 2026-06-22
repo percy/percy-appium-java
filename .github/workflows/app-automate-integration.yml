@@ -1,0 +1,50 @@
+name: App Automate Integration
+
+# Runs the REAL Percy-on-Automate flow against a live BrowserStack App Automate device.
+#
+# Requires three repository secrets:
+#   - BROWSERSTACK_USERNAME
+#   - BROWSERSTACK_ACCESS_KEY
+#   - PERCY_TOKEN          (Percy-on-Automate token, starts with "auto_")
+#
+# The integration test self-skips (green, never failing) when any secret is empty,
+# so this job is GREEN even before the secrets are configured, and runs a real
+# automate session + creates a Percy build on the first credentialed run.
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+      - test/100-coverage-jacoco-gate
+  workflow_dispatch:
+
+jobs:
+  app-automate-integration:
+    name: App Automate Integration
+    runs-on: ubuntu-latest
+    env:
+      BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+      BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+      PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      # Percy-on-Automate needs @percy/cli >= 1.27.0.
+      - name: Install Percy CLI
+        run: npm install -g @percy/cli
+
+      - name: Run live App Automate integration test under Percy
+        run: npx percy app:exec -- mvn test -Dgroups=integration -Dgpg.skip=true
