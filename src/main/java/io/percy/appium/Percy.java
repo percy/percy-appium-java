@@ -18,11 +18,27 @@ public class Percy {
         this.cliWrapper = new CliWrapper(driver);
         Boolean isPercyEnabled = cliWrapper.healthcheck();
 
-        if (Environment.getSessionType().equals("automate")) {
+        if ("automate".equals(Environment.getSessionType())) {
             percy = new PercyOnAutomate(driver);
         } else {
             percy = new AppPercy(driver);
         }
+    }
+
+    /**
+     * Override the client info reported to Percy.
+     * Used by framework wrappers (e.g., Cucumber) to identify themselves.
+     */
+    public void setClientInfo(String clientInfo, String environmentInfo) {
+        cliWrapper.getEnvironment().setClientInfo(clientInfo);
+        cliWrapper.getEnvironment().setEnvironmentInfo(environmentInfo);
+    }
+
+    /**
+     * Get the SDK version string.
+     */
+    public static String getSdkVersion() {
+        return Environment.getSdkVersion();
     }
 
     public JSONObject screenshot(String name) {

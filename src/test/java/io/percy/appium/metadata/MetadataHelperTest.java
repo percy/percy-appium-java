@@ -15,6 +15,7 @@ import org.openqa.selenium.remote.SessionId;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
+import io.appium.java_client.mac.Mac2Driver;
 
 @RunWith(org.mockito.junit.MockitoJUnitRunner.class)
 public class MetadataHelperTest {
@@ -26,6 +27,9 @@ public class MetadataHelperTest {
 
     @Mock
     RemoteWebDriver webDriver;
+
+    @Mock
+    Mac2Driver mac2Driver;
 
     @Before
     public void setup() {
@@ -61,6 +65,19 @@ public class MetadataHelperTest {
     @Test
     public void testValueFromStaticDevicesInfoWhenNotExists() {
         Assert.assertEquals(MetadataHelper.valueFromStaticDevicesInfo("pixelRatio", "iphone 1").intValue(), 0);
+    }
+
+    @Test
+    public void testResolveUnsupportedAppiumDriver() {
+        // Mac2Driver is an AppiumDriver whose class is neither AndroidDriver nor IOSDriver,
+        // exercising the "Driver class not found" throw + catch + return null path.
+        Assert.assertEquals(MetadataHelper.resolve(mac2Driver, null, null, null, null, null), null);
+    }
+
+    @Test
+    public void testMetadataHelperInstantiation() {
+        // Covers the implicit default constructor
+        Assert.assertEquals(new MetadataHelper() instanceof MetadataHelper, true);
     }
 
 }

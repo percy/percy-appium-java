@@ -107,7 +107,7 @@ public class AppPercy extends IPercy {
         if (!isPercyEnabled || !percyOptions.percyOptionEnabled()) {
             return null;
         }
-        percyOptions.setPercyIgnoreErrors();
+        ignoreErrors = percyOptions.setPercyIgnoreErrors();
         try {
             if (options == null) {
                 options = new ScreenshotOptions();

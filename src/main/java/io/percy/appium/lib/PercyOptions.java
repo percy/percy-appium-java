@@ -20,8 +20,9 @@ public class PercyOptions {
         if (percyOptionsW3CProtocol == null && percyEnabledJsonProtocol == null) {
             AppPercy.log("Percy options not provided in capabilitiies, considering enabled", "debug");
             return true;
-        } else if ((percyEnabledJsonProtocol != null && percyEnabledJsonProtocol.toString() == "false")
-                || (percyOptionsW3CProtocol != null && percyOptionsW3CProtocol.get("enabled").toString() == "false")) {
+        } else if ((percyEnabledJsonProtocol != null && "false".equals(percyEnabledJsonProtocol.toString()))
+                || (percyOptionsW3CProtocol != null
+                        && "false".equals(percyOptionsW3CProtocol.get("enabled").toString()))) {
             AppPercy.log("App Percy is disabled in capabilities");
             return false;
         }
@@ -34,9 +35,9 @@ public class PercyOptions {
         if (percyOptionsW3CProtocol == null && percyIgnoreErrorsJsonProtocol == null) {
             AppPercy.log("Percy options not provided in capabilitiies, ignoring errors by default", "debug");
             return true;
-        } else if ((percyIgnoreErrorsJsonProtocol != null && percyIgnoreErrorsJsonProtocol.toString() == "false")
+        } else if ((percyIgnoreErrorsJsonProtocol != null && "false".equals(percyIgnoreErrorsJsonProtocol.toString()))
                 || (percyOptionsW3CProtocol != null
-                        && percyOptionsW3CProtocol.get("ignoreErrors").toString() == "false")) {
+                        && "false".equals(percyOptionsW3CProtocol.get("ignoreErrors").toString()))) {
             return false;
         }
         return true;

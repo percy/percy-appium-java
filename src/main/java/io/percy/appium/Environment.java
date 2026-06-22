@@ -14,7 +14,13 @@ public class Environment {
         this.driver = driver;
     }
 
+    private String clientInfoOverride;
+    private String environmentInfoOverride;
+
     public String getClientInfo(Boolean flag) {
+        if (clientInfoOverride != null) {
+            return clientInfoOverride;
+        }
         if (flag) {
             return SDK_NAME + "-java" + "/" + SDK_VERSION;
         }
@@ -22,11 +28,26 @@ public class Environment {
     }
 
     public String getEnvironmentInfo() {
+        if (environmentInfoOverride != null) {
+            return environmentInfoOverride;
+        }
         String[] splitDriverName = driver.getClass().getName().split("\\.");
         String driverName = splitDriverName[splitDriverName.length - 1];
 
         // We don't know this type of driver. Report its classname as environment info.
         return String.format("appium-java; %s", driverName);
+    }
+
+    public void setClientInfo(String clientInfo) {
+        this.clientInfoOverride = clientInfo;
+    }
+
+    public void setEnvironmentInfo(String environmentInfo) {
+        this.environmentInfoOverride = environmentInfo;
+    }
+
+    public static String getSdkVersion() {
+        return SDK_VERSION;
     }
 
     public static String getPercyBuildID() {
