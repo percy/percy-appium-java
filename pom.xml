@@ -49,6 +49,20 @@
         <artifactId>java-client</artifactId>
         <version>8.6.0</version>
     </dependency>
+    <!--
+      Provides javax.annotation.Nullable. java-client 8.x pulled this in
+      transitively, but java-client 9.x/10.x dropped that transitive
+      dependency. Declaring it explicitly keeps the SDK compiling against all
+      major java-client versions (8, 9, 10). Scope is "provided": @Nullable has
+      CLASS retention (compile-only), so it is not needed at runtime and should
+      not leak onto consumers' classpath as a transitive compile dependency.
+    -->
+    <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>jsr305</artifactId>
+        <version>3.0.2</version>
+        <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
