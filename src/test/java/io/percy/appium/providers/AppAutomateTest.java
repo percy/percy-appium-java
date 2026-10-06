@@ -359,6 +359,41 @@ public class AppAutomateTest {
         Assert.assertEquals(appAutomate.verifyCorrectAppiumVersion(), true);
     }
 
+    @Test
+    public void verifyCorrectAppiumVersionAcceptsAppiumThree() {
+        bstackCaps.put("appiumVersion", "3.5.2");
+        when(capabilities.getCapability("bstack:options")).thenReturn(bstackCaps);
+        Assert.assertEquals(appAutomate.verifyCorrectAppiumVersion(), true);
+    }
+
+    @Test
+    public void verifyCorrectAppiumVersionAcceptsMajorOnly() {
+        bstackCaps.put("appiumVersion", "2");
+        when(capabilities.getCapability("bstack:options")).thenReturn(bstackCaps);
+        Assert.assertEquals(appAutomate.verifyCorrectAppiumVersion(), true);
+    }
+
+    @Test
+    public void verifyCorrectAppiumVersionAttemptsFullpageWhenUnparseable() {
+        bstackCaps.put("appiumVersion", "latest");
+        when(capabilities.getCapability("bstack:options")).thenReturn(bstackCaps);
+        Assert.assertEquals(appAutomate.verifyCorrectAppiumVersion(), true);
+    }
+
+    @Test
+    public void verifyCorrectAppiumVersionDowngradesWhenEitherProtocolIsBelowGate() {
+        bstackCaps.put("appiumVersion", "3.5.2");
+        when(capabilities.getCapability("bstack:options")).thenReturn(bstackCaps);
+        when(capabilities.getCapability("browserstack.appium_version")).thenReturn("1.17.0");
+        Assert.assertEquals(appAutomate.verifyCorrectAppiumVersion(), false);
+    }
+
+    @Test
+    public void verifyCorrectAppiumVersionAttemptsFullpageWhenCapabilityLookupThrows() {
+        when(capabilities.getCapability("bstack:options")).thenThrow(new RuntimeException("boom"));
+        Assert.assertEquals(appAutomate.verifyCorrectAppiumVersion(), true);
+    }
+
     // Covers lines 56-60: executePercyScreenshotBegin happy path returns the
     // parsed result and sets markedPercySession from the "success" field.
     @Test
