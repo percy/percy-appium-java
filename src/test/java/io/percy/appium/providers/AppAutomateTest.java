@@ -381,6 +381,14 @@ public class AppAutomateTest {
     }
 
     @Test
+    public void verifyCorrectAppiumVersionStillDowngradesWhenOtherLookupThrows() {
+        bstackCaps.put("appiumVersion", "1.17.0");
+        when(capabilities.getCapability("bstack:options")).thenReturn(bstackCaps);
+        when(capabilities.getCapability("browserstack.appium_version")).thenThrow(new RuntimeException("boom"));
+        Assert.assertEquals(appAutomate.verifyCorrectAppiumVersion(), false);
+    }
+
+    @Test
     public void verifyCorrectAppiumVersionDowngradesWhenEitherProtocolIsBelowGate() {
         bstackCaps.put("appiumVersion", "3.5.2");
         when(capabilities.getCapability("bstack:options")).thenReturn(bstackCaps);

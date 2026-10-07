@@ -193,8 +193,10 @@ public class AppAutomate extends GenericProvider {
 
     public Boolean verifyCorrectAppiumVersion() {
         try {
-            Map bstackOptions = (Map) driver.getCapabilities().getCapability("bstack:options");
-            Object appiumVersionJsonProtocol = driver.getCapabilities().getCapability("browserstack.appium_version");
+            // Each source is read on its own so a failing lookup cannot hide a known
+            // below-gate version in the other one.
+            Map bstackOptions = (Map) readCapability("bstack:options");
+            Object appiumVersionJsonProtocol = readCapability("browserstack.appium_version");
             if (bstackOptions == null && appiumVersionJsonProtocol == null) {
                 AppPercy.log("Unable to fetch Appium version, "
                         + "Appium version should be >= 1.19 for Fullpage Screenshot", "warn");
@@ -221,6 +223,15 @@ public class AppAutomate extends GenericProvider {
             AppPercy.log("Unable to verify Appium version, attempting Fullpage Screenshot anyway.", "warn");
             AppPercy.log(e.toString(), "debug");
             return true;
+        }
+    }
+
+    private Object readCapability(String name) {
+        try {
+            return driver.getCapabilities().getCapability(name);
+        } catch (Exception e) {
+            AppPercy.log("Unable to read capability '" + name + "': " + e, "debug");
+            return null;
         }
     }
 
