@@ -192,32 +192,62 @@ public class AppAutomate extends GenericProvider {
     }
 
     public Boolean verifyCorrectAppiumVersion() {
-        Map bstackOptions = (Map) driver.getCapabilities().getCapability("bstack:options");
-        Object appiumVersionJsonProtocol = driver.getCapabilities().getCapability("browserstack.appium_version");
-        if (bstackOptions == null && appiumVersionJsonProtocol == null) {
-            AppPercy.log("Unable to fetch Appium version, "
-                    + "Appium version should be >= 1.19 for Fullpage Screenshot", "warn");
-        } else if ((appiumVersionJsonProtocol != null && !appiumVersionCheck(appiumVersionJsonProtocol.toString()))
-                || (
-                    bstackOptions != null
-                    && bstackOptions.get("appiumVersion") != null
-                    && !appiumVersionCheck(bstackOptions.get("appiumVersion").toString())
-                    )
-                ) {
-            AppPercy.log("Appium version should be >= 1.19 for Fullpage Screenshot, "
-                    + "Falling back to single page screenshot.", "warn");
-            return false;
-        }
-        return true;
-    }
-
-    private Boolean appiumVersionCheck(String appiumVersion) {
-        Integer majorVersion = Integer.parseInt(appiumVersion.split("\\.")[0]);
-        Integer minorVersion = Integer.parseInt(appiumVersion.split("\\.")[1]);
-        if (majorVersion == 2 || (majorVersion == 1 && minorVersion > 18)) {
+        try {
+            // Each source is read on its own so a failing lookup cannot hide a known
+            // below-gate version in the other one.
+            Object bstackOptionsCap = readCapability("bstack:options");
+            Map bstackOptions = bstackOptionsCap instanceof Map ? (Map) bstackOptionsCap : null;
+            Object appiumVersionJsonProtocol = readCapability("browserstack.appium_version");
+            if (bstackOptions == null && appiumVersionJsonProtocol == null) {
+                AppPercy.log("Unable to fetch Appium version, "
+                        + "Appium version should be >= 1.19 for Fullpage Screenshot", "warn");
+                return true;
+            }
+            Object bstackAppiumVersion = bstackOptions != null ? bstackOptions.get("appiumVersion") : null;
+            for (Object version : new Object[] {appiumVersionJsonProtocol, bstackAppiumVersion}) {
+                if (version == null) {
+                    continue;
+                }
+                Boolean meetsGate = appiumVersionCheck(version.toString());
+                if (meetsGate == null) {
+                    AppPercy.log("Could not parse Appium version '" + version
+                            + "', attempting Fullpage Screenshot anyway.", "warn");
+                } else if (!meetsGate) {
+                    AppPercy.log("Appium version should be >= 1.19 for Fullpage Screenshot, "
+                            + "Falling back to single page screenshot.", "warn");
+                    return false;
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            // Version detection must never take the screenshot down with it.
+            AppPercy.log("Unable to verify Appium version, attempting Fullpage Screenshot anyway.", "warn");
+            AppPercy.log(e.toString(), "debug");
             return true;
         }
-        return false;
+    }
+
+    private Object readCapability(String name) {
+        try {
+            return driver.getCapabilities().getCapability(name);
+        } catch (Exception e) {
+            AppPercy.log("Unable to read capability '" + name + "': " + e, "debug");
+            return null;
+        }
+    }
+
+    // null when the version cannot be parsed, otherwise whether it meets the >= 1.19 gate.
+    // Majors are compared as >= 2 so Appium 3.x (and later) is not downgraded to single page,
+    // and a major-only version such as "2" is accepted.
+    Boolean appiumVersionCheck(String appiumVersion) {
+        String[] parts = appiumVersion.trim().split("\\.");
+        try {
+            int majorVersion = Integer.parseInt(parts[0]);
+            int minorVersion = parts.length > 1 ? Integer.parseInt(parts[1]) : 0;
+            return majorVersion >= 2 || (majorVersion == 1 && minorVersion > 18);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
 }
