@@ -195,7 +195,8 @@ public class AppAutomate extends GenericProvider {
         try {
             // Each source is read on its own so a failing lookup cannot hide a known
             // below-gate version in the other one.
-            Map bstackOptions = (Map) readCapability("bstack:options");
+            Object bstackOptionsCap = readCapability("bstack:options");
+            Map bstackOptions = bstackOptionsCap instanceof Map ? (Map) bstackOptionsCap : null;
             Object appiumVersionJsonProtocol = readCapability("browserstack.appium_version");
             if (bstackOptions == null && appiumVersionJsonProtocol == null) {
                 AppPercy.log("Unable to fetch Appium version, "

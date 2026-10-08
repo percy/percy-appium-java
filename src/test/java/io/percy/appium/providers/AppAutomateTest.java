@@ -389,6 +389,13 @@ public class AppAutomateTest {
     }
 
     @Test
+    public void verifyCorrectAppiumVersionChecksJsonProtocolWhenBstackOptionsIsNotAMap() {
+        when(capabilities.getCapability("bstack:options")).thenReturn("not-a-map");
+        when(capabilities.getCapability("browserstack.appium_version")).thenReturn("1.17.0");
+        Assert.assertEquals(appAutomate.verifyCorrectAppiumVersion(), false);
+    }
+
+    @Test
     public void verifyCorrectAppiumVersionDowngradesWhenEitherProtocolIsBelowGate() {
         bstackCaps.put("appiumVersion", "3.5.2");
         when(capabilities.getCapability("bstack:options")).thenReturn(bstackCaps);
